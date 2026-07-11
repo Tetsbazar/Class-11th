@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test Bazar - 1st Semester Main Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Tiro+Bangla:ital@0;1&display=swap" rel="stylesheet">
+<style>
+/* ================= COLOR SCHEME & VARIABLES ================= */
+:root {
+  --primary: #1a7a4a;
+  --primary-hover: #2aad68;
+  --accent: #f9a825;
+  --bg-main: #f0faf4;
+  --bg-card: #ffffff;
+  --text-main: #1c2e24;
+  --text-meta: #5a7a66;
+  --border-color: #c5dccb;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Syne', sans-serif; background: var(--bg-main); color: var(--text-main); min-height: 100vh; }
+.en-font { font-family: 'Syne', sans-serif; }
+a { text-decoration: none; }
+
+/* Top Bar */
+.top-bar { background: var(--primary); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; color: white; box-shadow: 0 4px 15px rgba(26,122,74,0.2); position: sticky; top: 0; z-index: 100; }
+.logo { font-size: 1.5rem; font-weight: 800; letter-spacing: 1px; }
+.logo span { color: var(--accent); }
+
+/* Main Container */
+.main-container { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
+.header-text { text-align: center; margin-bottom: 2rem; }
+.header-text h1 { font-family: 'Tiro Bangla', serif; font-size: 2rem; color: var(--primary); margin-bottom: 0.5rem; line-height: 1.4; }
+.header-text p { font-family: 'Tiro Bangla', serif; font-size: 1.05rem; color: var(--text-meta); font-weight: bold; }
+
+/* Demo Section */
+.demo-section { background: linear-gradient(135deg, #f9a825, #f57f17); padding: 25px; border-radius: 16px; text-align: center; margin-bottom: 30px; box-shadow: 0 8px 20px rgba(249, 168, 37, 0.3); }
+.demo-section h2 { font-family: 'Tiro Bangla', serif; color: white; font-size: 1.8rem; margin-bottom: 10px; }
+.demo-section p { font-family: 'Tiro Bangla', serif; color: rgba(255,255,255,0.9); font-size: 1.1rem; margin-bottom: 20px; font-weight: bold; }
+.demo-btn { background: white; color: #f57f17; padding: 12px 30px; border-radius: 30px; font-weight: bold; font-size: 1.2rem; display: inline-block; box-shadow: 0 4px 10px rgba(0,0,0,0.15); transition: 0.3s; font-family: 'Tiro Bangla', serif; }
+.demo-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.2); }
+.wa-btn { background: #25D366; color: white; padding: 10px 20px; border-radius: 8px; font-weight: bold; display: inline-flex; align-items: center; gap: 8px; margin-top: 10px; font-family: 'Syne', sans-serif; transition: 0.2s;}
+.wa-btn:hover { background: #128C7E; }
+
+/* Subject Grid */
+.subject-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; }
+.subject-card { background: var(--bg-card); border-radius: 16px; padding: 25px; border: 2px solid var(--border-color); box-shadow: 0 5px 15px rgba(0,0,0,0.03); transition: 0.3s; }
+.subject-card:hover { border-color: var(--primary); box-shadow: 0 10px 30px rgba(26,122,74,0.1); }
+.subject-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px dashed var(--border-color); }
+.subject-icon { font-size: 2.2rem; background: var(--bg-main); width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; border-radius: 12px; border: 1px solid var(--border-color); }
+.subject-title { font-size: 1.5rem; font-weight: 700; color: var(--primary); font-family: 'Tiro Bangla', serif;}
+
+/* Chapter List */
+.chapter-list { display: flex; flex-direction: column; gap: 10px; }
+.chapter-link { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; background: var(--bg-main); border-radius: 10px; color: var(--text-main); font-weight: bold; font-size: 1.05rem; transition: 0.2s; border: 1px solid transparent; font-family: 'Tiro Bangla', serif;}
+.chapter-link:hover { background: var(--bg-card); border-color: var(--primary); color: var(--primary); padding-left: 20px; }
+.chapter-meta { font-size: 0.85rem; color: var(--text-meta); background: rgba(0,0,0,0.05); padding: 3px 8px; border-radius: 6px; font-family: 'Syne', sans-serif;}
+.sub-heading { font-family: 'Tiro Bangla', serif; font-size: 1.1rem; color: #e8730a; font-weight: bold; margin: 15px 0 5px 5px; border-left: 4px solid var(--primary); padding-left: 10px;}
+
+@media (max-width: 768px) {
+  .top-bar { padding: 1rem; }
+  .main-container { padding: 1.5rem 1rem; }
+  .subject-card { padding: 15px; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<header class="top-bar">
+    <div class="logo en-font">Test<span>Bazar</span></div>
+    <div class="en-font" style="font-weight: bold;">1st Semester</div>
+</header>
+
+<!-- MAIN DASHBOARD -->
+<div class="main-container">
+    <div class="header-text">
+        <h1>১ম সেমিস্টার (Semester 1) মক টেস্ট ড্যাশবোর্ড</h1>
+        <p>আপনার বিষয়ের নির্দিষ্ট অধ্যায় নির্বাচন করে টেস্ট দেওয়া শুরু করুন</p>
+    </div>
+
+    <!-- FREE DEMO / WHATSAPP SECTION -->
+    <div class="demo-section">
+        <h2>🆓 ফ্রি ডেমো টেস্ট (সবার জন্য)</h2>
+        <p>Test Bazar কীভাবে কাজ করে তা দেখতে এই ডেমো টেস্টটি দিন। এর জন্য কোনো পাসওয়ার্ড লাগবে না!</p>
+        <a href="Demo_Test_1stSem.html" class="demo-btn">ডেমো টেস্ট শুরু করুন</a>
+
+        <div style="margin-top: 25px; border-top: 1px solid rgba(255,255,255,0.3); padding-top: 15px;">
+            <h3 style="color: white; margin-bottom: 5px; font-size: 1.2rem; font-family: 'Tiro Bangla', serif;">ইউজারনেম ও পাসওয়ার্ড প্রয়োজন?</h3>
+            <p style="color: rgba(255,255,255,0.9); font-size: 0.95rem; margin-bottom: 0;">মূল টেস্টগুলো দেওয়ার জন্য আইডি না থাকলে নিচে ক্লিক করে WhatsApp-এ মেসেজ করুন:</p>
+            <a href="https://wa.me/918710032880?text=Hello%20Test%20Bazar,%20I%20need%20a%20username%20and%20password." target="_blank" class="wa-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0.068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.921l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.865-.583-.43-1.022-1.006-1.141-1.144-.119-.137-.013-.21.085-.308.088-.089.197-.23.296-.346.099-.114.133-.197.197-.326.065-.133.033-.248-.016-.346-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/></svg>
+                WhatsApp: 8710032880
+            </a>
+        </div>
+    </div>
+
+    <div class="subject-grid">
+
+        <!-- POLITICAL SCIENCE (রাষ্ট্রবিজ্ঞান) -->
+        <div class="subject-card">
+            <div class="subject-header">
+                <div class="subject-icon">🏛️</div>
+                <div class="subject-title">রাষ্ট্রবিজ্ঞান (Pol. Science)</div>
+            </div>
+            <div class="chapter-list">
+                <a href="PolScience_1stSem_U1.html" class="chapter-link">
+                    <span>Unit-1: রাষ্ট্রবিজ্ঞানের প্রকৃতি ও পরিধি</span><span class="chapter-meta">5 Sets</span>
+                </a>
+                <a href="PolScience_1stSem_U2.html" class="chapter-link">
+                    <span>Unit-2: রাষ্ট্র: সংজ্ঞা ও বৈশিষ্ট্যসমূহ</span><span class="chapter-meta">4 Sets</span>
+                </a>
+                <a href="PolScience_1stSem_U3.html" class="chapter-link">
+                    <span>Unit-3: নাগরিকতা</span><span class="chapter-meta">4 Sets</span>
+                </a>
+                <a href="PolScience_1stSem_U4.html" class="chapter-link">
+                    <span>Unit-4: সংবিধানসমূহের উপলব্ধিকরণ</span><span class="chapter-meta">4 Sets</span>
+                </a>
+                <a href="PolScience_1stSem_U5.html" class="chapter-link">
+                    <span>Unit-5: ভারতীয় সংবিধান রচনা ও দর্শন</span><span class="chapter-meta">6 Sets</span>
+                </a>
+                <a href="PolScience_1stSem_U6.html" class="chapter-link">
+                    <span>Unit-6: ভারতীয় সংবিধানের প্রধান বৈশিষ্ট্য</span><span class="chapter-meta">4 Sets</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- HISTORY (ইতিহাস) -->
+        <div class="subject-card">
+            <div class="subject-header">
+                <div class="subject-icon">📜</div>
+                <div class="subject-title">ইতিহাস (History)</div>
+            </div>
+            <div class="chapter-list">
+                <a href="History_1stSem_U1.html" class="chapter-link">
+                    <span>ইউনিট ১: ইতিহাস পাঠ</span><span class="chapter-meta">5 Sets</span>
+                </a>
+                <a href="History_1stSem_U2.html" class="chapter-link">
+                    <span>ইউনিট ২: তিনটি মহাদেশ জুড়ে সাম্রাজ্য</span><span class="chapter-meta">10 Sets</span>
+                </a>
+                <a href="History_1stSem_U3.html" class="chapter-link">
+                    <span>ইউনিট ৩: শাসনপদ্ধতি সম্পর্কে ধারণা</span><span class="chapter-meta">11 Sets</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- GEOGRAPHY (ভূগোল) -->
+        <div class="subject-card" style="grid-column: 1 / -1;">
+            <div class="subject-header">
+                <div class="subject-icon">🌍</div>
+                <div class="subject-title">ভূগোল (Geography)</div>
+            </div>
+            <div class="chapter-list" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
+                <div>
+                    <div class="sub-heading">প্রাকৃতিক ভূগোল</div>
+                    <a href="Geography_1stSem_P_U1.html" class="chapter-link"><span>অধ্যায় ১: বিষয় হিসেবে ভূগোল</span><span class="chapter-meta">3 Sets</span></a>
+                    <a href="Geography_1stSem_P_U2.html" class="chapter-link"><span>অধ্যায় ২: পৃথিবীর উৎপত্তি</span><span class="chapter-meta">3 Sets</span></a>
+                    <a href="Geography_1stSem_P_U3.html" class="chapter-link"><span>অধ্যায় ৩: পৃথিবীর অভ্যন্তর</span><span class="chapter-meta">4 Sets</span></a>
+                    <a href="Geography_1stSem_P_U4.html" class="chapter-link"><span>অধ্যায় ৪: ভূমিরূপ প্রক্রিয়া</span><span class="chapter-meta">11 Sets</span></a>
+                    <a href="Geography_1stSem_P_U5.html" class="chapter-link"><span>অধ্যায় ৫: আবহাওয়া ও জলবায়ু</span><span class="chapter-meta">4 Sets</span></a>
+                </div>
+                <div>
+                    <div class="sub-heading">মানবীয় ও অর্থনৈতিক ভূগোল</div>
+                    <a href="Geography_1stSem_H_U2.html" class="chapter-link"><span>অধ্যায় ২: অর্থনৈতিক কার্যাবলির শ্রেণিবিভাগ</span><span class="chapter-meta">4 Sets</span></a>
+                    <a href="Geography_1stSem_H_U3.html" class="chapter-link"><span>অধ্যায় ৩: প্রাথমিক ক্রিয়াকলাপ</span><span class="chapter-meta">2 Sets</span></a>
+                    <br>
+                    <div class="sub-heading">আঞ্চলিক ভূগোল - ভারত</div>
+                    <a href="Geography_1stSem_I_U1.html" class="chapter-link"><span>অধ্যায় ১: দেশ হিসেবে ভারত</span><span class="chapter-meta">2 Sets</span></a>
+                    <a href="Geography_1stSem_I_U2.html" class="chapter-link"><span>অধ্যায় ২: গঠন ও ভূপ্রকৃতি</span><span class="chapter-meta">3 Sets</span></a>
+                    <a href="Geography_1stSem_I_U3.html" class="chapter-link"><span>অধ্যায় ৩: জলনিকাশি ব্যবস্থা</span><span class="chapter-meta">2 Sets</span></a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+// গ্লোবাল স্টুডেন্ট ডেটাবেস
+const GLOBAL_USERS = {
+    "demo1": "1234", "demo2": "1234", "demo3": "1234", "demo4": "1234",
+    "ajay": "7251", "sagun": "1234", "anita": "1234", "jaba": "1234",
+    "student100": "pass001", "rohit2027": "abc456"
+};
+localStorage.setItem("testBazarGlobalUsers", JSON.stringify(GLOBAL_USERS));
+</script>
+
+</body>
+</html>
+
