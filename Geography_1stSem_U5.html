@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test Bazar — Geography | 1st Sem | Unit 5</title>
+<link href="https://fonts.googleapis.com/css2?family=Tiro+Bangla&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ================== CSS STYLES ================== */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Syne', sans-serif; background: #f0faf4; min-height: 100vh; color: #1c2e24; }
+.en-font { font-family: 'Syne', sans-serif; }
+
+.top-bar { background: #1a7a4a; padding: 0.8rem 1.5rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+.top-logo { font-size: 1.2rem; font-weight: 800; color: white; cursor: pointer; }
+.top-logo span { color: #f9a825; }
+.timer-box { background: rgba(255,255,255,0.2); padding: 0.3rem 0.8rem; border-radius: 6px; color: white; font-weight: 700; font-size: 0.95rem; }
+.timer-box.danger { background: #dc3545; animation: pulse 1s infinite; }
+@keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+.main { max-width: 800px; margin: 0 auto; padding: 1.5rem; }
+
+/* HUB PAGE */
+.hub-header { text-align: center; margin-bottom: 2rem; }
+.hub-header h1 { font-family: 'Tiro Bangla', serif; color: #1a7a4a; font-size: 1.6rem; margin-bottom: 0.5rem; line-height: 1.4; }
+.hub-header p { color: #5a7a66; font-size: 0.95rem; font-family: 'Tiro Bangla', serif; font-weight: bold; }
+.set-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
+.set-card { background: white; border: 2px solid #c5dccb; border-radius: 12px; padding: 1.5rem; text-align: center; cursor: pointer; transition: all 0.2s; }
+.set-card:hover { transform: translateY(-3px); border-color: #1a7a4a; box-shadow: 0 6px 20px rgba(26,122,74,0.12); }
+.set-card .icon { font-size: 2.2rem; margin-bottom: 0.3rem; }
+.set-card .set-num { font-weight: 700; font-size: 1.1rem; color: #1a7a4a; }
+.set-card .set-title { font-family: 'Tiro Bangla', serif; font-size: 0.85rem; color: #5a7a66; margin: 0.2rem 0 0.5rem; }
+.set-card .set-meta { display: flex; gap: 1rem; font-size: 0.75rem; color: #5a7a66; justify-content: center; font-weight: bold;}
+.set-card .set-meta span { background: #f0faf4; padding: 0.2rem 0.6rem; border-radius: 4px; }
+.attempt-badge { font-size: 0.8rem; color: #dc3545; font-weight: 700; margin-top: 0.6rem; font-family: 'Tiro Bangla', serif; }
+
+/* QUIZ AREA */
+.quiz-info { background: white; border-radius: 12px; padding: 1rem 1.2rem; margin-bottom: 1.2rem; border: 1px solid #c5dccb; display: flex; gap: 1rem; flex-wrap: wrap; }
+.info-item { font-family: 'Tiro Bangla', serif; font-size: 0.9rem; color: #5a7a66; font-weight: 600; }
+.info-item strong { color: #1a7a4a; }
+
+.progress-wrap { background: #c5dccb; border-radius: 4px; height: 6px; margin-bottom: 1.2rem; overflow: hidden; }
+.progress-fill { height: 100%; background: #1a7a4a; border-radius: 4px; transition: width 0.3s; }
+
+.q-card { background: white; border-radius: 14px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+.q-num { font-size: 0.9rem; font-weight: 700; color: #1a7a4a; margin-bottom: 0.8rem; }
+.q-text { font-family: 'Tiro Bangla', serif; font-size: 1.1rem; color: #1c2e24; font-weight: 700; line-height: 1.6; margin-bottom: 1.2rem; }
+
+.opts { display: flex; flex-direction: column; gap: 0.6rem; }
+.opt { display: flex; align-items: flex-start; gap: 12px; padding: 0.8rem 1rem; border: 1.5px solid #c5dccb; border-radius: 10px; background: transparent; cursor: pointer; text-align: left; transition: all 0.2s; width: 100%; }
+.opt:hover:not(.disabled) { border-color: #1a7a4a; background: #f0faf4; }
+.opt-circle { min-width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid #c5dccb; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #5a7a66; flex-shrink: 0; }
+.opt-text { font-family: 'Tiro Bangla', serif; font-size: 0.95rem; color: #1c2e24; line-height: 1.6; font-weight: 600; padding-top: 2px; }
+
+.opt.correct { border-color: #1a7a4a; background: #e8f7ef; }
+.opt.correct .opt-circle { background: #1a7a4a; border-color: #1a7a4a; color: white; }
+.opt.wrong { border-color: #dc3545; background: #fdf0f0; }
+.opt.wrong .opt-circle { background: #dc3545; border-color: #dc3545; color: white; }
+.opt.disabled { cursor: default; }
+
+.explanation { background: #f0faf4; border-left: 4px solid #1a7a4a; border-radius: 0 8px 8px 0; padding: 1rem; margin-top: 1rem; display: none; }
+.explanation.show { display: block; }
+.explanation p { font-family: 'Tiro Bangla', serif; font-size: 0.9rem; color: #2c4035; line-height: 1.7; }
+
+.nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; }
+.score-show { font-family: 'Tiro Bangla', serif; font-size: 0.85rem; color: #5a7a66; font-weight: bold; }
+.next-btn { background: #1a7a4a; color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 8px; font-family: 'Tiro Bangla', serif; font-size: 0.95rem; font-weight: bold; cursor: pointer; transition: all 0.2s; }
+.next-btn:hover:not(:disabled) { background: #2aad68; }
+.next-btn:disabled { background: #c5dccb; cursor: not-allowed; }
+
+/* RESULT AREA */
+.result-wrap { background: white; border-radius: 14px; padding: 2rem; text-align: center; border: 1px solid #c5dccb; display: none; max-width: 600px; margin: 0 auto; box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+.result-wrap.show { display: block; }
+.result-icon { font-size: 3.5rem; margin-bottom: 0.5rem; line-height: 1; }
+.result-score { font-size: 3.5rem; font-weight: 800; color: #1a7a4a; line-height: 1; margin-bottom: 5px; }
+.result-total { font-size: 1rem; color: #5a7a66; margin-bottom: 0.5rem; font-family: 'Tiro Bangla', serif; font-weight: bold;}
+.result-grade { font-size: 1.2rem; font-weight: 700; color: #1c2e24; margin-bottom: 1.5rem; font-family: 'Tiro Bangla', serif; color: #e8730a; }
+
+.result-bars { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+.result-bar { background: #f0faf4; border-radius: 10px; padding: 1rem; text-align: center; border: 1px solid #c5dccb; }
+.rb-num { font-size: 1.8rem; font-weight: 800; }
+.rb-label { font-family: 'Tiro Bangla', serif; font-size: 0.85rem; color: #5a7a66; margin-top: 0.2rem; font-weight: bold;}
+.attempt-info { font-family: 'Tiro Bangla', serif; font-size: 0.9rem; color: #1a7a4a; font-weight: bold; margin-bottom: 1.5rem; background: #e8f7ef; padding: 10px; border-radius: 8px; }
+
+/* ACTION BUTTONS */
+.result-actions { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+.result-actions button { width: 100%; padding: 14px; border-radius: 8px; font-family: 'Tiro Bangla', serif; font-size: 1.05rem; font-weight: 800; cursor: pointer; border: none; transition: 0.2s; }
+.btn-retry { background: #17a2b8; color: white; }
+.btn-retry:hover { background: #138496; }
+.btn-review { background: #28a745; color: white; }
+.btn-review:hover { background: #218838; }
+.btn-home { background: transparent; color: #5a7a66; border: 2px solid #c5dccb !important; }
+.btn-home:hover { background: #f0faf4; }
+
+/* LOGIN MODAL */
+.login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(4px); }
+.login-overlay.active { display: flex; }
+.login-modal { background: white; padding: 2rem; border-radius: 16px; width: 90%; max-width: 380px; box-shadow: 0 15px 40px rgba(0,0,0,0.2); }
+.login-modal h2 { font-family: 'Tiro Bangla', serif; color: #1a7a4a; font-size: 1.4rem; margin-bottom: 0.5rem; text-align: center; }
+.login-modal p { font-family: 'Tiro Bangla', serif; color: #5a7a66; font-size: 0.9rem; margin-bottom: 1.5rem; text-align: center; }
+
+.input-group { margin-bottom: 1.2rem; }
+.input-group label { display: block; font-size: 0.85rem; font-weight: 700; color: #1c2e24; margin-bottom: 5px; font-family: 'Tiro Bangla', serif; }
+.input-group input { width: 100%; padding: 12px; border: 1.5px solid #c5dccb; border-radius: 8px; font-family: 'Syne', sans-serif; font-size: 0.95rem; outline: none; transition: 0.2s; }
+.input-group input:focus { border-color: #1a7a4a; box-shadow: 0 0 0 3px rgba(26,122,74,0.1); }
+
+.login-btn { width: 100%; background: #1a7a4a; color: white; border: none; padding: 12px; border-radius: 8px; font-family: 'Tiro Bangla', serif; font-size: 1.05rem; font-weight: 700; cursor: pointer; transition: 0.2s; margin-bottom: 8px; }
+.cancel-btn { width: 100%; background: transparent; color: #5a7a66; border: 1.5px solid #c5dccb; padding: 10px; border-radius: 8px; font-family: 'Tiro Bangla', serif; font-size: 1rem; font-weight: 700; cursor: pointer; }
+.error-msg { color: #dc3545; font-size: 0.85rem; font-weight: 700; margin-top: 10px; font-family: 'Tiro Bangla', serif; display: none; text-align: center; }
+.set-name-display { background: #f0faf4; border-radius: 8px; padding: 0.6rem; text-align: center; margin-bottom: 1rem; font-family: 'Tiro Bangla', serif; font-size: 0.95rem; color: #1a7a4a; font-weight: 700; }
+.hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+    <div class="top-logo" onclick="goToHub()">Test<span>Bazar</span></div>
+    <div class="timer-box hidden" id="timerBox">⏱ <span id="timerDisplay">10:00</span></div>
+</div>
+
+<div class="main">
+
+    <!-- ===== LOGIN OVERLAY ===== -->
+    <div class="login-overlay" id="loginOverlay">
+        <div class="login-modal">
+            <h2>🔐 লগইন করুন</h2>
+            <p>Test শুরু করতে আপনার ইউজারনেম ও পাসওয়ার্ড দিন</p>
+            <div class="set-name-display" id="loginSetName">📚 Set 1</div>
+            <div class="input-group">
+                <label>ইউজারনেম</label>
+                <input type="text" id="loginUsername" placeholder="আপনার ইউজারনেম লিখুন">
+            </div>
+            <div class="input-group">
+                <label>পাসওয়ার্ড</label>
+                <input type="password" id="loginPassword" placeholder="আপনার পাসওয়ার্ড লিখুন" onkeydown="if(event.key==='Enter') doLogin()">
+            </div>
+            <button class="login-btn" onclick="doLogin()">✅ লগইন করে Test শুরু করো</button>
+            <button class="cancel-btn" onclick="closeLogin()">বাতিল</button>
+            <div class="error-msg" id="loginError">❌ ভুল ইউজারনেম বা পাসওয়ার্ড।</div>
+        </div>
+    </div>
+
+    <!-- ===== HUB PAGE ===== -->
+    <div id="hubPage">
+        <div class="hub-header">
+            <h1>ভূগোল — 1st Sem<br>Unit 5: আবহাওয়া ও জলবায়ু</h1>
+            <p>নিচের সেটগুলো থেকে বেছে নিন।</p>
+            <div id="hubUserInfo" style="font-family:'Tiro Bangla',serif;font-size:1rem;color:#1a7a4a;margin-top:0.8rem;font-weight:bold;"></div>
+        </div>
+        <div class="set-grid" id="setGrid"></div>
+    </div>
+
+    <!-- ===== TEST AREA ===== -->
+    <div id="testArea" class="hidden">
+        <div class="quiz-info">
+            <div class="info-item">🎓 <strong id="testSetName">ভূগোল</strong> — 1st Sem | Unit 5 | <span id="testSetLabel">Set 1</span></div>
+            <div class="info-item">📝 <span id="testTopic">Topic</span></div>
+        </div>
+
+        <div class="progress-wrap"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+
+        <div class="q-card" id="qCard">
+            <div class="q-num" id="qNum">প্রশ্ন ১ / ১৫</div>
+            <div class="q-text" id="qText"></div>
+            <div class="opts" id="qOpts"></div>
+            <div class="explanation" id="explanation"><p id="explanationText"></p></div>
+
+            <div class="nav-row">
+                <div class="score-show" id="scoreShow">সঠিক: ০ | ভুল: ০</div>
+                <button class="next-btn" id="nextBtn" onclick="nextQ()" disabled>পরবর্তী →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== RESULT AREA ===== -->
+    <div class="result-wrap" id="resultWrap">
+        <div class="result-icon" id="resultIcon">🏆</div>
+        <div class="result-score en-font" id="finalScore">100%</div>
+        <div class="result-total">স্কোর</div>
+        <div class="result-grade" id="resultGrade">অসাধারণ!</div>
+
+        <div class="result-bars">
+            <div class="result-bar">
+                <div class="rb-num en-font" id="rbCorrect" style="color:#1a7a4a">0</div>
+                <div class="rb-label">সঠিক</div>
+            </div>
+            <div class="result-bar">
+                <div class="rb-num en-font" id="rbWrong" style="color:#dc3545">0</div>
+                <div class="rb-label">ভুল/স্কিপ</div>
+            </div>
+        </div>
+
+        <div class="attempt-info" id="attemptInfo">👤 user — Set 1: বাকি আছে 9 বার Test দেওয়ার সুযোগ</div>
+
+        <!-- ACTION BUTTONS -->
+        <div class="result-actions">
+            <button class="btn-retry" onclick="restartQuiz()">🔄 আবার চেষ্টা করো</button>
+            <button class="btn-review" onclick="showReview()">👀 উত্তর দেখো</button>
+            <button class="btn-home" onclick="goToHub()">🏠 ← Hub এ ফিরে যাও</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+// ============================================================
+// গ্লোবাল ভেরিয়েবল
+// ============================================================
+const MAX_ATTEMPTS = 10;
+const TIME_LIMIT = 10 * 60; // 10 Minutes
+const LABELS = ['ক', 'খ', 'গ', 'ঘ'];
+const STORAGE_KEY = "testBazarAttempts_Geo_1stSem_U5";
+
+let currentUser = "";
+let currentSetId = 1;
+let pendingSetId = null;
+
+let cur = 0, score = 0, wrong = 0, answered = false;
+let timerInterval, timeLeft = TIME_LIMIT;
+let userAnswers = [];
+let isReviewMode = false;
+let TOTAL_QS = 0;
+
+// ============================================================
+// Unit 5: আবহাওয়া ও জলবায়ু (Weather and Climate) - ৪টি সেটের প্রশ্নাবলি
+// ============================================================
+const allSets = {
+    1: {
+        name: 'Set 1', icon: '🌤️', topic: 'বায়ুমণ্ডলের ধারণা, উৎপত্তি ও উপাদান',
+        questions: [
+            { q: "১. সমুদ্রপৃষ্ঠ থেকে ওপরের দিকে আনুমানিক কত কিলোমিটার পর্যন্ত বায়ুমণ্ডলের অস্তিত্ব লক্ষ করা যায়?", opts: ["১,০০০ কিমি", "৫,০০০ কিমি", "১০,০০০ কিমি", "২০,০০০ কিমি"], ans: 2, exp: "পৃথিবীকে ঘিরে থাকা গ্যাসীয় আবরণটি মাধ্যাকর্ষণ বলের টানে পৃথিবীর সঙ্গে আবর্তিত হচ্ছে এবং সমুদ্রপৃষ্ঠ থেকে ওপরের দিকে প্রায় ১০,০০০ কিমি পর্যন্ত এই বায়ুমণ্ডলের অস্তিত্ব লক্ষণীয়।" },
+            { q: "২. 'পৃথিবীর স্থলভাগ ও জলভাগকে ঘিরে যে শত শত মাইল পুরু গ্যাসীয় আবরণ রয়েছে, তাকে বলে বায়ুমণ্ডল' — সংজ্ঞাটি কার?", opts: ["পিটার হ্যাগেট", "গ্লেন থমাস ট্রেওয়ার্থা", "এফ. জে. মঙ্কহাউস", "এলসওয়ার্থ হান্টিংটন"], ans: 1, exp: "মার্কিন ভূগোলবিদ গ্লেন থমাস ট্রেওয়ার্থা (G.T. Trewartha) ১৯৪৫ সালে বায়ুমণ্ডলের এই সংজ্ঞাটি প্রদান করেন।" },
+            { q: "৩. বর্তমান বায়ুমণ্ডলের প্রকৃতি বিগত কত বছর ধরে প্রায় একই রকম আছে?", opts: ["১০০ মিলিয়ন বছর", "৩০০ মিলিয়ন বছর", "৫০০ মিলিয়ন বছর", "১,০০০ মিলিয়ন বছর"], ans: 2, exp: "সৌরজগৎ প্রায় ৫০০ কোটি বছর আগে সৃষ্টি হলেও বর্তমান বায়ুমণ্ডলের প্রকৃতি বিগত ৫০০ মিলিয়ন বছর ধরে প্রায় অপরিবর্তিত রয়েছে।" },
+            { q: "৪. পৃথিবীর আদিম বায়ুমণ্ডলে (যখন পৃথিবী সৃষ্টি হয়) কোন্ গ্যাসটি উপস্থিত ছিল না?", opts: ["কার্বন ডাইঅক্সাইড", "মিথেন", "অ্যামোনিয়া", "ওজোন"], ans: 3, exp: "আদিম বায়ুমণ্ডল মূলত বিজারণধর্মী ছিল। তখন কার্বন ডাইঅক্সাইড, মিথেন, অ্যামোনিয়া ইত্যাদি থাকলেও জীবন রক্ষাকারী ওজোন গ্যাস বা মুক্ত অক্সিজেনের কোনো অস্তিত্ব ছিল না। উদ্ভিদ সৃষ্টির পর সালোকসংশ্লেষের মাধ্যমে বায়ুতে অক্সিজেন আসে।" },
+            { q: "৫. বায়ুমণ্ডলে আয়তনগত দিক থেকে নাইট্রোজেন (N₂) গ্যাসের পরিমাণ কত?", opts: ["২০.৯৪৬%", "৭৮.০৮৪%", "০.৯৩৪%", "২৩.১৪৩%"], ans: 1, exp: "বায়ুমণ্ডলের উপাদানগুলির মধ্যে নাইট্রোজেনের পরিমাণ সর্বাধিক। আয়তন হিসেবে এটি ৭৮.০৮৪% এবং ওজন হিসেবে ৭৫.৫২৭%।" },
+            { q: "৬. শুষ্ক বায়ুতে অক্সিজেনের (O₂) ওজনগত (Weight) শতকরা পরিমাণ কত?", opts: ["২০.৯৪৬%", "২৩.১৪৩%", "৭৫.৫২৭%", "৭৮.০৮৪%"], ans: 1, exp: "বায়ুমণ্ডলে অক্সিজেনের আয়তনগত পরিমাণ ২০.৯৪৬% হলেও ওজনগতভাবে এর পরিমাণ ২৩.১৪৩%।" },
+            { q: "৭. বায়ুমণ্ডলের তৃতীয় সর্বাধিক গ্যাসীয় উপাদান আর্গনের (Ar) আয়তনগত শতকরা পরিমাণ কত?", opts: ["১.২৮২%", "০.০৩৩%", "০.৯৩৪%", "০.০০৩%"], ans: 2, exp: "বায়ুমণ্ডলের নিষ্ক্রিয় গ্যাসগুলির মধ্যে আর্গনের পরিমাণ সবচেয়ে বেশি, যার আয়তনগত পরিমাণ ০.৯৩৪% এবং ওজনগত পরিমাণ ১.২৮২%।" },
+            { q: "৮. বায়ুমণ্ডলে কার্বন ডাইঅক্সাইড (CO₂) গ্যাসের প্রধান কাজ কী?", opts: ["উদ্ভিদের বৃদ্ধিতে বাধা দেওয়া", "সৌরতাপ শোষণ করে নিম্ন বায়ুমণ্ডলকে উত্তপ্ত করা", "বায়ুমণ্ডলকে শীতল করা", "অতিবেগুনি রশ্মি শোষণ করা"], ans: 1, exp: "বায়ুমণ্ডলে CO₂ পৃথিবীর পৃষ্ঠ থেকে বিকিরিত দীর্ঘ তরঙ্গযুক্ত তাপকে শোষণ করে নিম্ন বায়ুমণ্ডলকে উত্তপ্ত রাখে, যা 'গ্রিনহাউস এফেক্ট' নামে পরিচিত।" },
+            { q: "৯. বায়ুমণ্ডলের কোন্ স্তরটিকে হোমোস্ফিয়ার (Homosphere) বা সমমণ্ডল বলা হয়?", opts: ["০-৮০ কিমি", "৮০-২০০ কিমি", "২০০-১,১২৫ কিমি", "১,১২৫-৩,৫৪০ কিমি"], ans: 0, exp: "ভূপৃষ্ঠ থেকে ৮০-১০০ কিমি উচ্চতা পর্যন্ত বায়ুমণ্ডলের প্রধান গ্যাসীয় উপাদানগুলির অনুপাত মোটামুটি সমান থাকে, তাই এই স্তরটিকে হোমোস্ফিয়ার বলা হয়।" },
+            { q: "১০. বায়ুমণ্ডলে জলীয় বাষ্পের সর্বাধিক পরিমাণ কত হতে পারে?", opts: ["০.০২%", "১.৪%", "৫%", "১০%"], ans: 2, exp: "বায়ুতে জলীয় বাষ্পের পরিমাণ শীতল শুষ্ক বায়ুতে সর্বনিম্ন ০.০২% এবং আর্দ্র ক্রান্তীয় বায়ুতে সর্বাধিক ৫% হতে পারে। এর গড় পরিমাণ ১.৪%।" },
+            { q: "১১. বায়ুমণ্ডলের মোট জলীয় বাষ্পের প্রায় ৭০ শতাংশ ভূপৃষ্ঠ থেকে কত উচ্চতার মধ্যে অবস্থান করে?", opts: ["২ কিমি", "৫ কিমি", "১০ কিমি", "২০ কিমি"], ans: 1, exp: "উচ্চতা বাড়ার সঙ্গে সঙ্গে জলীয় বাষ্প কমতে থাকে। সমগ্র বায়ুর প্রায় ৭০% জলীয় বাষ্প ভূপৃষ্ঠ থেকে মাত্র ৫ কিমি উচ্চতার মধ্যেই সীমাবদ্ধ থাকে।" },
+            { q: "১২. হেটারোস্ফিয়ারের (Heterosphere) বা বিষমমণ্ডলের ৮৮ কিমি থেকে ২০০ কিমি পর্যন্ত বিস্তৃত স্তরটিকে কী বলা হয়?", opts: ["হিলিয়াম স্তর", "হাইড্রোজেন স্তর", "আণবিক নাইট্রোজেন স্তর", "পারমাণবিক অক্সিজেন স্তর"], ans: 2, exp: "বিষমমণ্ডলের সবচেয়ে নিচের স্তরটি (৮৮-২০০ কিমি) প্রধানত আণবিক নাইট্রোজেন (N₂) দ্বারা গঠিত। এর ওপরের স্তরটি পারমাণবিক অক্সিজেন স্তর।" },
+            { q: "১৩. হেটারোস্ফিয়ারের সবচেয়ে ওপরের স্তরটি (৩,৫৪০ কিমি থেকে ১০,০০০ কিমি) কী দ্বারা গঠিত?", opts: ["হিলিয়াম", "পারমাণবিক অক্সিজেন", "হাইড্রোজেন", "আণবিক নাইট্রোজেন"], ans: 2, exp: "৩,৫৪০ কিমি থেকে ১০,০০০ কিমি পর্যন্ত হেটারোস্ফিয়ারের সর্বোচ্চ স্তরটি প্রধানত হালকা হাইড্রোজেন গ্যাস (H₂) দ্বারা গঠিত।" },
+            { q: "১৪. উত্তর গোলার্ধে গ্রীষ্মকালে (এপ্রিল-সেপ্টেম্বর) বায়ুমণ্ডলে কার্বন ডাইঅক্সাইডের পরিমাণ কমে যাওয়ার প্রধান কারণ কী?", opts: ["সমুদ্রের জলের বাষ্পীভবন", "উদ্ভিদের সালোকসংশ্লেষ বৃদ্ধি পাওয়া", "বায়ুর চাপ কমে যাওয়া", "বৃষ্টিপাত বৃদ্ধি"], ans: 1, exp: "গ্রীষ্মকালে উত্তর গোলার্ধে উদ্ভিদের পাতা ও ফুল-কুঁড়ির আধিক্যের কারণে সালোকসংশ্লেষের হার বাড়ে, ফলে গাছ প্রচুর CO₂ গ্রহণ করে এবং বাতাসে এর পরিমাণ হ্রাস পায়।" },
+            { q: "১৫. বাতাসে সূক্ষ্ম কঠিন বা তরল বস্তুকণাগুলি ভাসমান অবস্থায় যে দ্রবণ তৈরি করে, তাকে কী বলে?", opts: ["অ্যারোসল (Aerosols)", "ফিউম (Fume)", "স্মগ (Smog)", "মিস্ট (Mist)"], ans: 0, exp: "বাতাসে ভাসমান ধূলিকণা, ধোঁয়া, কুয়াশা ইত্যাদি পদার্থ (০.০১ থেকে ১০০ মাইক্রন ব্যাস) যখন কলয়েডীয় দ্রবণ তৈরি করে, তখন তাকে অ্যারোসল বলে।" }
+        ]
+    },
+    2: {
+        name: 'Set 2', icon: '☁️', topic: 'ভাসমান কণা, সমমণ্ডল এবং ট্রপোস্ফিয়ার',
+        questions: [
+            { q: "১. বায়ুমণ্ডলের আর্দ্রতাগ্রাহী কণা (Hygroscopic Particles)-এর প্রধান উৎস কী?", opts: ["আগ্নেয়গিরির ছাই", "সমুদ্রের জলের লবণকণা", "উল্কাপিণ্ডের ধূলিকণা", "কলকারখানার ধোঁয়া"], ans: 1, exp: "সমুদ্রের জলের বুদ্বুদ থেকে উৎপন্ন সোডিয়াম ক্লোরাইড (NaCl) সমৃদ্ধ লবণকণাই হলো প্রধান আর্দ্রতাগ্রাহী কণা, যা জলীয় বাষ্প আকর্ষণ করে মেঘ সৃষ্টিতে সাহায্য করে।" },
+            { q: "২. বায়ুমণ্ডলে ভাসমান উদ্ভিদ জৈবকণার (Plant organics) পরিমাণ অ্যারোসলের প্রায় কত শতাংশ?", opts: ["১২%", "১০%", "২৪%", "২৬%"], ans: 3, exp: "অ্যারোসলের উপাদানগুলির মধ্যে উদ্ভিদ জৈবকণার পরিমাণ সর্বাধিক প্রায় ২৬%, বায়ুর ধূলিকণা ২৪%, সমুদ্রের লবণ ১২% এবং অগ্নিছাই কণা ১০% থাকে।" },
+            { q: "৩. বায়ুমণ্ডলের কোন্ স্তরে আবহাওয়ার সমস্ত গোলযোগ দেখা যায় বলে একে 'ক্ষুব্ধমণ্ডল' বলা হয়?", opts: ["ট্রপোস্ফিয়ার", "স্ট্র্যাটোস্ফিয়ার", "মেসোস্ফিয়ার", "থার্মোস্ফিয়ার"], ans: 0, exp: "বায়ুমণ্ডলের সর্বনিম্ন স্তর ট্রপোস্ফিয়ারে গ্যাসীয় উপাদানের সাথে ধূলিকণা ও জলীয় বাষ্প থাকে এবং এখানেই মেঘ, ঝড়, বৃষ্টিপাত হয় বলে একে ক্ষুব্ধমণ্ডল বলে।" },
+            { q: "৪. 'ট্রপোস্ফিয়ার' (Troposphere) শব্দটি সর্বপ্রথম কোন্ বিজ্ঞানী ব্যবহার করেন?", opts: ["নেপিয়ার শও", "টি দে বোর্ট (Teisserenc de Bort)", "পিটারসন", "ফারমেন"], ans: 1, exp: "'Tropos' অর্থাৎ মিশ্রণ বা গোলযোগ। বিজ্ঞানী টি দে বোর্ট সর্বপ্রথম 'ট্রপোস্ফিয়ার' শব্দটি ব্যবহার করেন, যার অর্থ মিশ্রণ বলয় (region of mixing)।" },
+            { q: "৫. নিরক্ষীয় অঞ্চলে ট্রপোস্ফিয়ারের গড় উচ্চতা কত থাকে?", opts: ["৮-৯ কিমি", "১০-১২ কিমি", "১৬-১৮ কিমি", "২০-২৫ কিমি"], ans: 2, exp: "মেরু অঞ্চলে পৃথিবীর আকর্ষণ বল বেশি থাকায় ট্রপোস্ফিয়ারের উচ্চতা ৮-৯ কিমি হয়, কিন্তু নিরক্ষীয় অঞ্চল স্ফীত হওয়ায় সেখানে এর উচ্চতা ১৬-১৮ কিমি পর্যন্ত হয়।" },
+            { q: "৬. ট্রপোস্ফিয়ারে প্রতি ১০০০ মিটার বা ১ কিলোমিটার উচ্চতা বৃদ্ধিতে তাপমাত্রা হ্রাসের গড় হার (Lapse Rate) কত?", opts: ["৩.৬°C", "৪.৫°C", "৬.৫°C", "১০°C"], ans: 2, exp: "ট্রপোস্ফিয়ারে উচ্চতা বাড়লে বায়ুর উষ্ণতা কমে। এই স্বাভাবিক হ্রাস হার হলো প্রতি কিলোমিটারে ৬.৫°C (বা প্রতি ১০০০ ফুটে ৩.৬°F)।" },
+            { q: "৭. ট্রপোস্ফিয়ারের ঊর্ধ্বসীমা নির্দেশক স্তরটিকে কী বলা হয়?", opts: ["স্ট্র্যাটোপজ", "মেসোপজ", "ট্রপোপজ", "থার্মোপজ"], ans: 2, exp: "ট্রপোস্ফিয়ার ও স্ট্র্যাটোস্ফিয়ারের মাঝে অবস্থিত পাতলা স্তরটি ট্রপোপজ (Tropopause) নামে পরিচিত। এখানে বায়ুর তাপীয় মিশ্রণ থেমে যায়।" },
+            { q: "৮. 'ট্রপোপজ' (Tropopause) শব্দটি সর্বপ্রথম কে ব্যবহার করেন?", opts: ["স্যার নেপিয়ার শও (Napier Shaw)", "টি দে বোর্ট", "জোসেফ ব্ল্যাক", "স্কোনবি"], ans: 0, exp: "আবহবিদ স্যার নেপিয়ার শও 'ট্রপোপজ' কথাটি প্রথম ব্যবহার করেন। এর অর্থ হলো যেখানে বায়ুর তাপীয় মিশ্রণ থেমে যায় (where the mixing stops)।" },
+            { q: "৯. নিরক্ষীয় অঞ্চলে ট্রপোপজ স্তরের তাপমাত্রা সাধারণত কত থাকে?", opts: ["-৪০°C", "-৬০°C", "-৭০°C থেকে -৮০°C", "-১০০°C"], ans: 2, exp: "নিরক্ষীয় অঞ্চলে ট্রপোপজের উচ্চতা বেশি হওয়ার কারণে এর তাপমাত্রা -৭০°C থেকে -৮০°C পর্যন্ত নেমে যায়। তবে মেরু অঞ্চলে তা -৬০°C থাকে।" },
+            { q: "১০. ভূপৃষ্ঠ থেকে ১-১.৫ কিমি উচ্চতা পর্যন্ত ট্রপোস্ফিয়ারের সর্বনিম্ন স্তরটিকে কী বলা হয়?", opts: ["সমতলীয় স্তর (Laminar layer)", "ঘর্ষণ স্তর (Friction layer)", "পৃষ্ঠ সীমানা স্তর (Boundary layer)", "স্তব্ধ স্তর"], ans: 1, exp: "ভূমিরূপের সঙ্গে সংঘর্ষে এই অংশে বায়ুর গতিবেগ কমে যায় এবং গতিপথ পরিবর্তিত হয়, তাই একে ঘর্ষণ স্তর বা Friction layer বলা হয়।" },
+            { q: "১১. স্ট্র্যাটোস্ফিয়ার (Stratosphere) স্তরটি ট্রপোপজ থেকে কত কিলোমিটার উচ্চতা পর্যন্ত বিস্তৃত?", opts: ["২৫ কিমি", "৩০ কিমি (সমুদ্রপৃষ্ঠ থেকে ৫০ কিমি)", "৮০ কিমি", "১০০ কিমি"], ans: 1, exp: "ট্রপোপজ থেকে শুরু করে স্ট্র্যাটোস্ফিয়ারের স্তরটি আরও প্রায় ৩০ কিমি ওপরে অর্থাৎ সমুদ্রপৃষ্ঠ থেকে প্রায় ৫০ কিমি পর্যন্ত বিস্তৃত।" },
+            { q: "১২. বায়ুমণ্ডলের কোন্ স্তরটিকে 'শান্তমণ্ডল' বলা হয়?", opts: ["ট্রপোস্ফিয়ার", "স্ট্র্যাটোস্ফিয়ার", "মেসোস্ফিয়ার", "থার্মোস্ফিয়ার"], ans: 1, exp: "স্ট্র্যাটোস্ফিয়ার স্তরে জলীয় বাষ্প নেই বললেই চলে, তাই মেঘ, ঝড়-বৃষ্টি হয় না। এই মেঘমুক্ত শান্ত পরিবেশের জন্য একে 'শান্তমণ্ডল' বলা হয়।" },
+            { q: "১৩. দ্রুতগতিসম্পন্ন জেট বিমানগুলি সাধারণত বায়ুমণ্ডলের কোন্ স্তরের মধ্য দিয়ে চলাচল করে?", opts: ["থার্মোস্ফিয়ার", "ট্রপোস্ফিয়ার", "মেসোস্ফিয়ার", "স্ট্র্যাটোস্ফিয়ার"], ans: 3, exp: "ঝড়-বৃষ্টি, বজ্রপাত ইত্যাদি প্রাকৃতিক দুর্যোগ এড়ানোর জন্য তীব্র গতিবেগ সম্পন্ন জেট বিমানগুলি স্ট্র্যাটোস্ফিয়ার বা শান্তমণ্ডলের মধ্য দিয়ে নিরাপদে চলাচল করে।" },
+            { q: "১৪. স্ট্র্যাটোস্ফিয়ারে মাঝে মাঝে সৃষ্ট মাদার অব পার্ল (Mother of Pearl) বা মৌক্তিক মেঘ প্রধানত কোন্ গ্যাসের উপস্থিতির জন্য হয়?", opts: ["নাইট্রোজেন", "কার্বন ডাইঅক্সাইড", "ওজোন গ্যাস", "হিলিয়াম"], ans: 2, exp: "স্ট্র্যাটোস্ফিয়ার মেঘহীন হলেও মাঝে মাঝে এক বিশেষ ধরনের সিরাস মেঘ সৃষ্টি হয় যা 'মাদার অব পার্ল' নামে পরিচিত। বিজ্ঞানীদের মতে, ওজোন (O₃) গ্যাসের উপস্থিতির জন্যই এটি দেখা যায়।" },
+            { q: "১৫. শীতকালে মেরু অঞ্চলে স্ট্র্যাটোস্ফিয়ারে তাপমাত্রা হঠাৎ লাফিয়ে বেড়ে যাওয়ার ঘটনাকে কী বলে?", opts: ["গ্রিনহাউস এফেক্ট", "গ্লোবাল ওয়ার্মিং", "উত্তাপের বিস্ফোরণ (Explosive warming)", "তাপীয় বিকিরণ"], ans: 2, exp: "প্রায় ২৫ কিমি উচ্চতায় মাত্র ৪৮ ঘণ্টা ব্যবধানে তাপমাত্রা -৮০°C থেকে বেড়ে -৪০°C-এ পৌঁছায়। একে উত্তাপের বিস্ফোরণ বা Explosive warming বলে।" }
+        ]
+    },
+    3: {
+        name: 'Set 3', icon: '🌌', topic: 'মেসোস্ফিয়ার, থার্মোস্ফিয়ার ও এক্সোস্ফিয়ার',
+        questions: [
+            { q: "১. বায়ুমণ্ডলের কোন্ স্তরে মহাকাশ থেকে আগত উল্কাপিণ্ড পুড়ে ছাই হয়ে যায়?", opts: ["ট্রপোস্ফিয়ার", "স্ট্র্যাটোস্ফিয়ার", "মেসোস্ফিয়ার", "এক্সোস্ফিয়ার"], ans: 2, exp: "মেসোস্ফিয়ার স্তরে পৃথিবীর বাইরের উল্কাপিণ্ড প্রবেশ করলে বায়ুর সঙ্গে সংঘর্ষে জ্বলে পুড়ে যায়, যাকে আমরা তারাখসা বা shooting star বলে থাকি।" },
+            { q: "২. মেসোস্ফিয়ারের ঊর্ধ্বসীমায় (মেসোপজ) বায়ুমণ্ডলের তাপমাত্রা সর্বনিম্ন কত হতে পারে?", opts: ["-৬০°C", "-৮৩°C থেকে -১০০°C", "০°C", "-১২০°C থেকে -১৫০°C"], ans: 1, exp: "মেসোস্ফিয়ার বায়ুমণ্ডলের সবচেয়ে শীতলতম স্তর। এই স্তরে উচ্চতা বৃদ্ধির সাথে তাপমাত্রা কমতে কমতে মেসোপজে -৮৩°C থেকে -১০০°C পর্যন্ত নেমে যায়।" },
+            { q: "৩. নকটিলুসেন্ট মেঘ (Noctilucent Cloud) বায়ুমণ্ডলের কোন্ স্তরে দেখা যায়?", opts: ["ট্রপোস্ফিয়ার", "স্ট্র্যাটোস্ফিয়ার", "মেসোস্ফিয়ার", "থার্মোস্ফিয়ার"], ans: 2, exp: "অত্যধিক ঠান্ডার কারণে মেসোস্ফিয়ারে জলীয় বাষ্প বরফ কণায় পরিণত হয়ে যে পাতলা মেঘ তৈরি করে, তাকে Noctilucent Cloud (NLC) বলে, যা মেসোপজে দেখা যায়।" },
+            { q: "৪. থার্মোস্ফিয়ারে (Thermosphere) উচ্চতা বাড়ার সাথে সাথে তাপমাত্রার কীরূপ পরিবর্তন হয়?", opts: ["দ্রুত হ্রাস পায়", "অপরিবর্তিত থাকে", "দ্রুত হারে বৃদ্ধি পায়", "প্রথমে বাড়ে তারপর কমে"], ans: 2, exp: "মেসোস্ফিয়ারের পর থার্মোস্ফিয়ারে অক্সিজেন পরমাণু কর্তৃক অতিবেগুনি রশ্মি শোষণের ফলে তাপমাত্রা দ্রুত বাড়তে থাকে এবং ৪৮০ কিমিতে প্রায় ১২৩২°C-এ পৌঁছায়।" },
+            { q: "৫. থার্মোস্ফিয়ারের নিচের অংশে (১০০-৪০০ কিমি) গ্যাসীয় কণাগুলি আয়নিত অবস্থায় থাকে বলে একে কী বলা হয়?", opts: ["ওজোনোস্ফিয়ার", "ম্যাগনেটোস্ফিয়ার", "আয়নমণ্ডল (Ionosphere)", "হেটারোস্ফিয়ার"], ans: 2, exp: "মহাজাগতিক রশ্মি, রঞ্জন রশ্মি ও অতিবেগুনি রশ্মির প্রভাবে থার্মোস্ফিয়ারের গ্যাসীয় অণু ভেঙে অসংখ্য তড়িৎগ্রস্ত কণা বা আয়নের সৃষ্টি করে, তাই একে আয়নমণ্ডল বলে।" },
+            { q: "৬. সুমেরু প্রভা (Aurora Borealis) বায়ুমণ্ডলের কোন্ স্তরে সৃষ্টি হয়?", opts: ["ট্রপোস্ফিয়ার", "মেসোস্ফিয়ার", "আয়নমণ্ডল / থার্মোস্ফিয়ার", "এক্সোস্ফিয়ার"], ans: 2, exp: "আয়নমণ্ডল বা থার্মোস্ফিয়ারে মুক্ত ইলেকট্রনগুলি অন্য পরমাণু দ্বারা অধিকৃত হওয়ার সময় বর্ধিত আলোকবর্ণ বিকিরণ করে, যাকে মেরুজ্যোতি বা সুমেরু/কুমেরু প্রভা বলে।" },
+            { q: "৭. ভূপৃষ্ঠ থেকে সম্প্রচারিত বেতার তরঙ্গ (Radio waves) বায়ুমণ্ডলের কোন্ স্তর থেকে প্রতিফলিত হয়ে পৃথিবীতে ফিরে আসে?", opts: ["মেসোস্ফিয়ার", "আয়নমণ্ডল (Ionosphere)", "এক্সোস্ফিয়ার", "ট্রপোস্ফিয়ার"], ans: 1, exp: "আয়নমণ্ডল সুপরিবাহী হওয়ায় বেতার প্রেরিত তরঙ্গ এই স্তরের ধনাত্মক ও ঋণাত্মক আয়নে বাধা পেয়ে প্রতিফলিত হয়ে পুনরায় ভূপৃষ্ঠে ফিরে আসে।" },
+            { q: "৮. আয়নমণ্ডলের 'কেনেলি হেভিসাইড' (Kennely Heaviside) স্তর বা E-স্তরের উচ্চতা কত?", opts: ["৭৫-৯০ কিমি", "৯৫-১৫০ কিমি", "১৫০-২৫০ কিমি", "২৫০-৩৮০ কিমি"], ans: 1, exp: "আয়নমণ্ডলের উপস্তরগুলির মধ্যে E-স্তরটির উচ্চতা ৯৫-১৫০ কিমি। এটি 'কেনেলি হেভিসাইড স্তর' নামে পরিচিত, যা বেতার তরঙ্গকে ভূপৃষ্ঠে পুনঃপ্রেরণ করে।" },
+            { q: "৯. আয়নমণ্ডলের কোন্ স্তরটি (F1 ও F2) 'অ্যাপ্লটন স্তর' (Appleton layer) নামে পরিচিত?", opts: ["৭৫-৯০ কিমি", "৯৫-১৫০ কিমি", "১৫০-৩৮০ কিমি", "৪০০ কিমির ওপরে"], ans: 2, exp: "১৫০ থেকে ৩৮০ কিমি পর্যন্ত বিস্তৃত F1 এবং F2 উপস্তর দুটিকে একত্রে 'অ্যাপ্লটন স্তর' বলা হয়, যা উচ্চ কম্পাঙ্কের বেতার তরঙ্গকে প্রতিফলিত করে।" },
+            { q: "১০. এক্সোস্ফিয়ারের (Exosphere) বিস্তার থার্মোস্ফিয়ার থেকে উপরের দিকে সাধারণত কত ধরা হয়?", opts: ["১৫০-২৫০ কিমি", "৫০০-৭৫০ কিমি (বা ১০০০ কিমি)", "২,০০০-৩,০০০ কিমি", "১০,০০০ কিমি"], ans: 1, exp: "থার্মোস্ফিয়ার বা আয়নমণ্ডলের ওপর থেকে প্রায় ৭৫০ বা ১০০০ কিমি পর্যন্ত বিস্তৃত স্তরটিকে এক্সোস্ফিয়ার বলা হয়।" },
+            { q: "১১. এক্সোস্ফিয়ারে প্রধানত কোন্ কোন্ গ্যাসের প্রাধান্য দেখা যায়?", opts: ["নাইট্রোজেন ও অক্সিজেন", "ওজোন ও আর্গন", "হিলিয়াম ও হাইড্রোজেন", "কার্বন ডাইঅক্সাইড ও মিথেন"], ans: 2, exp: "এক্সোস্ফিয়ার স্তরে অণু-পরমাণুর ঘনত্ব কমে যায় এবং এখানে খুব হালকা গ্যাস যেমন হিলিয়াম ও হাইড্রোজেন গ্যাসের প্রাধান্য দেখা যায়।" },
+            { q: "১২. এক্সোস্ফিয়ারে দিনের বেলায় তাপমাত্রা বাড়তে বাড়তে প্রায় কত ডিগ্রি সেলসিয়াসে পৌঁছায়?", opts: ["৫০০°C", "১০০০°C", "১৫০০°C", "৫০০০°C"], ans: 2, exp: "এক্সোস্ফিয়ারে তাপমাত্রা দিনের বেলায় বাড়তে বাড়তে প্রায় ১৫০০°C-এ পৌঁছায়, তবে রাতের বেলায় তা আবার ০°C-এ নেমে আসে (যদিও এই তাপ অনুভূত হয় না)।" },
+            { q: "১৩. বায়ুমণ্ডলের সর্বশেষ স্তর ম্যাগনেটোস্ফিয়ারের (Magnetosphere) বিস্তার কতদূর পর্যন্ত বলে বিজ্ঞানীরা অনুমান করেন?", opts: ["১০,০০০ কিমি", "প্রায় ৬৪,০০০ কিমি (১০টি পৃথিবীর ব্যাসার্ধ)", "১ লক্ষ কিমি", "৩,০০০ কিমি"], ans: 1, exp: "ম্যাগনেটোস্ফিয়ারের পরিসীমা প্রায় ১০টি পৃথিবীর ব্যাসার্ধের সমান, অর্থাৎ ৬৪০০ × ১০ = ৬৪,০০০ কিমি পর্যন্ত বিস্তৃত বলে ধরা হয়।" },
+            { q: "১৪. ম্যাগনেটোস্ফিয়ারের ঊর্ধ্বসীমার আকৃতি কেমন বলে মনে করা হয়?", opts: ["বৃত্তাকার", "উপবৃত্তাকার", "বুলেট আকৃতি (Bullet shaped)", "চ্যাপ্টা"], ans: 2, exp: "এই স্তরের ঊর্ধ্বসীমা গোলক আকৃতি না হয়ে সৌর বায়ুর প্রভাবে কিছুটা বুলেট আকৃতি (bullet shaped) বিশিষ্ট বলে মনে হয়।" },
+            { q: "১৫. ভ্যান অ্যালেন (Van Allen) বিকিরণ বলয় বায়ুমণ্ডলের কোন্ স্তরে দেখা যায়?", opts: ["স্ট্র্যাটোস্ফিয়ার", "থার্মোস্ফিয়ার", "এক্সোস্ফিয়ার", "ম্যাগনেটোস্ফিয়ার"], ans: 3, exp: "ম্যাগনেটোস্ফিয়ারে ভূপৃষ্ঠ থেকে ৩,০০০-১৬,০০০ কিমি উচ্চতায় ইলেকট্রন ও প্রোটনের দুটি ঘন বলয় অবস্থান করে, যা ভ্যান অ্যালেন বিকিরণ বলয় নামে পরিচিত।" }
+        ]
+    },
+    4: {
+        name: 'Set 4', icon: '🛡️', topic: 'ওজোনমণ্ডল ও ওজোন গহ্বর',
+        questions: [
+            { q: "১. বায়ুমণ্ডলে ওজোন (O₃) গ্যাসের ঘনত্ব পরিমাপের একককে কী বলা হয়?", opts: ["মিলিবার (mb)", "পিপিএম (ppm)", "ডবসন একক (Dobson Unit/DU)", "ডেসিবল (dB)"], ans: 2, exp: "বায়ুমণ্ডলে ওজোনের ঘনত্বকে সাধারণত 'ডবসন একক' (DU)-এ প্রকাশ করা হয়। ১ ডবসন একক বলতে এক বায়ুমণ্ডলীয় চাপে ০.০০১ মিমি পুরু ওজোনের ঘনত্ব বোঝায়।" },
+            { q: "২. ১৮ ৪০ খ্রিস্টাব্দে কোন্ বিজ্ঞানী সর্বপ্রথম ওজোন গ্যাসের অস্তিত্ব প্রমাণ করেন?", opts: ["ফারমেন (Farmen)", "স্কোনবি (Sconbien)", "জোসেফ ব্ল্যাক", "চার্লস রিখটার"], ans: 1, exp: "১৮ ৪০ খ্রিস্টাব্দে বিজ্ঞানী স্কোনবি (Sconbien) সর্বপ্রথম নীল রঙের আঁশটে গন্ধযুক্ত ওজোন গ্যাসের অস্তিত্ব প্রমাণ করেন।" },
+            { q: "৩. বায়ুমণ্ডলে ওজোন গ্যাসের ঘনত্ব সর্বাধিক কোন্ উচ্চতায় দেখা যায়?", opts: ["৫-১০ কিমি", "১৫-৩৫ কিমি (বিশেষত ২২ কিমিতে)", "৫০-৮০ কিমি", "৮০-১০০ কিমি"], ans: 1, exp: "সমগ্র স্ট্র্যাটোস্ফিয়ারে ওজোন গ্যাসের অস্তিত্ব পাওয়া গেলেও এর ঘনত্ব সর্বাধিক থাকে ১৫-৩৫ কিমি উচ্চতার মধ্যে (সবচেয়ে বেশি ২২ কিমিতে)।" },
+            { q: "৪. ক্রান্তীয় অঞ্চল থেকে মেরু অঞ্চলের দিকে ওজোন গ্যাসের ঘনত্ব কীভাবে পরিবর্তিত হয়?", opts: ["ক্রমশ বাড়ে", "ক্রমশ কমে", "একই থাকে", "প্রথমে বাড়ে তারপর কমে"], ans: 0, exp: "নিম্ন অক্ষাংশ থেকে উচ্চ অক্ষাংশে অর্থাৎ ক্রান্তীয় অঞ্চল (২৫০ DU) থেকে উপমেরু ও মেরু অঞ্চলের (৪৫০ DU) দিকে ওজোনের ঘনত্ব ক্রমশ বাড়ে।" },
+            { q: "৫. সূর্য থেকে আগত কোন্ অতিবেগুনি রশ্মি (UV rays) বায়ুমণ্ডলের অক্সিজেনকে ভেঙে ওজোন গ্যাস তৈরিতে সাহায্য করে?", opts: ["শুধুমাত্র UV-A", "প্রধানত UV-B এবং UV-C", "ইনফ্রারেড রশ্মি", "এক্স-রে"], ans: 1, exp: "সবচেয়ে কম তরঙ্গদৈর্ঘ্যের অতিবেগুনি রশ্মি (UV-C এবং খানিকটা UV-B) বায়ুমণ্ডলের অক্সিজেন অণুকে ভেঙে জায়মান অক্সিজেন তৈরি করে, যা পরে ওজোন গঠন করে।" },
+            { q: "৬. বায়ুমণ্ডলের কোন্ স্তরটিকে 'পৃথিবীর ছাতা' (Umbrella of the Earth) বলা হয়?", opts: ["ট্রপোস্ফিয়ার", "ওজোন স্তর", "আয়নমণ্ডল", "এক্সোস্ফিয়ার"], ans: 1, exp: "ওজোন স্তর ছাতার মতো সূর্য থেকে আগত ক্ষতিকারক অতিবেগুনি রশ্মিকে আটকে দিয়ে পৃথিবীকে রক্ষা করে, তাই একে পৃথিবীর ছাতা বলা হয়।" },
+            { q: "৭. ভূপৃষ্ঠে অতিবেগুনি রশ্মির (UV-B) প্রভাব বৃদ্ধি পেলে মানবদেহে প্রধানত কোন্ রোগের আশঙ্কা বাড়ে?", opts: ["ম্যালেরিয়া", "যক্ষ্মা", "ত্বকের ক্যানসার ও চোখে ছানি", "ডায়াবেটিস"], ans: 2, exp: "ইউ ভি-বি (UV-B) রশ্মির প্রভাবে মানুষের ত্বকের ক্যানসার (Malignant skin cancer) ঘটাতে পারে এবং অল্প বয়সেই চোখে ছানি (eye cataract) পড়ার সম্ভাবনা বাড়ে।" },
+            { q: "৮. অতিবেগুনি রশ্মির প্রভাবে সমুদ্রের কোন্ এককোশী উদ্ভিদের বৃদ্ধি ব্যাহত হয়, যা সামুদ্রিক বাস্তুতন্ত্রের ক্ষতি করে?", opts: ["জুপ্ল্যাঙ্কটন", "ফাইটোপ্ল্যাঙ্কটন", "প্রবাল", "কেল্প"], ans: 1, exp: "UV-B রশ্মির প্রভাবে সামুদ্রিক এককোশী উদ্ভিদ ফাইটোপ্ল্যাঙ্কটনের (Phytoplankton) বৃদ্ধি কমে যায়, ফলে মাছেদের খাদ্যসংকট দেখা দেয় এবং বাস্তুতন্ত্র নষ্ট হয়।" },
+            { q: "৯. অ্যান্টার্কটিকা মহাদেশের ওপর 'ওজোন হোল' (Ozone Hole) বা ওজোন গহ্বরের কথা প্রথম কে প্রকাশ করেন?", opts: ["ফারমেন (Farmen)", "স্কোনবি", "জোসেফ ফুরিয়ার", "মার্সালি"], ans: 0, exp: "১৯৭০-এর পর থেকে অ্যান্টার্কটিকার ওজোন স্তর পাতলা হতে শুরু করে, যা বিজ্ঞানী ফারমেন (Farmen) সর্বপ্রথম 'অ্যান্টার্কটিক ওজোন হোল' নামে অভিহিত করেন।" },
+            { q: "১০. অ্যান্টার্কটিকার ওজোন গহ্বরের পরিমাণ বছরের কোন্ সময়ে সর্বাধিক পরিলক্ষিত হয়?", opts: ["জানুয়ারি-মার্চ", "মে-জুলাই", "সেপ্টেম্বর-নভেম্বর (বসন্তকাল)", "ডিসেম্বর-ফেব্রুয়ারি"], ans: 2, exp: "প্রতি বছর অ্যান্টার্কটিকায় বসন্তকালে অর্থাৎ সেপ্টেম্বর থেকে নভেম্বরের মধ্যে সেখানকার ওজোনস্তর অতিদ্রুত পাতলা হয়ে ওজোন ছিদ্রের সৃষ্টি হয়।" },
+            { q: "১১. বায়ুমণ্ডলে ওজোন গ্যাস ধ্বংসকারী প্রধান মানবসৃষ্ট রাসায়নিক উপাদান কোনটি?", opts: ["কার্বন ডাইঅক্সাইড (CO₂)", "ক্লোরোফ্লুরো কার্বন (CFC)", "সালফার ডাইঅক্সাইড (SO₂)", "মিথেন (CH₄)"], ans: 1, exp: "মানুষ বিভিন্ন শিল্পের মাধ্যমে প্রচুর পরিমাণে ক্লোরোফ্লুরো কার্বন (CFC) গ্যাস বায়ুমণ্ডলে নির্গত করে, যাকে সর্বাপেক্ষা কার্যকরী ওজোন বিনাশকারী উপাদান বলে মনে করা হয়।" },
+            { q: "১২. শব্দ অপেক্ষা দ্রুতগামী সুপারসনিক জেট বিমানগুলি বায়ুমণ্ডলের উচ্চস্তর দিয়ে যাওয়ার সময় কোন্ গ্যাস বিমুক্ত করে ওজোন স্তরকে বিনষ্ট করে?", opts: ["কার্বন মনোক্সাইড", "নাইট্রাস অক্সাইড (N₂O)", "সালফার ডাইঅক্সাইড", "মিথেন"], ans: 1, exp: "উচ্চস্তর দিয়ে উড়ে যাওয়া দ্রুতগামী জেট বিমানগুলি জ্বালানির দহনে নাইট্রাস অক্সাইড (N₂O) নির্গত করে, যা অনুঘটকীয় প্রক্রিয়ায় ওজোনমণ্ডলকে বিনষ্ট করে।" },
+            { q: "১৩. পোলার স্ট্র্যাটোস্ফিয়ারিক মেঘ বা মেরুদেশীয় মেঘ (PSC) কোন্ অঞ্চলে ওজোন ধ্বংসের ক্ষেত্রে গুরুত্বপূর্ণ ভূমিকা পালন করে?", opts: ["নিরক্ষীয় অঞ্চলে", "ক্রান্তীয় অঞ্চলে", "অ্যান্টার্কটিকা অঞ্চলে", "মধ্য অক্ষাংশে"], ans: 2, exp: "শীতকালে অ্যান্টার্কটিকায় প্রচণ্ড ঠান্ডায় দূষক গ্যাসগুলি জমাট বেঁধে পোলার স্ট্র্যাটোস্ফিয়ারিক মেঘ (PSC) গঠন করে, যা বসন্তকালে ক্লোরিন পরমাণু নির্গত করে ওজোন স্তর ধ্বংস করে।" },
+            { q: "১৪. ওজোন স্তর সংরক্ষণের জন্য এবং CFC উৎপাদন কমানোর লক্ষ্যে ১৯৮৭ সালে কোন্ ঐতিহাসিক চুক্তি স্বাক্ষরিত হয়?", opts: ["কিয়োটো প্রোটোকল", "মন্ট্রিল প্রোটোকল", "কোপেনহেগেন চুক্তি", "স্টকহোম চুক্তি"], ans: 1, exp: "ওজোন স্তর রক্ষার উদ্দেশ্যে এবং সিএফসি উৎপাদন ও ব্যবহারে নিয়ন্ত্রণ আনার জন্য ১৯৮৭ সালে মন্ট্রিল (Montreal) চুক্তি স্বাক্ষরিত হয়।" }
+        ]
+    }
+};
+
+// ============================================================
+// মূল লজিক (লগইন, টাইমার, কুইজ পরিচালনা এবং রেজাল্ট)
+// ============================================================
+function initHub() {
+    const grid = document.getElementById('setGrid');
+    grid.innerHTML = '';
+
+    Object.keys(allSets).forEach(setId => {
+        const set = allSets[setId];
+        const card = document.createElement('div');
+        card.className = 'set-card';
+
+        let attemptCount = 0;
+        if (currentUser) {
+            let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+            attemptCount = (data[currentUser] && data[currentUser][setId]) || 0;
+        }
+
+        card.innerHTML = `
+            <div class="icon">${set.icon}</div>
+            <div class="set-num">${set.name}</div>
+            <div class="set-title">${set.topic}</div>
+            <div class="set-meta"><span>${set.questions.length} প্রশ্ন</span><span>১০ মিনিট</span></div>
+            ${currentUser ? `<div class="attempt-badge">${attemptCount}/${MAX_ATTEMPTS} Attempts</div>` : ''}
+        `;
+
+        card.onclick = () => {
+            if (currentUser) {
+                if (attemptCount >= MAX_ATTEMPTS) {
+                    alert(`⚠️ আপনি ${set.name} এর সর্বোচ্চ ${MAX_ATTEMPTS} বার Test দিয়েছেন।`);
+                    return;
+                }
+                startQuiz(setId);
+            } else {
+                openLogin(setId);
+            }
+        };
+        grid.appendChild(card);
+    });
+}
+
+function openLogin(setId) {
+    pendingSetId = setId;
+    document.getElementById('loginSetName').innerText = `📚 ${allSets[setId].name}`;
+    document.getElementById('loginOverlay').classList.add('active');
+    document.getElementById('loginUsername').value = '';
+    document.getElementById('loginPassword').value = '';
+    document.getElementById('loginError').style.display = 'none';
+}
+
+function closeLogin() {
+    document.getElementById('loginOverlay').classList.remove('active');
+}
+
+function doLogin() {
+    const u = document.getElementById('loginUsername').value.trim();
+    const p = document.getElementById('loginPassword').value.trim();
+    const err = document.getElementById('loginError');
+
+    // গ্লোবাল স্টোরেজ থেকে ইউজার ডেটাবেস কল করা হচ্ছে
+    const GLOBAL_USERS = JSON.parse(localStorage.getItem("testBazarGlobalUsers")) || {};
+
+    if (!u || !p) {
+        err.innerText = "❌ ইউজারনেম এবং পাসওয়ার্ড দিন!";
+        err.style.display = 'block';
+        return;
+    }
+
+    if (GLOBAL_USERS[u] && GLOBAL_USERS[u] === p) {
+        currentUser = u;
+        document.getElementById('hubUserInfo').innerText = `👤 ${u} — Test দিতে সেট সিলেক্ট করো।`;
+        closeLogin();
+        initHub();
+
+        if (pendingSetId) {
+            let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+            let attemptCount = (data[u] && data[u][pendingSetId]) || 0;
+            if (attemptCount < MAX_ATTEMPTS) {
+                startQuiz(pendingSetId);
+            } else {
+                alert(`⚠️ আপনি ${allSets[pendingSetId].name} এর সর্বোচ্চ ${MAX_ATTEMPTS} বার Test দিয়েছেন।`);
+            }
+            pendingSetId = null;
+        }
+    } else {
+        err.innerText = "❌ ভুল ইউজারনেম বা পাসওয়ার্ড।";
+        err.style.display = 'block';
+    }
+}
+
+function startQuiz(setId) {
+    currentSetId = setId;
+    TOTAL_QS = allSets[setId].questions.length;
+
+    let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+    if (!data[currentUser]) data[currentUser] = {};
+    data[currentUser][setId] = (data[currentUser][setId] || 0) + 1;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    initHub();
+
+    cur = 0; score = 0; wrong = 0; answered = false; userAnswers = [];
+    timeLeft = TIME_LIMIT;
+    isReviewMode = false;
+
+    document.getElementById('hubPage').classList.add('hidden');
+    document.getElementById('resultWrap').classList.remove('show');
+    document.getElementById('testArea').classList.remove('hidden');
+    document.getElementById('timerBox').classList.remove('hidden');
+    document.getElementById('timerBox').classList.remove('danger');
+
+    const set = allSets[setId];
+    document.getElementById('testSetLabel').innerText = set.name;
+    document.getElementById('testTopic').innerText = set.topic;
+
+    startTimer();
+    loadQuestion();
+}
+
+function startTimer() {
+    clearInterval(timerInterval);
+    updateTimerDisplay();
+    timerInterval = setInterval(() => {
+        timeLeft--;
+        updateTimerDisplay();
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            showResult();
+        }
+    }, 1000);
+}
+
+function updateTimerDisplay() {
+    const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+    const s = (timeLeft % 60).toString().padStart(2, '0');
+    document.getElementById('timerDisplay').innerText = `${m}:${s}`;
+    if (timeLeft < 60) document.getElementById('timerBox').classList.add('danger');
+}
+
+function loadQuestion() {
+    answered = false;
+    const set = allSets[currentSetId];
+    const q = set.questions[cur];
+
+    document.getElementById('qNum').innerText = isReviewMode ? `Review: প্রশ্ন ${cur + 1} / ${TOTAL_QS}` : `প্রশ্ন ${cur + 1} / ${TOTAL_QS}`;
+    document.getElementById('qText').innerText = q.q;
+    document.getElementById('progressFill').style.width = `${((cur + 1) / TOTAL_QS) * 100}%`;
+
+    const optsContainer = document.getElementById('qOpts');
+    optsContainer.innerHTML = '';
+
+    q.opts.forEach((optText, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'opt';
+        btn.innerHTML = `<div class="opt-circle">${LABELS[idx]}</div> <div class="opt-text">${optText}</div>`;
+
+        if (isReviewMode) {
+            btn.classList.add('disabled');
+            if (idx === q.ans) btn.classList.add('correct');
+            else if (userAnswers[cur] === idx) btn.classList.add('wrong');
+        } else {
+            btn.onclick = () => selectAnswer(idx, btn);
+        }
+        optsContainer.appendChild(btn);
+    });
+
+    const nextBtn = document.getElementById('nextBtn');
+    document.getElementById('explanation').classList.remove('show');
+    document.getElementById('scoreShow').innerText = isReviewMode ? "সবুজ = সঠিক উত্তর | লাল = আপনার ভুল উত্তর" : `সঠিক: ${score} | ভুল: ${wrong}`;
+
+    if (isReviewMode) {
+        document.getElementById('explanationText').innerHTML = '<strong>ব্যাখ্যা:</strong> ' + q.exp;
+        document.getElementById('explanation').classList.add('show');
+        nextBtn.disabled = false;
+        nextBtn.innerText = cur === set.questions.length - 1 ? 'ফলাফল পেজে ফিরুন' : 'পরবর্তী →';
+    } else {
+        nextBtn.disabled = true;
+        nextBtn.innerText = cur === set.questions.length - 1 ? 'ফলাফল দেখো 🏆' : 'পরবর্তী →';
+    }
+}
+
+function selectAnswer(selectedIdx, btnElement) {
+    if (answered) return;
+    answered = true;
+    const set = allSets[currentSetId];
+    const q = set.questions[cur];
+    userAnswers[cur] = selectedIdx;
+
+    const allBtns = document.getElementById('qOpts').children;
+    for (let i = 0; i < allBtns.length; i++) {
+        allBtns[i].classList.add('disabled');
+        if (i === q.ans) allBtns[i].classList.add('correct');
+    }
+
+    if (selectedIdx === q.ans) {
+        score++;
+    } else {
+        btnElement.classList.add('wrong');
+        wrong++;
+    }
+
+    document.getElementById('scoreShow').innerText = `সঠিক: ${score} | ভুল: ${wrong}`;
+    document.getElementById('explanationText').innerHTML = '<strong>ব্যাখ্যা:</strong> ' + q.exp;
+    document.getElementById('explanation').classList.add('show');
+    document.getElementById('nextBtn').disabled = false;
+}
+
+function nextQ() {
+    const set = allSets[currentSetId];
+    if (cur < set.questions.length - 1) {
+        cur++;
+        loadQuestion();
+    } else {
+        if (isReviewMode) {
+            document.getElementById('testArea').classList.add('hidden');
+            document.getElementById('resultWrap').classList.add('show');
+        } else {
+            clearInterval(timerInterval);
+            showResult();
+        }
+    }
+}
+
+function showResult() {
+    document.getElementById('testArea').classList.add('hidden');
+    document.getElementById('timerBox').classList.add('hidden');
+    document.getElementById('resultWrap').classList.add('show');
+
+    const total = allSets[currentSetId].questions.length;
+    const pct = Math.round((score / total) * 100);
+
+    document.getElementById('finalScore').innerText = `${pct}%`;
+    document.getElementById('rbCorrect').innerText = score;
+    document.getElementById('rbWrong').innerText = total - score;
+
+    let msg = "অসাধারণ!"; let icon = "🏆";
+    if (pct < 50) { msg = "আরও অনুশীলন প্রয়োজন!"; icon = "📚"; }
+    else if (pct < 80) { msg = "খুব ভালো চেষ্টা!"; icon = "👍"; }
+
+    document.getElementById('resultGrade').innerText = msg;
+    document.getElementById('resultIcon').innerText = icon;
+
+    let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+    let count = data[currentUser][currentSetId] || 0;
+    let remaining = MAX_ATTEMPTS - count;
+    document.getElementById('attemptInfo').innerText = `👤 ${currentUser} — ${allSets[currentSetId].name}: বাকি আছে ${remaining} বার Test দেওয়ার সুযোগ`;
+}
+
+function showReview() {
+    document.getElementById('resultWrap').classList.remove('show');
+    document.getElementById('testArea').classList.remove('hidden');
+    isReviewMode = true;
+    cur = 0;
+    loadQuestion();
+}
+
+function restartQuiz() {
+    let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+    let count = data[currentUser][currentSetId] || 0;
+    if (count >= MAX_ATTEMPTS) {
+        alert(`⚠️ আপনি এই সেটের সর্বোচ্চ ${MAX_ATTEMPTS} বার Test দিয়েছেন। আর দেওয়া সম্ভব নয়।`);
+        return;
+    }
+    document.getElementById('resultWrap').classList.remove('show');
+    startQuiz(currentSetId);
+}
+
+function goToHub() {
+    window.location.href = "index.html";
+}
+
+window.onload = initHub;
+</script>
+
+</body>
+</html>
+
+
