@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test Bazar — Political Science | 1st Sem | Unit 2</title>
+<link href="https://fonts.googleapis.com/css2?family=Tiro+Bangla&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ================== CSS STYLES ================== */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Syne', sans-serif; background: #f0faf4; min-height: 100vh; color: #1c2e24; }
+.en-font { font-family: 'Syne', sans-serif; }
+
+.top-bar { background: #1a7a4a; padding: 0.8rem 1.5rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+.top-logo { font-size: 1.2rem; font-weight: 800; color: white; cursor: pointer; }
+.top-logo span { color: #f9a825; }
+.timer-box { background: rgba(255,255,255,0.2); padding: 0.3rem 0.8rem; border-radius: 6px; color: white; font-weight: 700; font-size: 0.95rem; }
+.timer-box.danger { background: #dc3545; animation: pulse 1s infinite; }
+@keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+.main { max-width: 800px; margin: 0 auto; padding: 1.5rem; }
+
+/* HUB PAGE */
+.hub-header { text-align: center; margin-bottom: 2rem; }
+.hub-header h1 { font-family: 'Tiro Bangla', serif; color: #1a7a4a; font-size: 1.6rem; margin-bottom: 0.5rem; line-height: 1.4; }
+.hub-header p { color: #5a7a66; font-size: 0.95rem; font-family: 'Tiro Bangla', serif; font-weight: bold; }
+.set-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
+.set-card { background: white; border: 2px solid #c5dccb; border-radius: 12px; padding: 1.5rem; text-align: center; cursor: pointer; transition: all 0.2s; }
+.set-card:hover { transform: translateY(-3px); border-color: #1a7a4a; box-shadow: 0 6px 20px rgba(26,122,74,0.12); }
+.set-card .icon { font-size: 2.2rem; margin-bottom: 0.3rem; }
+.set-card .set-num { font-weight: 700; font-size: 1.1rem; color: #1a7a4a; }
+.set-card .set-title { font-family: 'Tiro Bangla', serif; font-size: 0.85rem; color: #5a7a66; margin: 0.2rem 0 0.5rem; }
+.set-card .set-meta { display: flex; gap: 1rem; font-size: 0.75rem; color: #5a7a66; justify-content: center; font-weight: bold;}
+.set-card .set-meta span { background: #f0faf4; padding: 0.2rem 0.6rem; border-radius: 4px; }
+.attempt-badge { font-size: 0.8rem; color: #dc3545; font-weight: 700; margin-top: 0.6rem; font-family: 'Tiro Bangla', serif; }
+
+/* QUIZ AREA */
+.quiz-info { background: white; border-radius: 12px; padding: 1rem 1.2rem; margin-bottom: 1.2rem; border: 1px solid #c5dccb; display: flex; gap: 1rem; flex-wrap: wrap; }
+.info-item { font-family: 'Tiro Bangla', serif; font-size: 0.9rem; color: #5a7a66; font-weight: 600; }
+.info-item strong { color: #1a7a4a; }
+
+.progress-wrap { background: #c5dccb; border-radius: 4px; height: 6px; margin-bottom: 1.2rem; overflow: hidden; }
+.progress-fill { height: 100%; background: #1a7a4a; border-radius: 4px; transition: width 0.3s; }
+
+.q-card { background: white; border-radius: 14px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+.q-num { font-size: 0.9rem; font-weight: 700; color: #1a7a4a; margin-bottom: 0.8rem; }
+.q-text { font-family: 'Tiro Bangla', serif; font-size: 1.1rem; color: #1c2e24; font-weight: 700; line-height: 1.6; margin-bottom: 1.2rem; }
+
+.opts { display: flex; flex-direction: column; gap: 0.6rem; }
+.opt { display: flex; align-items: flex-start; gap: 12px; padding: 0.8rem 1rem; border: 1.5px solid #c5dccb; border-radius: 10px; background: transparent; cursor: pointer; text-align: left; transition: all 0.2s; width: 100%; }
+.opt:hover:not(.disabled) { border-color: #1a7a4a; background: #f0faf4; }
+.opt-circle { min-width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid #c5dccb; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #5a7a66; flex-shrink: 0; }
+.opt-text { font-family: 'Tiro Bangla', serif; font-size: 0.95rem; color: #1c2e24; line-height: 1.6; font-weight: 600; padding-top: 2px; }
+
+.opt.correct { border-color: #1a7a4a; background: #e8f7ef; }
+.opt.correct .opt-circle { background: #1a7a4a; border-color: #1a7a4a; color: white; }
+.opt.wrong { border-color: #dc3545; background: #fdf0f0; }
+.opt.wrong .opt-circle { background: #dc3545; border-color: #dc3545; color: white; }
+.opt.disabled { cursor: default; }
+
+.explanation { background: #f0faf4; border-left: 4px solid #1a7a4a; border-radius: 0 8px 8px 0; padding: 1rem; margin-top: 1rem; display: none; }
+.explanation.show { display: block; }
+.explanation p { font-family: 'Tiro Bangla', serif; font-size: 0.9rem; color: #2c4035; line-height: 1.7; }
+
+.nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; }
+.score-show { font-family: 'Tiro Bangla', serif; font-size: 0.85rem; color: #5a7a66; font-weight: bold; }
+.next-btn { background: #1a7a4a; color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 8px; font-family: 'Tiro Bangla', serif; font-size: 0.95rem; font-weight: bold; cursor: pointer; transition: all 0.2s; }
+.next-btn:hover:not(:disabled) { background: #2aad68; }
+.next-btn:disabled { background: #c5dccb; cursor: not-allowed; }
+
+/* RESULT AREA */
+.result-wrap { background: white; border-radius: 14px; padding: 2rem; text-align: center; border: 1px solid #c5dccb; display: none; max-width: 600px; margin: 0 auto; box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+.result-wrap.show { display: block; }
+.result-icon { font-size: 3.5rem; margin-bottom: 0.5rem; line-height: 1; }
+.result-score { font-size: 3.5rem; font-weight: 800; color: #1a7a4a; line-height: 1; margin-bottom: 5px; }
+.result-total { font-size: 1rem; color: #5a7a66; margin-bottom: 0.5rem; font-family: 'Tiro Bangla', serif; font-weight: bold;}
+.result-grade { font-size: 1.2rem; font-weight: 700; color: #1c2e24; margin-bottom: 1.5rem; font-family: 'Tiro Bangla', serif; color: #e8730a; }
+
+.result-bars { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+.result-bar { background: #f0faf4; border-radius: 10px; padding: 1rem; text-align: center; border: 1px solid #c5dccb; }
+.rb-num { font-size: 1.8rem; font-weight: 800; }
+.rb-label { font-family: 'Tiro Bangla', serif; font-size: 0.85rem; color: #5a7a66; margin-top: 0.2rem; font-weight: bold;}
+.attempt-info { font-family: 'Tiro Bangla', serif; font-size: 0.9rem; color: #1a7a4a; font-weight: bold; margin-bottom: 1.5rem; background: #e8f7ef; padding: 10px; border-radius: 8px; }
+
+/* ACTION BUTTONS */
+.result-actions { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+.result-actions button { width: 100%; padding: 14px; border-radius: 8px; font-family: 'Tiro Bangla', serif; font-size: 1.05rem; font-weight: 800; cursor: pointer; border: none; transition: 0.2s; }
+.btn-retry { background: #17a2b8; color: white; }
+.btn-retry:hover { background: #138496; }
+.btn-review { background: #28a745; color: white; }
+.btn-review:hover { background: #218838; }
+.btn-home { background: transparent; color: #5a7a66; border: 2px solid #c5dccb !important; }
+.btn-home:hover { background: #f0faf4; }
+
+/* LOGIN MODAL */
+.login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(4px); }
+.login-overlay.active { display: flex; }
+.login-modal { background: white; padding: 2rem; border-radius: 16px; width: 90%; max-width: 380px; box-shadow: 0 15px 40px rgba(0,0,0,0.2); }
+.login-modal h2 { font-family: 'Tiro Bangla', serif; color: #1a7a4a; font-size: 1.4rem; margin-bottom: 0.5rem; text-align: center; }
+.login-modal p { font-family: 'Tiro Bangla', serif; color: #5a7a66; font-size: 0.9rem; margin-bottom: 1.5rem; text-align: center; }
+
+.input-group { margin-bottom: 1.2rem; }
+.input-group label { display: block; font-size: 0.85rem; font-weight: 700; color: #1c2e24; margin-bottom: 5px; font-family: 'Tiro Bangla', serif; }
+.input-group input { width: 100%; padding: 12px; border: 1.5px solid #c5dccb; border-radius: 8px; font-family: 'Syne', sans-serif; font-size: 0.95rem; outline: none; transition: 0.2s; }
+.input-group input:focus { border-color: #1a7a4a; box-shadow: 0 0 0 3px rgba(26,122,74,0.1); }
+
+.login-btn { width: 100%; background: #1a7a4a; color: white; border: none; padding: 12px; border-radius: 8px; font-family: 'Tiro Bangla', serif; font-size: 1.05rem; font-weight: 700; cursor: pointer; transition: 0.2s; margin-bottom: 8px; }
+.cancel-btn { width: 100%; background: transparent; color: #5a7a66; border: 1.5px solid #c5dccb; padding: 10px; border-radius: 8px; font-family: 'Tiro Bangla', serif; font-size: 1rem; font-weight: 700; cursor: pointer; }
+.error-msg { color: #dc3545; font-size: 0.85rem; font-weight: 700; margin-top: 10px; font-family: 'Tiro Bangla', serif; display: none; text-align: center; }
+.set-name-display { background: #f0faf4; border-radius: 8px; padding: 0.6rem; text-align: center; margin-bottom: 1rem; font-family: 'Tiro Bangla', serif; font-size: 0.95rem; color: #1a7a4a; font-weight: 700; }
+.hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+    <div class="top-logo" onclick="goToHub()">Test<span>Bazar</span></div>
+    <div class="timer-box hidden" id="timerBox">⏱ <span id="timerDisplay">10:00</span></div>
+</div>
+
+<div class="main">
+
+    <!-- ===== LOGIN OVERLAY ===== -->
+    <div class="login-overlay" id="loginOverlay">
+        <div class="login-modal">
+            <h2>🔐 লগইন করুন</h2>
+            <p>Test শুরু করতে আপনার ইউজারনেম ও পাসওয়ার্ড দিন</p>
+            <div class="set-name-display" id="loginSetName">📚 Set 1</div>
+            <div class="input-group">
+                <label>ইউজারনেম</label>
+                <input type="text" id="loginUsername" placeholder="আপনার ইউজারনেম লিখুন">
+            </div>
+            <div class="input-group">
+                <label>পাসওয়ার্ড</label>
+                <input type="password" id="loginPassword" placeholder="আপনার পাসওয়ার্ড লিখুন" onkeydown="if(event.key==='Enter') doLogin()">
+            </div>
+            <button class="login-btn" onclick="doLogin()">✅ লগইন করে Test শুরু করো</button>
+            <button class="cancel-btn" onclick="closeLogin()">বাতিল</button>
+            <div class="error-msg" id="loginError">❌ ভুল ইউজারনেম বা পাসওয়ার্ড।</div>
+        </div>
+    </div>
+
+    <!-- ===== HUB PAGE ===== -->
+    <div id="hubPage">
+        <div class="hub-header">
+            <h1>রাষ্ট্রবিজ্ঞান — 1st Sem<br>Unit 2: রাষ্ট্র: সংজ্ঞা ও বৈশিষ্ট্যসমূহ</h1>
+            <p>নিচের সেটগুলো থেকে বেছে নিন। প্রতিটি সেটে ১৫টি প্রশ্ন রয়েছে।</p>
+            <div id="hubUserInfo" style="font-family:'Tiro Bangla',serif;font-size:1rem;color:#1a7a4a;margin-top:0.8rem;font-weight:bold;"></div>
+        </div>
+        <div class="set-grid" id="setGrid"></div>
+    </div>
+
+    <!-- ===== TEST AREA ===== -->
+    <div id="testArea" class="hidden">
+        <div class="quiz-info">
+            <div class="info-item">🎓 <strong id="testSetName">রাষ্ট্রবিজ্ঞান</strong> — 1st Sem | Unit 2 | <span id="testSetLabel">Set 1</span></div>
+            <div class="info-item">📝 <span id="testTopic">Topic</span></div>
+        </div>
+
+        <div class="progress-wrap"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+
+        <div class="q-card" id="qCard">
+            <div class="q-num" id="qNum">প্রশ্ন ১ / ১৫</div>
+            <div class="q-text" id="qText"></div>
+            <div class="opts" id="qOpts"></div>
+            <div class="explanation" id="explanation"><p id="explanationText"></p></div>
+
+            <div class="nav-row">
+                <div class="score-show" id="scoreShow">সঠিক: ০ | ভুল: ০</div>
+                <button class="next-btn" id="nextBtn" onclick="nextQ()" disabled>পরবর্তী →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== RESULT AREA ===== -->
+    <div class="result-wrap" id="resultWrap">
+        <div class="result-icon" id="resultIcon">🏆</div>
+        <div class="result-score en-font" id="finalScore">100%</div>
+        <div class="result-total">স্কোর</div>
+        <div class="result-grade" id="resultGrade">অসাধারণ!</div>
+
+        <div class="result-bars">
+            <div class="result-bar">
+                <div class="rb-num en-font" id="rbCorrect" style="color:#1a7a4a">0</div>
+                <div class="rb-label">সঠিক</div>
+            </div>
+            <div class="result-bar">
+                <div class="rb-num en-font" id="rbWrong" style="color:#dc3545">0</div>
+                <div class="rb-label">ভুল/স্কিপ</div>
+            </div>
+        </div>
+
+        <div class="attempt-info" id="attemptInfo">👤 user — Set 1: বাকি আছে 9 বার Test দেওয়ার সুযোগ</div>
+
+        <!-- ACTION BUTTONS -->
+        <div class="result-actions">
+            <button class="btn-retry" onclick="restartQuiz()">🔄 আবার চেষ্টা করো</button>
+            <button class="btn-review" onclick="showReview()">👀 উত্তর দেখো</button>
+            <button class="btn-home" onclick="goToHub()">🏠 ← Hub এ ফিরে যাও</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+// ============================================================
+// গ্লোবাল ভেরিয়েবল
+// ============================================================
+const MAX_ATTEMPTS = 10;
+const TIME_LIMIT = 10 * 60; // 10 Minutes
+const LABELS = ['A', 'B', 'C', 'D'];
+const STORAGE_KEY = "testBazarAttempts_PolSci_1stSem_U2_4Sets";
+
+let currentUser = "";
+let currentSetId = 1;
+let pendingSetId = null;
+
+let cur = 0, score = 0, wrong = 0, answered = false;
+let timerInterval, timeLeft = TIME_LIMIT;
+let userAnswers = [];
+let isReviewMode = false;
+let TOTAL_QS = 0;
+
+// ============================================================
+// Unit 2: রাষ্ট্র: সংজ্ঞা ও বৈশিষ্ট্যসমূহ (৪টি সেটের প্রশ্নাবলি)
+// ============================================================
+const allSets = {
+    1: {
+        name: 'Set 1', icon: '🌍', topic: 'রাষ্ট্রের ধারণা ও বিভিন্ন সংজ্ঞা',
+        questions: [
+            { q: "১. সর্বপ্রথম আধুনিক অর্থে 'রাষ্ট্র' (State) শব্দটির প্রয়োগ কে করেন?", opts: ["প্লেটো", "অ্যারিস্টট্ল", "নিকোলো ম্যাকিয়াভেলি", "টমাস হবস"], ans: 2, exp: "প্রাচীন গ্রিক বা রোমানরা আধুনিক অর্থে 'রাষ্ট্র' শব্দটি ব্যবহার করতেন না। ষোড়শ শতাব্দীর ইতালীয় চিন্তাবিদ নিকোলো ম্যাকিয়াভেলি তাঁর বিখ্যাত গ্রন্থ 'দ্য প্রিন্স' (The Prince)-এ সর্বপ্রথম আধুনিক অর্থে 'রাষ্ট্র' শব্দটি ব্যবহার করেন।" },
+            { q: "২. প্রাচীন গ্রিসের চিন্তাবিদরা রাষ্ট্রকে কী বলে অভিহিত করতেন?", opts: ["সিভিটাস (Civitas)", "পোলিস্ (Polis)", "স্ট্যাটাস্ (Status)", "নেশন (Nation)"], ans: 1, exp: "প্রাচীন গ্রিসকে রাষ্ট্রবিজ্ঞানের সূতিকাগার বলা হলেও তাঁরা রাষ্ট্র বোঝাতে 'পোলিস্' শব্দটি ব্যবহার করতেন, যার অর্থ ছিল 'নগররাষ্ট্র' (city state)।" },
+            { q: "৩. 'স্বাবলম্বী ও পরিপূর্ণ জীবনযাপনের উদ্দেশে সংগঠিত কয়েকটি পরিবার ও গ্রামের সমষ্টিই হল রাষ্ট্র।'— রাষ্ট্রের এই সংজ্ঞাটি কে দিয়েছেন?", opts: ["গার্নার", "অ্যারিস্টট্ল", "সিসেরো", "ল্যাস্কি"], ans: 1, exp: "প্রখ্যাত গ্রিক দার্শনিক অ্যারিস্টট্ল মানুষের নৈতিক ও স্বাবলম্বী জীবনযাপনের ওপর জোর দিয়ে রাষ্ট্রের এই প্রাচীন সংজ্ঞাটি প্রদান করেছিলেন।" },
+            { q: "৪. রাষ্ট্রের সর্বাপেক্ষা গ্রহণযোগ্য ও পূর্ণাঙ্গ সংজ্ঞাটি কে প্রদান করেছেন?", opts: ["উড্রো উইলসন", "ম্যাকাইভার", "গার্নার", "বোদাঁ"], ans: 2, exp: "অধ্যাপক গার্নার প্রদত্ত সংজ্ঞার মধ্যেই রাষ্ট্রের চারটি মূল বৈশিষ্ট্যের (জনসমষ্টি, নির্দিষ্ট ভূখণ্ড, সরকার এবং সার্বভৌমিকতা) সুস্পষ্ট উল্লেখ রয়েছে, তাই এটি সর্বাপেক্ষা গ্রহণযোগ্য বলে বিবেচিত হয়।" },
+            { q: "৫. ডেভিড ইস্টনের মতো আধুনিক আচরণবাদী রাষ্ট্রবিজ্ঞানীরা 'রাষ্ট্র' শব্দটির পরিবর্তে কোন্ শব্দটি প্রয়োগ করার পক্ষপাতী?", opts: ["রাজনৈতিক ব্যবস্থা (Political system)", "সরকার (Government)", "সংঘ (Association)", "নাগরিক সমাজ (Civil society)"], ans: 0, exp: "আচরণবাদীরা মনে করেন, রাষ্ট্রের প্রচলিত আইনগত সংজ্ঞা রাষ্ট্রের প্রকৃত চরিত্র ব্যাখ্যা করতে পারে না। তাই তাঁরা সমাজের সব ধরনের রাজনৈতিক কার্যকলাপ বোঝাতে 'রাজনৈতিক ব্যবস্থা' কথাটি ব্যবহার করেন।" },
+            { q: "৬. 'রাষ্ট্র নির্দিষ্ট ভূখণ্ডে আইন প্রতিষ্ঠার জন্য সংগঠিত জনসমষ্টি।'— উক্তিটি কার?", opts: ["ম্যাকাইভার", "উড্রো উইলসন", "কার্ল মার্কস", "রবার্ট ডাল"], ans: 1, exp: "প্রাক্তন মার্কিন রাষ্ট্রপতি উড্রো উইলসন রাষ্ট্রকে আইন প্রতিষ্ঠার একটি নির্দিষ্ট ভৌগোলিক সংগঠন হিসেবেই সংজ্ঞায়িত করেছিলেন।" },
+            { q: "৭. কোন্ রাষ্ট্রবিজ্ঞানী রাষ্ট্রের আইনমূলক (Legal) সংজ্ঞা প্রদান করেছেন?", opts: ["সিসেরো", "জাঁ বোদাঁ", "অ্যারিস্টট্ল", "ওপেনহাইম"], ans: 1, exp: "ষোড়শ শতাব্দীতে জাঁ বোদাঁ রাষ্ট্রের আইনমূলক সংজ্ঞা প্রদান করে বলেন যে, রাষ্ট্র হল পরিবার ও তার ধনসম্পত্তির এমন এক সংগঠন যা চূড়ান্ত ক্ষমতা ও যুক্তির দ্বারা নিয়ন্ত্রিত।" },
+            { q: "৮. 'রাষ্ট্র হল একটি শ্রেণির ওপর অন্য একটি শ্রেণির উৎপীড়নের যন্ত্র।'— এটি কে বলেছেন?", opts: ["কার্ল মার্কস", "ফ্রেডরিক এঙ্গেলস", "ভি. আই. লেনিন", "ল্যাস্কি"], ans: 2, exp: "লেনিন এবং অন্যান্য মার্কসবাদীরা রাষ্ট্রকে জনকল্যাণমূলক প্রতিষ্ঠান হিসেবে মানতে নারাজ। তাঁদের মতে, রাষ্ট্র আসলে প্রভুত্বকারী পুঁজিপতি শ্রেণির দ্বারা দরিদ্রদের শোষণের একটি হাতিয়ার মাত্র।" },
+            { q: "৯. 'যখন কোনো দেশের জনসাধারণ তাদের নিজেদের সার্বভৌম সরকারের অধীনে বসবাস করে, তখনই তাকে একটি যথার্থ রাষ্ট্র বলা যায়।'— উক্তিটি কার?", opts: ["ওপেনহাইম", "র‍্যাফেল", "ল্যাস্কি", "গার্নার"], ans: 0, exp: "প্রখ্যাত আন্তর্জাতিক আইনবিদ ওপেনহাইম রাষ্ট্রের এই সংক্ষিপ্ত অথচ অত্যন্ত সুন্দর সংজ্ঞাটি নির্দেশ করেছেন, যেখানে রাষ্ট্রের সব কটি বৈশিষ্ট্যের কথা বলা আছে।" },
+            { q: "১০. রাষ্ট্রবিজ্ঞানীদের মতে রাষ্ট্রের আনুমানিক কতগুলি সংজ্ঞা রয়েছে?", opts: ["প্রায় ৫০টি", "প্রায় ১০০টি", "প্রায় ১৪৫টি", "প্রায় ২০০টি"], ans: 2, exp: "ডেভিড ইস্টনের দেওয়া তথ্য অনুযায়ী রাষ্ট্রের প্রায় ১৪৫টি সংজ্ঞা রয়েছে। এই সংজ্ঞার সংখ্যাধিক্য দেখেই জার্মান দার্শনিক সুঞ্জে পরিহাস করে বলেছিলেন যে দুজন রাষ্ট্রবিজ্ঞানীর সংজ্ঞার মধ্যে কোনো মিল পাওয়া যায় না।" },
+            { q: "১১. প্রাচীন রোমানরা রাষ্ট্র বোঝাতে কোন্ শব্দ ব্যবহার করতেন?", opts: ["পোলিস", "সিভিটাস", "স্ট্যাটাস", "ইম্পেরিয়াম"], ans: 1, exp: "প্রাচীন গ্রিকদের মতো রোমানরাও মূলত নগররাষ্ট্রের ধারণাতেই বিশ্বাসী ছিলেন, যাকে তাঁরা 'সিভিটাস' (civitas) বলে অভিহিত করতেন।" },
+            { q: "১২. টিউটনরাই সর্বপ্রথম বৃহদায়তন রাষ্ট্রের কথা বলেন। তাঁরা এই রাষ্ট্রকে কী বলতেন?", opts: ["পোলিস্", "সিভিটাস", "স্ট্যাটাস্", "স্টেট"], ans: 2, exp: "আধুনিক 'State' বা রাষ্ট্র শব্দটি এই 'স্ট্যাটাস্' (status) শব্দ থেকেই ধীরে ধীরে বিবর্তিত হয়ে আজকের রূপ পেয়েছে।" },
+            { q: "১৩. কে রাষ্ট্র বলতে 'কোনো নির্দিষ্ট অঞ্চলে রাজনৈতিকভাবে সংগঠিত জনসমষ্টি'-কে বুঝিয়েছেন?", opts: ["উড্রো উইলসন", "বার্জেস", "ম্যাকাইভার", "ল্যাস্কি"], ans: 1, exp: "বার্জেস তাঁর সংজ্ঞায় নির্দিষ্ট ভূখণ্ডের পাশাপাশি জনগণের রাজনৈতিকভাবে সংঘবদ্ধ হওয়ার বিষয়টিকে রাষ্ট্রের মূল শর্ত হিসেবে তুলে ধরেছিলেন।" },
+            { q: "১৪. 'রাষ্ট্র হল এমন একটি ভৌগোলিক সমাজ, যা শাসক ও শাসিতের মধ্যে বিভক্ত...'— উক্তিটি কার?", opts: ["ল্যাস্কি", "আর্নেস্ট বার্কার", "গার্নার", "ম্যাকাইভার"], ans: 0, exp: "অধ্যাপক হ্যারল্ড ল্যাস্কি রাষ্ট্রের ক্ষমতা এবং তার ভৌগোলিক আধিপত্য বোঝাতে গিয়ে শাসক ও শাসিতের এই বিভাজনের কথা তাঁর সংজ্ঞায় উল্লেখ করেছিলেন।" },
+            { q: "১৫. মার্কসীয় দৃষ্টিকোণ থেকে রাষ্ট্র কী?", opts: ["সকলের কল্যাণের একটি প্রতিষ্ঠান", "ঈশ্বর সৃষ্ট একটি সংগঠন", "শ্রেণিস্বার্থ সংরক্ষণের একটি শক্তিশালী রাজনৈতিক হাতিয়ার", "আইন তৈরির একটি নিরপেক্ষ সংস্থা"], ans: 2, exp: "কার্ল মার্কসের মতে, শ্রেণিবিভক্ত সমাজে রাষ্ট্র কখনোই নিরপেক্ষ নয়, এটি শোষক শ্রেণির স্বার্থকে রক্ষা করার জন্যই সৃষ্টি হয়েছে।" }
+        ]
+    },
+    2: {
+        name: 'Set 2', icon: '👥', topic: 'রাষ্ট্রের উপাদান (জনসমষ্টি ও নির্দিষ্ট ভূখণ্ড)',
+        questions: [
+            { q: "১. গার্নারের সংজ্ঞা বিশ্লেষণ করলে রাষ্ট্রের কয়টি মূল বৈশিষ্ট্যের সন্ধান পাওয়া যায়?", opts: ["২ টি", "৩ টি", "৪ টি", "৫ টি"], ans: 2, exp: "গার্নারের সংজ্ঞা অনুযায়ী রাষ্ট্রের চারটি প্রধান উপাদান বা বৈশিষ্ট্য হলো— জনসমষ্টি, নির্দিষ্ট ভূখণ্ড, সরকার এবং সার্বভৌমিকতা। এর যেকোনো একটির অভাব হলে তাকে রাষ্ট্র বলা যায় না।" },
+            { q: "২. আধুনিক রাষ্ট্রের অভ্যন্তরস্থ জনসমাজকে মূলত কয় ভাগে ভাগ করা হয়?", opts: ["২ ভাগে", "৩ ভাগে", "৪ ভাগে", "৫ ভাগে"], ans: 1, exp: "আধুনিক রাষ্ট্রের জনসমাজকে মূলত তিনটি ভাগে ভাগ করা যায়: নাগরিক (যাঁরা সব রাজনৈতিক অধিকার পান), বিদেশি (অন্য দেশের নাগরিক), এবং প্রজা (বিদেশি সরকার দ্বারা শাসিত জনগণ)।" },
+            { q: "৩. প্রাচীন গ্রিসের নগররাষ্ট্রগুলির জনসমষ্টির মধ্যে কাদের 'নাগরিক' বলা হতো না?", opts: ["কেবল স্ত্রীলোকদের", "কেবল দাসদের", "আবাসিক-বিদেশি (মেটিক) এবং দাসদের", "কেবল সৈনিকদের"], ans: 2, exp: "প্রাচীন গ্রিসে যারা প্রত্যক্ষভাবে রাষ্ট্র পরিচালনায় অংশ নিত কেবল তাদেরই নাগরিক বলা হতো। মেটিক এবং দাসরা সব ধরনের রাজনৈতিক অধিকার থেকে বঞ্চিত ছিল।" },
+            { q: "৪. প্লেটো এবং অ্যারিস্টট্ল-এর মতে একটি আদর্শ রাষ্ট্রের জনসংখ্যা কত হওয়া উচিত?", opts: ["১,০০০ থেকে ৫,০০০", "৫,০০০ থেকে ১০,০০০", "৫০,০০০ থেকে ১,০০,০০০", "১ কোটির বেশি"], ans: 1, exp: "প্রাচীন গ্রিসের নগররাষ্ট্রগুলি ক্ষুদ্র আয়তনের হওয়ায় তাঁরা মনে করতেন যে খুব বেশি জনসংখ্যা থাকলে রাষ্ট্রের শাসনকার্য চালানো কঠিন হবে।" },
+            { q: "৫. রাষ্ট্রের নির্দিষ্ট ভূখণ্ড বলতে কেবল ভূপৃষ্ঠকে বোঝায় না, এর সঙ্গে আর কী যুক্ত থাকে?", opts: ["কেবল নদনদী", "ভূগর্ভস্থ পদার্থ, আকাশপথ এবং সমুদ্রোপকূল", "কেবল আকাশপথ", "কেবল অন্যান্য রাষ্ট্রের সীমান্ত"], ans: 1, exp: "একটি রাষ্ট্রের ভৌগোলিক সীমানার মধ্যে থাকা পাহাড়-পর্বত, মাটির তলার খনিজ পদার্থ এবং নির্দিষ্ট সীমানা পর্যন্ত আকাশ ও সমুদ্র সবই সেই রাষ্ট্রের ভূখণ্ডের অংশ।" },
+            { q: "৬. রাষ্ট্র গঠনের দ্বিতীয় অপরিহার্য উপাদান কোনটি?", opts: ["সার্বভৌমিকতা", "সরকার", "নির্দিষ্ট ভূখণ্ড", "অন্যান্য রাষ্ট্রের স্বীকৃতি"], ans: 2, exp: "নির্দিষ্ট ভূখণ্ড ছাড়া রাষ্ট্রের কল্পনা করা যায় না। যাযাবর উপজাতিদের সরকার থাকলেও তাদের নির্দিষ্ট ভূখণ্ড না থাকায় তাদের সংগঠনকে রাষ্ট্র বলা যায় না।" },
+            { q: "৭. সম্মিলিত জাতিপুঞ্জের সামুদ্রিক আইন-সংক্রান্ত তৃতীয় সম্মেলন অনুযায়ী সমুদ্রের জলভাগের কতদূর পর্যন্ত উপকূলবর্তী রাষ্ট্রের ভূখণ্ড বলে ধরা হয়?", opts: ["৩ মাইল", "৬ মাইল", "১২ মাইল", "২০০ মাইল"], ans: 2, exp: "যদিও সব রাষ্ট্র এটি মানে না, তবে জাতিপুঞ্জের ১৯৭৩-১৯৮২ সালের সম্মেলনে সমুদ্রোপকূল থেকে ১২ মাইল পর্যন্ত এলাকাকে রাষ্ট্রের ভূখণ্ড হিসেবে স্বীকৃতি দেওয়ার কথা বলা হয়েছিল।" },
+            { q: "৮. সাধারণত রাষ্ট্রীয় ভূখণ্ডের উপরিস্থিত আকাশের কত কিলোমিটার পর্যন্ত রাষ্ট্রের 'গাগনিক সীমারেখা' বিস্তৃত বলে মনে করা হয়?", opts: ["৫০ থেকে ৬০ কিমি", "১০০ থেকে ১১০ কিমি", "২০০ থেকে ২৫০ কিমি", "৫০০ কিমি"], ans: 1, exp: "এর ওপরের অংশকে 'মহাকাশ' (outer space) বলা হয়, যার ওপর পৃথিবীর কোনো নির্দিষ্ট রাষ্ট্রের একক কর্তৃত্ব থাকে না।" },
+            { q: "৯. কোন্ জার্মান দার্শনিক রাষ্ট্রের ক্ষুদ্রত্বকে তার 'পাপের প্রতীক' বলে মনে করতেন?", opts: ["কার্ল মার্কস", "হেগেল", "ট্রাইটস্কে (Treitschke)", "এঙ্গেলস"], ans: 2, exp: "ট্রাইটস্কে বৃহদায়তন রাষ্ট্রের সমর্থক ছিলেন। তাঁর মতে, রাষ্ট্র বড়ো হলে সামরিক শক্তি বাড়ে এবং অর্থনৈতিক উন্নতি সহজ হয়, তাই ক্ষুদ্র রাষ্ট্র কাম্য নয়।" },
+            { q: "১০. মার্কিন যুক্তরাষ্ট্র, ব্রিটেন, জার্মানি প্রভৃতি রাষ্ট্র সমুদ্রের জলভাগের কতদূর পর্যন্ত নিজেদের 'ভূখণ্ডগত জলভাগ' হিসেবে চিহ্নিত করেছে?", opts: ["৩ মাইল", "৬ মাইল", "১২ মাইল", "২০ মাইল"], ans: 0, exp: "যদিও জাতিপুঞ্জ ১২ মাইলের কথা বলেছে, তবুও আমেরিকা বা ব্রিটেনের মতো ক্ষমতাশালী দেশগুলো ৩ মাইলের পুরোনো নীতিটিই নিজেদের ক্ষেত্রে মেনে চলে।" },
+            { q: "১১. বিদেশি সরকার কর্তৃক শাসিত কোনো দেশের জনগণকে কী বলা হয়?", opts: ["নাগরিক", "আবাসিক", "মেটিক", "প্রজা"], ans: 3, exp: "উদাহরণস্বরূপ, ব্রিটিশ শাসনাধীনে ভারতের জনগণকে স্বাধীন নাগরিক না বলে ব্রিটিশ রাজমুকুটের 'প্রজা' (Subject) বলা হতো।" },
+            { q: "১২. ইহুদিরা যতদিন পর্যন্ত কোনো নির্দিষ্ট ভূখণ্ড পায়নি, ততদিন তারা রাষ্ট্র গড়তে পারেনি। ইস্রায়েল রাষ্ট্র কবে প্রতিষ্ঠিত হয়?", opts: ["১৯৪৫ সালের ২৪ অক্টোবর", "১৯৪৭ সালের ১৫ আগস্ট", "১৯৪৮ সালের ১৪ মে", "১৯৫০ সালের ২৬ জানুয়ারি"], ans: 2, exp: "দ্বিতীয় বিশ্বযুদ্ধের পর প্যালেস্তাইন অঞ্চলে ইহুদিরা স্থায়ীভাবে বসবাসের জন্য নির্দিষ্ট ভূখণ্ড লাভ করে এবং এই দিনেই ইস্রায়েল একটি রাষ্ট্র হিসেবে আত্মপ্রকাশ করে।" },
+            { q: "১৩. প্রাচীন গ্রিসে ব্যবসাবাণিজ্যের সূত্রে যেসব বিদেশি স্থায়ী বা অস্থায়ীভাবে বসবাস করত, তাদের কী বলা হতো?", opts: ["প্রজা", "মেটিক (Metic)", "দাস", "প্লিবিয়ান"], ans: 1, exp: "মেটিকদের সামাজিক অধিকার থাকলেও কোনো রাজনৈতিক অধিকার ছিল না এবং তারা গ্রিসের নগররাষ্ট্রের নাগরিক বলে গণ্য হতো না।" },
+            { q: "১৪. আধুনিক রাষ্ট্রের জনসংখ্যা বেশি হওয়াকে কি প্রতিবন্ধক মনে করা হয়?", opts: ["হ্যাঁ, সবসময়", "না, কারণ জনশক্তির ওপর সামরিক ও অর্থনৈতিক উন্নতি নির্ভর করে", "হ্যাঁ, কারণ খাদ্যাভাব দেখা দেয়", "না, কারণ রাষ্ট্র ছোটো হয়"], ans: 1, exp: "বর্তমানে চীন বা ভারতের মতো জনবহুল দেশগুলো তাদের বিশাল মানবসম্পদকে কাজে লাগিয়ে দ্রুত অর্থনৈতিক ও সামরিক উন্নতি করছে।" },
+            { q: "১৫. রুশো (Rousseau) কীরূপ আয়তনবিশিষ্ট রাষ্ট্রের সমর্থক ছিলেন?", opts: ["ক্ষুদ্রায়তন", "বৃহদায়তন", "মাঝারি আয়তন", "বিশ্বরাষ্ট্র"], ans: 0, exp: "ফরাসি দার্শনিক রুশো প্রত্যক্ষ গণতন্ত্রের সমর্থক ছিলেন, যা কেবল ক্ষুদ্র আয়তন এবং কম জনসংখ্যার রাষ্ট্রে কার্যকর করা সম্ভব।" }
+        ]
+    },
+    3: {
+        name: 'Set 3', icon: '🛡️', topic: 'রাষ্ট্রের উপাদান (সরকার, সার্বভৌমিকতা এবং অন্যান্য বৈশিষ্ট্য)',
+        questions: [
+            { q: "১. রাষ্ট্রের বিমূর্ত ধারণা কার মাধ্যমে বাস্তব রূপ লাভ করে?", opts: ["নাগরিকের মাধ্যমে", "ভূখণ্ডের মাধ্যমে", "সরকারের মাধ্যমে", "বিচার বিভাগের মাধ্যমে"], ans: 2, exp: "রাষ্ট্র চোখে দেখা যায় না, এটি একটি কাল্পনিক বা বিমূর্ত ধারণা। সরকার হলো সেই যন্ত্র বা প্রতিষ্ঠান, যার মধ্য দিয়ে রাষ্ট্র তার কাজ ও ইচ্ছাকে বাস্তবে প্রকাশ করে।" },
+            { q: "২. সরকারকে রাষ্ট্রের কী বলে বর্ণনা করা হয়?", opts: ["প্রাণ", "মস্তিষ্ক", "হৃৎপিণ্ড", "হাত-পা"], ans: 1, exp: "মানবদেহে মস্তিষ্ক যেমন সব কাজ পরিচালনা করে, তেমনি রাষ্ট্ররূপী দেহের যাবতীয় সিদ্ধান্ত গ্রহণ ও কাজ পরিচালনার দায়িত্ব সরকারের, তাই একে মস্তিষ্ক বলা হয়।" },
+            { q: "৩. যদি সরকারকে রাষ্ট্রের মস্তিষ্ক বলা হয়, তবে সার্বভৌমিকতাকে রাষ্ট্রের কী বলে চিহ্নিত করা যুক্তিযুক্ত?", opts: ["চোখ", "বাহু", "প্রাণ", "পা"], ans: 2, exp: "প্রাণ ছাড়া যেমন দেহ বাঁচে না, তেমনি সার্বভৌমিকতা বা নিজস্ব চূড়ান্ত ক্ষমতা ছাড়া কোনো সংগঠন রাষ্ট্র হিসেবে টিকে থাকতে পারে না।" },
+            { q: "৪. সার্বভৌমিকতা মূলত কয় প্রকারের হয়?", opts: ["২ প্রকার (অভ্যন্তরীণ ও বাহ্যিক)", "৩ প্রকার (সামাজিক, অর্থনৈতিক, রাজনৈতিক)", "৪ প্রকার", "নির্দিষ্ট কোনো প্রকার নেই"], ans: 0, exp: "অভ্যন্তরীণ সার্বভৌমিকতা মানে রাষ্ট্রের ভেতরে তার আইনই চূড়ান্ত। আর বাহ্যিক সার্বভৌমিকতা মানে রাষ্ট্র অন্য কোনো বিদেশি শক্তির নির্দেশ মেনে চলতে বাধ্য নয়।" },
+            { q: "৫. 'সার্বভৌমিকতার ধারণাকে আধুনিক রাষ্ট্রের ভিত্তি' বলে কে বর্ণনা করেছেন?", opts: ["গার্নার", "গেটেল", "ল্যাস্কি", "উইলসন"], ans: 1, exp: "অধ্যাপক গেটেল মনে করতেন যে, প্রাচীনকালে এমন চূড়ান্ত ক্ষমতার ধারণা ছিল না। আধুনিক রাষ্ট্রব্যবস্থা এই চরম সার্বভৌম ক্ষমতার ওপর ভিত্তি করেই দাঁড়িয়ে আছে।" },
+            { q: "৬. ১৯৪৭ সালের ১৫ই আগস্টের পূর্বে ভারতের জনসমষ্টি, নির্দিষ্ট ভূখণ্ড ও সরকার থাকা সত্ত্বেও তাকে রাষ্ট্র বলা যেত না কেন?", opts: ["কারণ ভারতের কোনো রাজা ছিল না", "কারণ ভারতের সার্বভৌমিকতা ছিল না", "কারণ ভারতের কোনো সংবিধান ছিল না", "কারণ ভারত বিভক্ত ছিল"], ans: 1, exp: "ওই সময় ভারতের সরকার স্বাধীন ছিল না, ব্রিটিশ সরকারের নির্দেশে দেশ চলত। অর্থাৎ বাহ্যিক ও অভ্যন্তরীণ সার্বভৌমিকতার অভাবে ভারত তখন রাষ্ট্র নয়, একটি 'উপনিবেশ' ছিল।" },
+            { q: "৭. বর্তমান যুগে কোন্ প্রক্রিয়ার ফলে রাষ্ট্রের চরম সার্বভৌমিকতার ধারণাটি বিরাট চ্যালেঞ্জের মুখে এসে দাঁড়িয়েছে?", opts: ["নগরায়ণ", "বিশ্বায়ন (Globalization)", "শিল্পায়ন", "পরিবেশ আন্দোলন"], ans: 1, exp: "বিশ্বায়নের ফলে আজ অর্থনীতি, প্রযুক্তি ও বাজার একে অপরের ওপর নির্ভরশীল। তাই চাইলেও কোনো রাষ্ট্র একাকী নিজের মতো করে পুরোপুরি স্বাধীন সিদ্ধান্ত নিতে পারে না।" },
+            { q: "৮. 'বর্তমানে প্রকৃত স্বাধীন জাতিসমূহ-সংক্রান্ত ধারণা ক্ষয়প্রাপ্ত হয়েছে।'— এই উক্তিটি কার?", opts: ["চার্লস ডারউইন", "জেমস কালাঘান (James Callaghan)", "উইনস্টন চার্চিল", "ডেভিড ইস্টন"], ans: 1, exp: "প্রাক্তন ব্রিটিশ প্রধানমন্ত্রী জেমস কালাঘান এই বাস্তব পরিস্থিতি তুলে ধরে বলেছিলেন যে বর্তমানে আন্তর্জাতিক চুক্তি বা জাতিপুঞ্জের নির্দেশের ফলে কোনো রাষ্ট্রই একশো শতাংশ স্বাধীন নয়।" },
+            { q: "৯. স্থায়িত্বকে রাষ্ট্রের একটি বৈশিষ্ট্য বলে ধরা হলেও, কোন্ মতাদর্শীরা রাষ্ট্রকে শাশ্বত বা চিরন্তন বলে মনে করেন না?", opts: ["আদর্শবাদীরা", "আচরণবাদীরা", "মার্কসবাদীরা", "উদারনীতিবাদীরা"], ans: 2, exp: "মার্কসবাদীদের মতে, রাষ্ট্র কেবল শ্রেণিশোষণের জন্যই তৈরি হয়েছিল। সমাজে যখন কোনো শ্রেণি থাকবে না (সাম্যবাদী সমাজ), তখন রাষ্ট্রেরও কোনো প্রয়োজন থাকবে না এবং তা বিলুপ্ত হবে।" },
+            { q: "১০. অন্যান্য রাষ্ট্রের স্বীকৃতি কি রাষ্ট্র গঠনের জন্য অপরিহার্য বৈশিষ্ট্য?", opts: ["হ্যাঁ, এটি ছাড়া রাষ্ট্র হয় না", "না, এটি অপরিহার্য বৈশিষ্ট্য নয়", "কেবল জাতিপুঞ্জের স্বীকৃতি দরকার", "কেবল প্রতিবেশী রাষ্ট্রের স্বীকৃতি দরকার"], ans: 1, exp: "গার্নারের মতো পণ্ডিতরা একে অপরিহার্য বলেন না। কারণ উত্তর কোরিয়া বা ভিয়েতনামের মতো অনেক দেশ স্বীকৃতি ছাড়াই রাষ্ট্র হিসেবে স্বাধীনভাবে টিকে ছিল।" },
+            { q: "১১. পশ্চিমবঙ্গ কি একটি রাষ্ট্র?", opts: ["হ্যাঁ, কারণ এর জনসংখ্যা ও ভূখণ্ড আছে", "না, এটি স্বাধীন ও সার্বভৌম ভারতের একটি অঙ্গরাজ্য মাত্র", "হ্যাঁ, কারণ এর নিজস্ব সরকার আছে", "না, কারণ এর নির্দিষ্ট কোনো ভাষা নেই"], ans: 1, exp: "পশ্চিমবঙ্গের জনসমষ্টি, নির্দিষ্ট ভূখণ্ড এবং সরকার থাকলেও এর কোনো 'সার্বভৌমিকতা' নেই। এটি ভারতের কেন্দ্রীয় সরকার ও সংবিধানের অধীন। তাই এটি রাষ্ট্র নয়।" },
+            { q: "১২. সম্মিলিত জাতিপুঞ্জ (United Nations) কি একটি রাষ্ট্র?", opts: ["হ্যাঁ, এটি একটি বিশ্বরাষ্ট্র", "না, কারণ এর কোনো নির্দিষ্ট ভূখণ্ড, নিজস্ব নাগরিক এবং সার্বভৌম ক্ষমতা নেই", "হ্যাঁ, কারণ এর সরকার আছে", "না, কারণ এটি আমেরিকায় অবস্থিত"], ans: 1, exp: "জাতিপুঞ্জ হলো স্বাধীন রাষ্ট্রদের নিয়ে তৈরি একটি আন্তর্জাতিক সংস্থা মাত্র। এটি কোনো আইন তার সদস্যদের ওপর জোর করে চাপিয়ে দিতে পারে না।" },
+            { q: "১৩. বর্তমান বিশ্বের সরকারগুলিকে রাজনৈতিক মতাদর্শের ভিত্তিতে মূলত কোন্ দুটি শ্রেণিতে ভাগ করা যায়?", opts: ["সংসদীয় এবং রাষ্ট্রপতিশাসিত", "বুর্জোয়া গণতান্ত্রিক এবং সমাজতান্ত্রিক", "এককেন্দ্রিক এবং যুক্তরাষ্ট্রীয়", "রাজতান্ত্রিক এবং গণতান্ত্রিক"], ans: 1, exp: "ভারত, ব্রিটেন, আমেরিকার মতো দেশে বুর্জোয়া গণতান্ত্রিক সরকার রয়েছে। অন্যদিকে কিউবা বা ভিয়েতনামের মতো দেশে সমাজতান্ত্রিক সরকার দেখা যায়।" },
+            { q: "১৪. ঊনবিংশ শতাব্দীতে 'ব্যক্তিস্বাতন্ত্র্যবাদ' অনুযায়ী রাষ্ট্রের কর্মক্ষেত্রের পরিধি কেমন ছিল?", opts: ["অত্যন্ত বিস্তৃত", "খুব সংকীর্ণ (কেবল শান্তিশৃঙ্খলা রক্ষা ও দেশরক্ষা)", "কেবল ব্যবসাবাণিজ্য নিয়ন্ত্রণ করা", "কেবল শিক্ষা প্রদান করা"], ans: 1, exp: "তখন মনে করা হতো রাষ্ট্র মানুষের জীবনে যত কম হস্তক্ষেপ করবে ততই ভালো। কিন্তু বর্তমানে জনকল্যাণকর রাষ্ট্রের ধারণায় সরকারের কাজ অনেক বেড়ে গেছে।" },
+            { q: "১৫. 'রাষ্ট্র সার্বভৌম'— এই কথার অর্থ কী?", opts: ["রাষ্ট্র সব নাগরিককে সমান সুযোগ দেয়", "রাষ্ট্রের আয়তন বিশাল", "সমাজের মধ্যে রাষ্ট্রের চূড়ান্ত বা চরম কর্তৃত্ব রয়েছে", "রাষ্ট্র কেবল গণতান্ত্রিক হবে"], ans: 2, exp: "সার্বভৌমিকতা মানে এমন চরম ক্ষমতা, যার ওপরে দেশে আর কোনো আইন বা ব্যক্তির স্থান নেই। সবাই রাষ্ট্রের আইন মানতে বাধ্য।" }
+        ]
+    },
+    4: {
+        name: 'Set 4', icon: '⚖️', topic: 'রাষ্ট্র এবং অন্যান্য সংঘের পার্থক্য',
+        questions: [
+            { q: "১. কোন্ বিশেষ উদ্দেশ্য সাধনের জন্য সমাজবদ্ধ মানুষের স্বেচ্ছাকৃত সংগঠনকে কী বলা হয়?", opts: ["রাষ্ট্র", "সংঘ (Association)", "সরকার", "আইনসভা"], ans: 1, exp: "মানুষের জীবন বহুমুখী। কেবল রাষ্ট্র সব দিক পূরণ করতে পারে না। তাই খেলাধুলা, ধর্ম বা পেশার জন্য মানুষ রেডক্রশ, রামকৃষ্ণ মিশন বা ট্রেড ইউনিয়নের মতো 'সংঘ' তৈরি করে।" },
+            { q: "২. রাষ্ট্র এবং অন্যান্য সংঘের মধ্যে প্রধান পার্থক্য কীসের ক্ষেত্রে দেখা যায়?", opts: ["নির্দিষ্ট ভূখণ্ডের প্রয়োজনীয়তায়", "সার্বভৌমিকতা বা চূড়ান্ত ক্ষমতায়", "সদস্য সংখ্যার ক্ষেত্রে", "উপরের সবকটি"], ans: 3, exp: "সংঘের নির্দিষ্ট ভূখণ্ড লাগে না, সদস্যসংখ্যা কম হয় এবং সবচেয়ে বড়ো কথা, সংঘের কোনো সার্বভৌম ক্ষমতা থাকে না যা রাষ্ট্রের থাকে।" },
+            { q: "৩. রাষ্ট্রের সদস্যপদ কেমন প্রকৃতির হয়?", opts: ["স্বেচ্ছামূলক (ইচ্ছাধীন)", "বাধ্যতামূলক বা আবশ্যিক", "অস্থায়ী", "চুক্তিভিত্তিক"], ans: 1, exp: "একটি রাষ্ট্রের ভৌগোলিক সীমানায় স্থায়ীভাবে বাস করলে সেই ব্যক্তিকে ওই রাষ্ট্রের আইন মানতেই হবে এবং সদস্য হতে হবে। কিন্তু ক্লাবের সদস্য হওয়া সম্পূর্ণ ঐচ্ছিক।" },
+            { q: "৪. একজন ব্যক্তি একইসঙ্গে কয়টি রাষ্ট্রের নাগরিক হতে পারেন?", opts: ["কেবল একটি", "দুটি", "একাধিক", "অসংখ্য"], ans: 0, exp: "এক-নাগরিকত্বের নিয়মে সাধারণত একজন ব্যক্তি একটি দেশেরই নাগরিক হতে পারেন। কিন্তু তিনি একইসঙ্গে একাধিক সংঘের (যেমন- দুটি আলাদা ক্লাব বা ইউনিয়ন) সদস্য হতে পারেন।" },
+            { q: "৫. রাষ্ট্রের কর্মক্ষেত্রের পরিধি কেমন হয়?", opts: ["সারা বিশ্বে ছড়ানো", "একটি নির্দিষ্ট ভৌগোলিক সীমারেখার মধ্যে আবদ্ধ", "কেবল শহরে সীমাবদ্ধ", "কেবল গ্রামে সীমাবদ্ধ"], ans: 1, exp: "ভারত রাষ্ট্রের আইন কেবল ভারতের সীমানার ভেতরেই কাজ করবে। কিন্তু রেডক্রশ সোসাইটির মতো সামাজিক সংঘের কাজ বিশ্বের অনেক দেশেই ছড়িয়ে থাকতে পারে।" },
+            { q: "৬. রাষ্ট্রের আইন অমান্য করলে সর্বোচ্চ কী হতে পারে?", opts: ["কেবল জরিমানা", "রাষ্ট্র থেকে বহিষ্কার", "ক কঠোর শাস্তি বা মৃত্যুদণ্ড", "কিছুই হয় না"], ans: 2, exp: "রাষ্ট্রের সার্বভৌম ক্ষমতা থাকায় তার বিচার বিভাগ মারাত্মক অপরাধের জন্য মৃত্যুদণ্ড দিতে পারে। কিন্তু সংঘ কেবল তার সদস্যকে বহিষ্কার করতে পারে।" },
+            { q: "৭. রাষ্ট্র এবং সংঘের উদ্ভবগত পার্থক্য কোথায়?", opts: ["রাষ্ট্র ঈশ্বরের সৃষ্টি, সংঘ মানুষের সৃষ্টি", "রাষ্ট্র ঐতিহাসিক বিবর্তনের ফল, সংঘ স্বেচ্ছাকৃত পরিকল্পনার ফল", "রাষ্ট্র ব্যবসার জন্য, সংঘ রাজনীতির জন্য", "উভয়ের কোনো পার্থক্য নেই"], ans: 1, exp: "রাষ্ট্র কোনো নির্দিষ্ট দিনে চুক্তি করে তৈরি হয়নি, সমাজ বিবর্তনের ফলে এটি এসেছে। অন্যদিকে একটি সংঘ মানুষ নির্দিষ্ট দিনে পরিকল্পনা করে তৈরি করে।" },
+            { q: "৮. 'অনাদি অনন্তকাল থেকে রাষ্ট্রের অস্তিত্ব নেই। এমন সব সমাজ ছিল যেগুলি রাষ্ট্র ছাড়াই পরিচালিত হত...'— এই উক্তিটি কার?", opts: ["ফ্রেডরিক এঙ্গেলস", "গার্নার", "ম্যাকাইভার", "ডেভিড ইস্টন"], ans: 0, exp: "মার্কসবাদী তাত্ত্বিক এঙ্গেলস বোঝাতে চেয়েছিলেন যে রাষ্ট্র কোনো চিরস্থায়ী জিনিস নয়। শোষণের প্রয়োজনে এর জন্ম এবং সাম্যবাদী সমাজে এর মৃত্যু ঘটবে।" },
+            { q: "৯. 'পেনসিল কাটার পক্ষে কুঠার যেমন অনুপযোগী, ব্যক্তির অন্তর্জীবনের সূক্ষ্ম অনুভূতিগুলির উন্নয়নে রাষ্ট্রও তেমনই অনুপযোগী।'— এটি কে বলেছেন?", opts: ["ল্যাস্কি", "কার্ল মার্কস", "আর. এম. ম্যাকাইভার (R. M. MacIver)", "জাঁ বোদাঁ"], ans: 2, exp: "ম্যাকাইভার বোঝাতে চেয়েছেন যে রাষ্ট্র কেবল বাইরের আচরণ নিয়ন্ত্রণ করতে পারে। কিন্তু মানুষের ধর্ম, সংস্কৃতি বা শিল্পের মতো ভেতরের সূক্ষ্ম অনুভূতির জন্য সংঘগুলোর ভূমিকা রাষ্ট্রের চেয়ে বেশি।" },
+            { q: "১০. একটি রাষ্ট্রের উদ্দেশ্য এবং একটি সংঘের উদ্দেশ্যের মধ্যে মূল তফাত কী?", opts: ["রাষ্ট্রের উদ্দেশ্য বহুমুখী এবং সর্বজনীন, সংঘের উদ্দেশ্য একটি বা কয়েকটি নির্দিষ্ট বিষয়ে সীমাবদ্ধ", "রাষ্ট্রের উদ্দেশ্য একটি, সংঘের বহুমুখী", "রাষ্ট্র কেবল ব্যবসা করে, সংঘ ধর্ম নিয়ে থাকে", "রাষ্ট্রের কোনো উদ্দেশ্য নেই, সংঘের আছে"], ans: 0, exp: "রাষ্ট্রকে দেশের শিক্ষা, স্বাস্থ্য, নিরাপত্তা, অর্থনীতি সব দেখতে হয়। কিন্তু একটি ব্যবসায়ী সংগঠন কেবল ব্যবসায়ীদের লাভ-লোকসান নিয়েই ভাবে।" },
+            { q: "১১. রাষ্ট্র এবং সংঘ একে অপরের বিরোধী নাকি পরিপূরক?", opts: ["সম্পূর্ণ বিরোধী", "একে অপরের পরিপূরক", "উভয়ের কোনো সম্পর্ক নেই", "রাষ্ট্র সংঘকে ধ্বংস করতে চায়"], ans: 1, exp: "মানুষের রাজনৈতিক চেতনা রাষ্ট্রের মাধ্যমে বাড়ে, আর নৈতিক ও সাংস্কৃতিক উন্নতি সংঘের মাধ্যমে হয়। তাই মানুষের পূর্ণ বিকাশে এরা দুজনেই একে অপরকে সাহায্য করে।" },
+            { q: "১২. রাষ্ট্র কি সংঘ তৈরি করতে পারে?", opts: ["হ্যাঁ, সমাজকল্যাণের প্রয়োজনে রাষ্ট্র নতুন সংঘ তৈরি ও নিয়ন্ত্রণ করতে পারে", "না, রাষ্ট্র তা পারে না", "কেবল যুদ্ধ সংঘ তৈরি করতে পারে", "কেবল ধর্মের জন্য তৈরি করতে পারে"], ans: 0, exp: "রাষ্ট্র নিজের কাজের সুবিধার্থে বিভিন্ন একাডেমি, মিশন বা কমিশন তৈরি করতে পারে। কিন্তু কোনো সংঘ নিজে থেকে একটি নতুন রাষ্ট্র তৈরি করতে পারে না।" },
+            { q: "১৩. মার্কসবাদীদের মতে সাম্যবাদী সমাজে রাষ্ট্রের কী পরিণতি হবে?", opts: ["রাষ্ট্র আরও শক্তিশালী হবে", "রাষ্ট্র বিশ্বসরকারে পরিণত হবে", "রাষ্ট্র বিলুপ্ত হবে বা ঝরে পড়বে (wither away)", "রাষ্ট্র পুঁজিপতিদের হাতে যাবে"], ans: 2, exp: "যখন সমাজ থেকে শ্রেণিশোষণ এবং বৈষম্য দূর হয়ে যাবে, তখন শোষণের যন্ত্র হিসেবে রাষ্ট্রের কোনো প্রয়োজন থাকবে না।" },
+            { q: "১৪. রাষ্ট্র পরিচালনায় যেমন 'সরকার' থাকে, একটি সংঘ পরিচালনার জন্য কী থাকে?", opts: ["পুলিশ", "পরিচালকমণ্ডলী (Managing Committee/Board)", "সেনাপতি", "বিচারক"], ans: 1, exp: "এটি রাষ্ট্র এবং সংঘের মধ্যে একটি গঠনগত সাদৃশ্য। সংঘের কাজ সুষ্ঠুভাবে পরিচালনার জন্য সদস্যরা ভোটের মাধ্যমে একটি পরিচালকমণ্ডলী তৈরি করে।" },
+            { q: "১৫. সংঘের কার্যাবলি কি কেবল একটি রাষ্ট্রের ভৌগোলিক সীমানায় আবদ্ধ থাকে?", opts: ["হ্যাঁ, সবসময়", "না, রেডক্রশ সোসাইটির মতো সামাজিক সংঘের কাজ বিশ্বের বিভিন্ন রাষ্ট্রে ছড়ানো থাকতে পারে", "হ্যাঁ, আইন অনুযায়ী তা বাধ্য", "সংঘ কেবল একটি শহরে কাজ করে"], ans: 1, exp: "সামাজিক, মানবিক বা পরিবেশ রক্ষার সাথে যুক্ত আন্তর্জাতিক সংঘগুলির শাখা পৃথিবীর প্রায় সব দেশেই থাকতে পারে।" }
+        ]
+    }
+};
+
+// ============================================================
+// মূল লজিক (লগইন, টাইমার, কুইজ পরিচালনা এবং রেজাল্ট)
+// ============================================================
+function initHub() {
+    const grid = document.getElementById('setGrid');
+    grid.innerHTML = '';
+
+    Object.keys(allSets).forEach(setId => {
+        const set = allSets[setId];
+        const card = document.createElement('div');
+        card.className = 'set-card';
+
+        let attemptCount = 0;
+        if (currentUser) {
+            let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+            attemptCount = (data[currentUser] && data[currentUser][setId]) || 0;
+        }
+
+        card.innerHTML = `
+            <div class="icon">${set.icon}</div>
+            <div class="set-num">${set.name}</div>
+            <div class="set-title">${set.topic}</div>
+            <div class="set-meta"><span>${set.questions.length} প্রশ্ন</span><span>১০ মিনিট</span></div>
+            ${currentUser ? `<div class="attempt-badge">${attemptCount}/${MAX_ATTEMPTS} Attempts</div>` : ''}
+        `;
+
+        card.onclick = () => {
+            if (currentUser) {
+                if (attemptCount >= MAX_ATTEMPTS) {
+                    alert(`⚠️ আপনি ${set.name} এর সর্বোচ্চ ${MAX_ATTEMPTS} বার Test দিয়েছেন।`);
+                    return;
+                }
+                startQuiz(setId);
+            } else {
+                openLogin(setId);
+            }
+        };
+        grid.appendChild(card);
+    });
+}
+
+function openLogin(setId) {
+    pendingSetId = setId;
+    document.getElementById('loginSetName').innerText = `📚 ${allSets[setId].name}`;
+    document.getElementById('loginOverlay').classList.add('active');
+    document.getElementById('loginUsername').value = '';
+    document.getElementById('loginPassword').value = '';
+    document.getElementById('loginError').style.display = 'none';
+}
+
+function closeLogin() {
+    document.getElementById('loginOverlay').classList.remove('active');
+}
+
+function doLogin() {
+    const u = document.getElementById('loginUsername').value.trim();
+    const p = document.getElementById('loginPassword').value.trim();
+    const err = document.getElementById('loginError');
+
+    // গ্লোবাল স্টোরেজ থেকে ইউজার ডেটাবেস কল করা হচ্ছে
+    const GLOBAL_USERS = JSON.parse(localStorage.getItem("testBazarGlobalUsers")) || {};
+
+    if (!u || !p) {
+        err.innerText = "❌ ইউজারনেম এবং পাসওয়ার্ড দিন!";
+        err.style.display = 'block';
+        return;
+    }
+
+    if (GLOBAL_USERS[u] && GLOBAL_USERS[u] === p) {
+        currentUser = u;
+        document.getElementById('hubUserInfo').innerText = `👤 ${u} — Test দিতে সেট সিলেক্ট করো।`;
+        closeLogin();
+        initHub();
+
+        if (pendingSetId) {
+            let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+            let attemptCount = (data[u] && data[u][pendingSetId]) || 0;
+            if (attemptCount < MAX_ATTEMPTS) {
+                startQuiz(pendingSetId);
+            } else {
+                alert(`⚠️ আপনি ${allSets[pendingSetId].name} এর সর্বোচ্চ ${MAX_ATTEMPTS} বার Test দিয়েছেন।`);
+            }
+            pendingSetId = null;
+        }
+    } else {
+        err.innerText = "❌ ভুল ইউজারনেম বা পাসওয়ার্ড।";
+        err.style.display = 'block';
+    }
+}
+
+function startQuiz(setId) {
+    currentSetId = setId;
+    TOTAL_QS = allSets[setId].questions.length;
+
+    let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+    if (!data[currentUser]) data[currentUser] = {};
+    data[currentUser][setId] = (data[currentUser][setId] || 0) + 1;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    initHub();
+
+    cur = 0; score = 0; wrong = 0; answered = false; userAnswers = [];
+    timeLeft = TIME_LIMIT;
+    isReviewMode = false;
+
+    document.getElementById('hubPage').classList.add('hidden');
+    document.getElementById('resultWrap').classList.remove('show');
+    document.getElementById('testArea').classList.remove('hidden');
+    document.getElementById('timerBox').classList.remove('hidden');
+    document.getElementById('timerBox').classList.remove('danger');
+
+    const set = allSets[setId];
+    document.getElementById('testSetLabel').innerText = set.name;
+    document.getElementById('testTopic').innerText = set.topic;
+
+    startTimer();
+    loadQuestion();
+}
+
+function startTimer() {
+    clearInterval(timerInterval);
+    updateTimerDisplay();
+    timerInterval = setInterval(() => {
+        timeLeft--;
+        updateTimerDisplay();
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            showResult();
+        }
+    }, 1000);
+}
+
+function updateTimerDisplay() {
+    const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+    const s = (timeLeft % 60).toString().padStart(2, '0');
+    document.getElementById('timerDisplay').innerText = `${m}:${s}`;
+    if (timeLeft < 60) document.getElementById('timerBox').classList.add('danger');
+}
+
+function loadQuestion() {
+    answered = false;
+    const set = allSets[currentSetId];
+    const q = set.questions[cur];
+
+    document.getElementById('qNum').innerText = isReviewMode ? `Review: প্রশ্ন ${cur + 1} / ${TOTAL_QS}` : `প্রশ্ন ${cur + 1} / ${TOTAL_QS}`;
+    document.getElementById('qText').innerText = q.q;
+    document.getElementById('progressFill').style.width = `${((cur + 1) / TOTAL_QS) * 100}%`;
+
+    const optsContainer = document.getElementById('qOpts');
+    optsContainer.innerHTML = '';
+
+    q.opts.forEach((optText, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'opt';
+        btn.innerHTML = `<div class="opt-circle">${LABELS[idx]}</div> <div class="opt-text">${optText}</div>`;
+
+        if (isReviewMode) {
+            btn.classList.add('disabled');
+            if (idx === q.ans) btn.classList.add('correct');
+            else if (userAnswers[cur] === idx) btn.classList.add('wrong');
+        } else {
+            btn.onclick = () => selectAnswer(idx, btn);
+        }
+        optsContainer.appendChild(btn);
+    });
+
+    const nextBtn = document.getElementById('nextBtn');
+    document.getElementById('explanation').classList.remove('show');
+    document.getElementById('scoreShow').innerText = isReviewMode ? "সবুজ = সঠিক উত্তর | লাল = আপনার ভুল উত্তর" : `সঠিক: ${score} | ভুল: ${wrong}`;
+
+    if (isReviewMode) {
+        document.getElementById('explanationText').innerHTML = '<strong>ব্যাখ্যা:</strong> ' + q.exp;
+        document.getElementById('explanation').classList.add('show');
+        nextBtn.disabled = false;
+        nextBtn.innerText = cur === set.questions.length - 1 ? 'ফলাফল পেজে ফিরুন' : 'পরবর্তী →';
+    } else {
+        nextBtn.disabled = true;
+        nextBtn.innerText = cur === set.questions.length - 1 ? 'ফলাফল দেখো 🏆' : 'পরবর্তী →';
+    }
+}
+
+function selectAnswer(selectedIdx, btnElement) {
+    if (answered) return;
+    answered = true;
+    const set = allSets[currentSetId];
+    const q = set.questions[cur];
+    userAnswers[cur] = selectedIdx;
+
+    const allBtns = document.getElementById('qOpts').children;
+    for (let i = 0; i < allBtns.length; i++) {
+        allBtns[i].classList.add('disabled');
+        if (i === q.ans) allBtns[i].classList.add('correct');
+    }
+
+    if (selectedIdx === q.ans) {
+        score++;
+    } else {
+        btnElement.classList.add('wrong');
+        wrong++;
+    }
+
+    document.getElementById('scoreShow').innerText = `সঠিক: ${score} | ভুল: ${wrong}`;
+    document.getElementById('explanationText').innerHTML = '<strong>ব্যাখ্যা:</strong> ' + q.exp;
+    document.getElementById('explanation').classList.add('show');
+    document.getElementById('nextBtn').disabled = false;
+}
+
+function nextQ() {
+    const set = allSets[currentSetId];
+    if (cur < set.questions.length - 1) {
+        cur++;
+        loadQuestion();
+    } else {
+        if (isReviewMode) {
+            document.getElementById('testArea').classList.add('hidden');
+            document.getElementById('resultWrap').classList.add('show');
+        } else {
+            clearInterval(timerInterval);
+            showResult();
+        }
+    }
+}
+
+function showResult() {
+    document.getElementById('testArea').classList.add('hidden');
+    document.getElementById('timerBox').classList.add('hidden');
+    document.getElementById('resultWrap').classList.add('show');
+
+    const total = allSets[currentSetId].questions.length;
+    const pct = Math.round((score / total) * 100);
+
+    document.getElementById('finalScore').innerText = `${pct}%`;
+    document.getElementById('rbCorrect').innerText = score;
+    document.getElementById('rbWrong').innerText = total - score;
+
+    let msg = "অসাধারণ!"; let icon = "🏆";
+    if (pct < 50) { msg = "আরও অনুশীলন প্রয়োজন!"; icon = "📚"; }
+    else if (pct < 80) { msg = "খুব ভালো চেষ্টা!"; icon = "👍"; }
+
+    document.getElementById('resultGrade').innerText = msg;
+    document.getElementById('resultIcon').innerText = icon;
+
+    let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+    let count = data[currentUser][currentSetId] || 0;
+    let remaining = MAX_ATTEMPTS - count;
+    document.getElementById('attemptInfo').innerText = `👤 ${currentUser} — ${allSets[currentSetId].name}: বাকি আছে ${remaining} বার Test দেওয়ার সুযোগ`;
+}
+
+function showReview() {
+    document.getElementById('resultWrap').classList.remove('show');
+    document.getElementById('testArea').classList.remove('hidden');
+    isReviewMode = true;
+    cur = 0;
+    loadQuestion();
+}
+
+function restartQuiz() {
+    let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+    let count = data[currentUser][currentSetId] || 0;
+    if (count >= MAX_ATTEMPTS) {
+        alert(`⚠️ আপনি এই সেটের সর্বোচ্চ ${MAX_ATTEMPTS} বার Test দিয়েছেন। আর দেওয়া সম্ভব নয়।`);
+        return;
+    }
+    document.getElementById('resultWrap').classList.remove('show');
+    startQuiz(currentSetId);
+}
+
+function goToHub() {
+    window.location.href = "index.html";
+}
+
+window.onload = initHub;
+</script>
+
+</body>
+</html>
+
+
