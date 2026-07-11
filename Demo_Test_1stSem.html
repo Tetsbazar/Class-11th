@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test Bazar — 1st Sem Demo Test</title>
+<link href="https://fonts.googleapis.com/css2?family=Tiro+Bangla&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ================== CSS STYLES ================== */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Syne', sans-serif; background: #f0faf4; min-height: 100vh; color: #1c2e24; }
+.en-font { font-family: 'Syne', sans-serif; }
+
+.top-bar { background: #1a7a4a; padding: 0.8rem 1.5rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+.top-logo { font-size: 1.2rem; font-weight: 800; color: white; cursor: pointer; }
+.top-logo span { color: #f9a825; }
+.timer-box { background: rgba(255,255,255,0.2); padding: 0.3rem 0.8rem; border-radius: 6px; color: white; font-weight: 700; font-size: 0.95rem; }
+.timer-box.danger { background: #dc3545; animation: pulse 1s infinite; }
+@keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+.main { max-width: 800px; margin: 0 auto; padding: 1.5rem; }
+
+/* HUB PAGE */
+.hub-header { text-align: center; margin-bottom: 2rem; }
+.hub-header h1 { font-family: 'Tiro Bangla', serif; color: #1a7a4a; font-size: 1.6rem; margin-bottom: 0.5rem; line-height: 1.4; }
+.hub-header p { color: #5a7a66; font-size: 0.95rem; font-family: 'Tiro Bangla', serif; font-weight: bold; }
+
+.set-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
+.set-card { background: white; border: 2px solid #c5dccb; border-radius: 12px; padding: 1.5rem; text-align: center; cursor: pointer; transition: all 0.2s; }
+.set-card:hover { transform: translateY(-3px); border-color: #1a7a4a; box-shadow: 0 6px 20px rgba(26,122,74,0.12); }
+.set-card .icon { font-size: 2.2rem; margin-bottom: 0.3rem; }
+.set-card .set-num { font-weight: 700; font-size: 1.1rem; color: #1a7a4a; }
+.set-card .set-title { font-family: 'Tiro Bangla', serif; font-size: 0.85rem; color: #5a7a66; margin: 0.2rem 0 0.5rem; }
+.set-card .set-meta { display: flex; gap: 1rem; font-size: 0.75rem; color: #5a7a66; justify-content: center; font-weight: bold;}
+.set-card .set-meta span { background: #f0faf4; padding: 0.2rem 0.6rem; border-radius: 4px; }
+.attempt-badge { font-size: 0.8rem; color: #dc3545; font-weight: 700; margin-top: 0.6rem; font-family: 'Tiro Bangla', serif; }
+
+/* QUIZ AREA */
+.quiz-info { background: white; border-radius: 12px; padding: 1rem 1.2rem; margin-bottom: 1.2rem; border: 1px solid #c5dccb; display: flex; gap: 1rem; flex-wrap: wrap; }
+.info-item { font-family: 'Tiro Bangla', serif; font-size: 0.9rem; color: #5a7a66; font-weight: 600; }
+.info-item strong { color: #1a7a4a; }
+
+.progress-wrap { background: #c5dccb; border-radius: 4px; height: 6px; margin-bottom: 1.2rem; overflow: hidden; }
+.progress-fill { height: 100%; background: #1a7a4a; border-radius: 4px; transition: width 0.3s; }
+
+.q-card { background: white; border-radius: 14px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+.q-num { font-size: 0.9rem; font-weight: 700; color: #1a7a4a; margin-bottom: 0.8rem; }
+.q-text { font-family: 'Tiro Bangla', serif; font-size: 1.1rem; color: #1c2e24; font-weight: 700; line-height: 1.6; margin-bottom: 1.2rem; }
+
+.opts { display: flex; flex-direction: column; gap: 0.6rem; }
+.opt { display: flex; align-items: flex-start; gap: 12px; padding: 0.8rem 1rem; border: 1.5px solid #c5dccb; border-radius: 10px; background: transparent; cursor: pointer; text-align: left; transition: all 0.2s; width: 100%; }
+.opt:hover:not(.disabled) { border-color: #1a7a4a; background: #f0faf4; }
+.opt-circle { min-width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid #c5dccb; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #5a7a66; flex-shrink: 0; }
+.opt-text { font-family: 'Tiro Bangla', serif; font-size: 0.95rem; color: #1c2e24; line-height: 1.6; font-weight: 600; padding-top: 2px; }
+
+.opt.correct { border-color: #1a7a4a; background: #e8f7ef; }
+.opt.correct .opt-circle { background: #1a7a4a; border-color: #1a7a4a; color: white; }
+.opt.wrong { border-color: #dc3545; background: #fdf0f0; }
+.opt.wrong .opt-circle { background: #dc3545; border-color: #dc3545; color: white; }
+.opt.disabled { cursor: default; }
+
+.explanation { background: #f0faf4; border-left: 4px solid #1a7a4a; border-radius: 0 8px 8px 0; padding: 1rem; margin-top: 1rem; display: none; }
+.explanation.show { display: block; }
+.explanation p { font-family: 'Tiro Bangla', serif; font-size: 0.9rem; color: #2c4035; line-height: 1.7; }
+
+.nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; }
+.score-show { font-family: 'Tiro Bangla', serif; font-size: 0.85rem; color: #5a7a66; font-weight: bold; }
+.next-btn { background: #1a7a4a; color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 8px; font-family: 'Tiro Bangla', serif; font-size: 0.95rem; font-weight: bold; cursor: pointer; transition: all 0.2s; }
+.next-btn:hover:not(:disabled) { background: #2aad68; }
+.next-btn:disabled { background: #c5dccb; cursor: not-allowed; }
+
+/* RESULT AREA */
+.result-wrap { background: white; border-radius: 14px; padding: 2rem; text-align: center; border: 1px solid #c5dccb; display: none; max-width: 600px; margin: 0 auto; box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+.result-wrap.show { display: block; }
+.result-icon { font-size: 3.5rem; margin-bottom: 0.5rem; line-height: 1; }
+.result-score { font-size: 3.5rem; font-weight: 800; color: #1a7a4a; line-height: 1; margin-bottom: 5px; }
+.result-total { font-size: 1rem; color: #5a7a66; margin-bottom: 0.5rem; font-family: 'Tiro Bangla', serif; font-weight: bold;}
+.result-grade { font-size: 1.2rem; font-weight: 700; color: #1c2e24; margin-bottom: 1.5rem; font-family: 'Tiro Bangla', serif; color: #e8730a; }
+
+.result-bars { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+.result-bar { background: #f0faf4; border-radius: 10px; padding: 1rem; text-align: center; border: 1px solid #c5dccb; }
+.rb-num { font-size: 1.8rem; font-weight: 800; }
+.rb-label { font-family: 'Tiro Bangla', serif; font-size: 0.85rem; color: #5a7a66; margin-top: 0.2rem; font-weight: bold;}
+.attempt-info { font-family: 'Tiro Bangla', serif; font-size: 0.9rem; color: #1a7a4a; font-weight: bold; margin-bottom: 1.5rem; background: #e8f7ef; padding: 10px; border-radius: 8px; }
+
+/* ACTION BUTTONS */
+.result-actions { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+.result-actions button { width: 100%; padding: 14px; border-radius: 8px; font-family: 'Tiro Bangla', serif; font-size: 1.05rem; font-weight: 800; cursor: pointer; border: none; transition: 0.2s; }
+.btn-retry { background: #17a2b8; color: white; }
+.btn-retry:hover { background: #138496; }
+.btn-review { background: #28a745; color: white; }
+.btn-review:hover { background: #218838; }
+.btn-home { background: transparent; color: #5a7a66; border: 2px solid #c5dccb !important; }
+.btn-home:hover { background: #f0faf4; }
+
+.hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+    <div class="top-logo" onclick="goToHub()">Test<span>Bazar</span></div>
+    <div class="timer-box hidden" id="timerBox">⏱ <span id="timerDisplay">10:00</span></div>
+</div>
+
+<div class="main">
+
+    <!-- ===== HUB PAGE ===== -->
+    <div id="hubPage">
+        <div class="hub-header">
+            <h1>ফ্রি ডেমো টেস্ট (১ম সেমিস্টার)</h1>
+            <p>এই ডেমো টেস্টটিতে কোনো পাসওয়ার্ড লাগবে না। ক্লিক করেই শুরু করুন!</p>
+        </div>
+        <div class="set-grid" id="setGrid"></div>
+    </div>
+
+    <!-- ===== TEST AREA ===== -->
+    <div id="testArea" class="hidden">
+        <div class="quiz-info">
+            <div class="info-item">🎓 <strong id="testSetName">ভূগোল</strong> — 1st Sem | <span id="testSetLabel">Demo Set</span></div>
+            <div class="info-item">📝 <span id="testTopic">Topic</span></div>
+        </div>
+        <div class="progress-wrap"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+
+        <div class="q-card" id="qCard">
+            <div class="q-num" id="qNum">প্রশ্ন ১ / ১৫</div>
+            <div class="q-text" id="qText"></div>
+            <div class="opts" id="qOpts"></div>
+            <div class="explanation" id="explanation"><p id="explanationText"></p></div>
+
+            <div class="nav-row">
+                <div class="score-show" id="scoreShow">সঠিক: ০ | ভুল: ০</div>
+                <button class="next-btn" id="nextBtn" onclick="nextQ()" disabled>পরবর্তী →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== RESULT AREA ===== -->
+    <div class="result-wrap" id="resultWrap">
+        <div class="result-icon" id="resultIcon">🏆</div>
+        <div class="result-score en-font" id="finalScore">100%</div>
+        <div class="result-total">স্কোর</div>
+        <div class="result-grade" id="resultGrade">অসাধারণ!</div>
+
+        <div class="result-bars">
+            <div class="result-bar">
+                <div class="rb-num en-font" id="rbCorrect" style="color:#1a7a4a">0</div>
+                <div class="rb-label">সঠিক</div>
+            </div>
+            <div class="result-bar">
+                <div class="rb-num en-font" id="rbWrong" style="color:#dc3545">0</div>
+                <div class="rb-label">ভুল/স্কিপ</div>
+            </div>
+        </div>
+
+        <div class="attempt-info" id="attemptInfo">ডেমো টেস্ট - আপনি যতবার খুশি প্র্যাকটিস করতে পারেন</div>
+
+        <!-- ACTION BUTTONS -->
+        <div class="result-actions">
+            <button class="btn-retry" onclick="restartQuiz()">🔄 আবার চেষ্টা করো</button>
+            <button class="btn-review" onclick="showReview()">👀 উত্তর দেখো</button>
+            <button class="btn-home" onclick="goToHub()">🏠 ← ফিরে যাও</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+// ============================================================
+// গ্লোবাল ভেরিয়েবল ও সেটিংস
+// ============================================================
+const TIME_LIMIT = 10 * 60; // 10 Minutes
+const LABELS = ['ক', 'খ', 'গ', 'ঘ'];
+
+let currentSetId = 1;
+let cur = 0, score = 0, wrong = 0, answered = false;
+let timerInterval, timeLeft = TIME_LIMIT;
+let userAnswers = [];
+let isReviewMode = false;
+let TOTAL_QS = 0;
+
+// ============================================================
+// Demo Questions (15 Questions, 10 Minutes)
+// ============================================================
+const allSets = {
+    1: {
+        name: 'Demo Test (Geography)', icon: '🆓', topic: 'ভূগোলের অর্থ, সংজ্ঞা ও সাধারণ ধারণা',
+        questions: [
+            { q: "১. 'Geography' শব্দটি সর্বপ্রথম কে ব্যবহার করেন?", opts: ["কার্ল রিটার", "আলেকজান্ডার ভন হামবোল্ট", "এরাটোসথেনিস", "রিচার্ড হার্টশোর্ন"], ans: 2, exp: "প্রাচীন গ্রিক পণ্ডিত এরাটোসথেনিস সর্বপ্রথম 'Geo' (পৃথিবী) এবং 'Graphein' (বর্ণনা) শব্দদুটির মিলনে 'Geography' শব্দটি ব্যবহার করেন, যার আক্ষরিক অর্থ হলো পৃথিবীর বর্ণনা।" },
+            { q: "২. কোন্ সময়ে এরাটোসথেনিস 'Geography' কথাটি প্রথম ব্যবহার করেন?", opts: ["৩৩৪ খ্রিস্টপূর্বাব্দে", "২৩৪ খ্রিস্টপূর্বাব্দে", "২৬০ খ্রিস্টপূর্বাব্দে", "৩৬০ খ্রিস্টপূর্বাব্দে"], ans: 1, exp: "আজ থেকে বহু পূর্বে, প্রায় ২৩৪ খ্রিস্টপূর্বাব্দে গ্রিক পণ্ডিত এরাটোসথেনিস সর্বপ্রথম ভূগোল বোঝাতে এই শব্দটি ব্যবহার করেছিলেন।" },
+            { q: "৩. 'Geo' শব্দের অর্থ কী?", opts: ["মহাদেশ", "মহাসাগর", "পৃথিবী", "জীবন"], ans: 2, exp: "'জিয়োগ্রাফি' শব্দটি গ্রিক শব্দ থেকে আগত। এর মধ্যে 'Geo' কথার অর্থ হলো পৃথিবী এবং 'Graphein' কথার অর্থ হলো বর্ণনা।" },
+            { q: "৪. 'ভূগোল হল পৃথিবীর অধ্যয়ন বা বর্ণনা' – উক্তিটি কার?", opts: ["হামবোল্ট", "ইমানুয়েল কান্ট", "রিটার", "টলেমি"], ans: 1, exp: "বিখ্যাত জার্মান দার্শনিক ইমানুয়েল কান্ট ভূগোলের সংজ্ঞা দিতে গিয়ে বলেছিলেন যে, ভূগোল হলো পৃথিবীর অধ্যয়ন বা বর্ণনা, যা পৃথিবীর বিভিন্ন অঞ্চলের বৈচিত্র্য ও প্রকৃতির সম্পর্ক নিয়ে আলোচনা করে।" },
+            { q: "৫. 'Kosmos' (কসমস) গ্রন্থটির রচয়িতা কে?", opts: ["কার্ল রিটার", "পিটার হ্যাগেট", "আলেকজান্ডার ভন হামবোল্ট", "ইমানুয়েল কান্ট"], ans: 2, exp: "১৮৪৫ সালে আলেকজান্ডার ভন হামবোল্ট তাঁর বিখ্যাত 'কসমস' বইটি রচনা করেন, যেখানে তিনি ভূগোলকে প্রকৃতির সাথে সম্পর্কিত বিজ্ঞান হিসেবে আখ্যায়িত করেছিলেন।" },
+            { q: "৬. 'Erdkunde' (এরদকুন্ডে) বইটির লেখক কে?", opts: ["হামবোল্ট", "কার্ল রিটার", "র‍্যাটজেল", "হার্টশোর্ন"], ans: 1, exp: "জার্মান ভৌগোলিক কার্ল রিটার ১৮৩২ সালে তাঁর বিখ্যাত 'এরদকুন্ডে' বইটি রচনা করেন, যেখানে তিনি ভূগোলকে এক স্বাধীন একক হিসেবে বিচার করেছেন।" },
+            { q: "৭. ভূগোলের প্রধান তিনটি উপাদান কী কী?", opts: ["প্রকৃতি, মানুষ ও সম্পদ", "পৃথিবী, মহাকাশ ও বাস্তুতন্ত্র", "স্থান, কাল ও বাস্তুতন্ত্র", "মানুষ, পরিবেশ ও সমাজ"], ans: 0, exp: "আধুনিক ভূগোলের সংজ্ঞাগুলি বিশ্লেষণ করলে দেখা যায়, এর প্রধান তিনটি উপাদান হলো প্রকৃতি, মানুষ ও সম্পদ। এদের মধ্যে সম্পর্ক সময়ের সাথে সাথে দ্রুত বদলায় বলে ভূগোলকে গতিশীল বিজ্ঞান বলা হয়।" },
+            { q: "৮. 'ভূগোল হল মানুষের বাস্তুতন্ত্র ও স্থান-কাল বিষয়ক সমীক্ষা' – কে বলেছিলেন?", opts: ["কার্ল রিটার", "পিটার হ্যাগেট", "রিচার্ড হার্টশোর্ন", "ইমানুয়েল কান্ট"], ans: 1, exp: "১৯৬৫ সালে পিটার হ্যাগেট ভূগোলের সংজ্ঞায় বলেন যে, ভূগোল হলো সেই বিজ্ঞান যা ভূপৃষ্ঠে মানুষের বাস্তুতন্ত্র এবং তাদের গঠন ও পারস্পরিক কাজকর্মের সমীক্ষা করে।" },
+            { q: "৯. সকল বিজ্ঞানের জননী বা মাতৃসম শাস্ত্র বলা হয় কোন্ বিষয়কে?", opts: ["পদার্থবিদ্যাকে", "রসায়নবিদ্যাকে", "ইতিহাসকে", "ভূগোলশাস্ত্রকে"], ans: 3, exp: "হামবোল্ট ও রিটারের বক্তব্য গ্রহণ করে ভৌগোলিকরা মেনে নিয়েছেন যে, ভূগোলই হলো আদি, মাতৃসম শাস্ত্র। এটি থেকেই ভূ-আকৃতি বিজ্ঞান, আবহবিজ্ঞান, মৃত্তিকাবিজ্ঞানের মতো শাখার জন্ম হয়েছে।" },
+            { q: "১০. আধুনিক ভূগোলের জনক কাদের বলা হয়?", opts: ["হামবোল্ট ও রিটার", "কান্ট ও টলেমি", "হ্যাগেট ও হার্টশোর্ন", "ভিদাল-দ্য-লা-ব্লাশ ও হান্টিংটন"], ans: 0, exp: "ঊনবিংশ শতাব্দীতে জার্মানির দুই পণ্ডিত আলেকজান্ডার ভন হামবোল্ট এবং কার্ল রিটারের নেতৃত্বে ভূগোল বিজ্ঞানের একটি স্বতন্ত্র ও আধুনিক শাখা হিসেবে প্রতিষ্ঠিত হয়, তাই তাদের আধুনিক ভূগোলের জনক বলা হয়।" },
+            { q: "১১. 'প্রণালীবদ্ধ ভূগোল' বা Systematic Geography-এর প্রবর্তক কে?", opts: ["রিচার্ড হার্টশোর্ন", "কার্ল রিটার", "আলেকজান্ডার ভন হামবোল্ট", "পিটার হ্যাগেট"], ans: 2, exp: "জার্মান ভৌগোলিক আলেকজান্ডার ভন হামবোল্ট সর্বপ্রথম প্রণালীবদ্ধ ভূগোলের দৃষ্টিভঙ্গির পরিচিতি ঘটান, যেখানে একটি নির্দিষ্ট বিষয় নিয়ে সমগ্র পৃথিবীব্যাপী আলোচনা করা হয়।" },
+            { q: "১২. 'আঞ্চলিক ভূগোল' বা Regional Geography-এর প্রবক্তা কে?", opts: ["উইলিয়াম মরিস ডেভিস", "কার্ল রিটার", "ভিদাল-দ্য-লা-ব্লাশ", "আলেকজান্ডার ভন হামবোল্ট"], ans: 1, exp: "হামবোল্টের সমসাময়িক অপর এক জার্মান ভৌগোলিক কার্ল রিটার হলেন আঞ্চলিক ভূগোলের প্রবক্তা, যেখানে পৃথিবীকে ছোটো ছোটো অঞ্চলে ভাগ করে সমীক্ষা করা হয়।" },
+            { q: "১৩. মানবীয় ভূগোলের প্রকৃত প্রতিষ্ঠাতা কাকে বলা হয়?", opts: ["পিটার হ্যাগেট", "কার্ল ও সসার", "ভিদাল-দ্য-লা-ব্লাশ", "জিন ব্লুনস"], ans: 2, exp: "ফরাসি ভৌগোলিক ভিদাল-দ্য-লা-ব্লাশ হলেন মানবীয় ভূগোলের প্রকৃত প্রতিষ্ঠাতা। এই শাখায় মানুষের জীবনযাত্রার বৈশিষ্ট্যের ওপর প্রাকৃতিক পরিবেশের প্রভাব আলোচনা করা হয়।" },
+            { q: "১৪. ভূগোলে 'মাত্রিক বিপ্লব' (Quantitative Revolution) কবে শুরু হয়?", opts: ["১৯৩০ সালে", "১৯৫০ সালে", "১৯৬০ সালে", "১৯৯০ সালে"], ans: 2, exp: "১৯৬০ সালে ভূগোলে মাত্রিক বিপ্লবের সূচনা হয়। এর ফলে সংখ্যাগত বিশ্লেষণের মাধ্যমে ভূগোল বিজ্ঞানের একটি প্রধান শাখারূপে অন্যান্য শাস্ত্রের সঙ্গে স্থায়ীভাবে জায়গা করে নেয়।" },
+            { q: "১৫. শাস্ত্র হিসেবে ভূগোলের প্রকৃতি বা বৈশিষ্ট্য কীরূপ?", opts: ["সংকোচনশীল", "পরিবর্তনশীল বা গতিশীল", "অপরিবর্তনশীল", "কোনোটিই নয়"], ans: 1, exp: "প্রাকৃতিক, অর্থনৈতিক ও সামাজিক পরিবেশের সঙ্গে মানুষের সম্পর্ক সময়ের সাথে সাথে দ্রুত পরিবর্তনশীল। তাই শাস্ত্র হিসেবে ভূগোলকে একটি গতিশীল বিজ্ঞান বলা হয়।" }
+        ]
+    }
+};
+
+function initHub() {
+    const grid = document.getElementById('setGrid');
+    grid.innerHTML = '';
+    Object.keys(allSets).forEach(setId => {
+        const set = allSets[setId];
+        const card = document.createElement('div');
+        card.className = 'set-card';
+        card.innerHTML = `
+            <div class="icon">${set.icon}</div>
+            <div class="set-num">${set.name}</div>
+            <div class="set-title">${set.topic}</div>
+            <div class="set-meta"><span>${set.questions.length} প্রশ্ন</span><span>১০ মিনিট</span></div>
+            <div class="attempt-badge" style="color:#1a7a4a;">No Password Required</div>
+        `;
+        // ডেমো টেস্ট তাই লগইন ছাড়াই সরাসরি শুরু হবে
+        card.onclick = () => { startQuiz(setId); };
+        grid.appendChild(card);
+    });
+}
+
+function startQuiz(setId) {
+    currentSetId = setId;
+    TOTAL_QS = allSets[setId].questions.length;
+    cur = 0; score = 0; wrong = 0; answered = false; userAnswers = [];
+    timeLeft = TIME_LIMIT;
+    isReviewMode = false;
+
+    document.getElementById('hubPage').classList.add('hidden');
+    document.getElementById('resultWrap').classList.remove('show');
+    document.getElementById('testArea').classList.remove('hidden');
+    document.getElementById('timerBox').classList.remove('hidden');
+    document.getElementById('timerBox').classList.remove('danger');
+
+    const set = allSets[setId];
+    document.getElementById('testSetLabel').innerText = set.name;
+    document.getElementById('testTopic').innerText = set.topic;
+
+    startTimer();
+    loadQuestion();
+}
+
+function startTimer() {
+    clearInterval(timerInterval);
+    updateTimerDisplay();
+    timerInterval = setInterval(() => {
+        timeLeft--;
+        updateTimerDisplay();
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            showResult();
+        }
+    }, 1000);
+}
+
+function updateTimerDisplay() {
+    const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+    const s = (timeLeft % 60).toString().padStart(2, '0');
+    document.getElementById('timerDisplay').innerText = `${m}:${s}`;
+    if (timeLeft < 60) document.getElementById('timerBox').classList.add('danger');
+}
+
+function loadQuestion() {
+    answered = false;
+    const set = allSets[currentSetId];
+    const q = set.questions[cur];
+
+    document.getElementById('qNum').innerText = isReviewMode ? `Review: প্রশ্ন ${cur + 1} / ${TOTAL_QS}` : `প্রশ্ন ${cur + 1} / ${TOTAL_QS}`;
+    document.getElementById('qText').innerText = q.q;
+    document.getElementById('progressFill').style.width = `${((cur + 1) / TOTAL_QS) * 100}%`;
+
+    const optsContainer = document.getElementById('qOpts');
+    optsContainer.innerHTML = '';
+
+    q.opts.forEach((optText, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'opt';
+        btn.innerHTML = `<div class="opt-circle">${LABELS[idx]}</div> <div class="opt-text">${optText}</div>`;
+
+        if (isReviewMode) {
+            btn.classList.add('disabled');
+            if (idx === q.ans) btn.classList.add('correct');
+            else if (userAnswers[cur] === idx) btn.classList.add('wrong');
+        } else {
+            btn.onclick = () => selectAnswer(idx, btn);
+        }
+        optsContainer.appendChild(btn);
+    });
+
+    const nextBtn = document.getElementById('nextBtn');
+    document.getElementById('explanation').classList.remove('show');
+    document.getElementById('scoreShow').innerText = isReviewMode ? "সবুজ = সঠিক উত্তর | লাল = আপনার ভুল উত্তর" : `সঠিক: ${score} | ভুল: ${wrong}`;
+
+    if (isReviewMode) {
+        document.getElementById('explanationText').innerHTML = '<strong>ব্যাখ্যা:</strong> ' + q.exp;
+        document.getElementById('explanation').classList.add('show');
+        nextBtn.disabled = false;
+        nextBtn.innerText = cur === set.questions.length - 1 ? 'ফলাফল পেজে ফিরুন' : 'পরবর্তী →';
+    } else {
+        nextBtn.disabled = true;
+        nextBtn.innerText = cur === set.questions.length - 1 ? 'ফলাফল দেখো 🏆' : 'পরবর্তী →';
+    }
+}
+
+function selectAnswer(selectedIdx, btnElement) {
+    if (answered) return;
+    answered = true;
+    const set = allSets[currentSetId];
+    const q = set.questions[cur];
+    userAnswers[cur] = selectedIdx;
+
+    const allBtns = document.getElementById('qOpts').children;
+    for (let i = 0; i < allBtns.length; i++) {
+        allBtns[i].classList.add('disabled');
+        if (i === q.ans) allBtns[i].classList.add('correct');
+    }
+
+    if (selectedIdx === q.ans) {
+        score++;
+    } else {
+        btnElement.classList.add('wrong');
+        wrong++;
+    }
+
+    document.getElementById('scoreShow').innerText = `সঠিক: ${score} | ভুল: ${wrong}`;
+    document.getElementById('explanationText').innerHTML = '<strong>ব্যাখ্যা:</strong> ' + q.exp;
+    document.getElementById('explanation').classList.add('show');
+    document.getElementById('nextBtn').disabled = false;
+}
+
+function nextQ() {
+    const set = allSets[currentSetId];
+    if (cur < set.questions.length - 1) {
+        cur++;
+        loadQuestion();
+    } else {
+        if (isReviewMode) {
+            document.getElementById('testArea').classList.add('hidden');
+            document.getElementById('resultWrap').classList.add('show');
+        } else {
+            clearInterval(timerInterval);
+            showResult();
+        }
+    }
+}
+
+function showResult() {
+    document.getElementById('testArea').classList.add('hidden');
+    document.getElementById('timerBox').classList.add('hidden');
+    document.getElementById('resultWrap').classList.add('show');
+
+    const total = allSets[currentSetId].questions.length;
+    const pct = Math.round((score / total) * 100);
+
+    document.getElementById('finalScore').innerText = `${pct}%`;
+    document.getElementById('rbCorrect').innerText = score;
+    document.getElementById('rbWrong').innerText = total - score;
+
+    let msg = "অসাধারণ!"; let icon = "🏆";
+    if (pct < 50) { msg = "আরও অনুশীলন প্রয়োজন!"; icon = "📚"; }
+    else if (pct < 80) { msg = "খুব ভালো চেষ্টা!"; icon = "👍"; }
+
+    document.getElementById('resultGrade').innerText = msg;
+    document.getElementById('resultIcon').innerText = icon;
+}
+
+function showReview() {
+    document.getElementById('resultWrap').classList.remove('show');
+    document.getElementById('testArea').classList.remove('hidden');
+    isReviewMode = true;
+    cur = 0;
+    loadQuestion();
+}
+
+function restartQuiz() {
+    document.getElementById('resultWrap').classList.remove('show');
+    startQuiz(currentSetId);
+}
+
+function goToHub() {
+    // Return to the main index page (index.html) or just reload
+    window.location.href = "index.html";
+    // অথবা শুধু এই পেজের হাব দেখাতে চাইলে:
+    // document.getElementById('resultWrap').classList.remove('show');
+    // document.getElementById('testArea').classList.add('hidden');
+    // document.getElementById('timerBox').classList.add('hidden');
+    // document.getElementById('hubPage').classList.remove('hidden');
+    // initHub();
+}
+
+window.onload = initHub;
+</script>
+
+</body>
+</html>
+
+
