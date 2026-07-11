@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test Bazar — Geography | 1st Sem | Econ Unit 2</title>
+<link href="https://fonts.googleapis.com/css2?family=Tiro+Bangla&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ================== CSS STYLES ================== */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Syne', sans-serif; background: #f0faf4; min-height: 100vh; color: #1c2e24; }
+.en-font { font-family: 'Syne', sans-serif; }
+
+.top-bar { background: #1a7a4a; padding: 0.8rem 1.5rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+.top-logo { font-size: 1.2rem; font-weight: 800; color: white; cursor: pointer; }
+.top-logo span { color: #f9a825; }
+.timer-box { background: rgba(255,255,255,0.2); padding: 0.3rem 0.8rem; border-radius: 6px; color: white; font-weight: 700; font-size: 0.95rem; }
+.timer-box.danger { background: #dc3545; animation: pulse 1s infinite; }
+@keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+.main { max-width: 800px; margin: 0 auto; padding: 1.5rem; }
+
+/* HUB PAGE */
+.hub-header { text-align: center; margin-bottom: 2rem; }
+.hub-header h1 { font-family: 'Tiro Bangla', serif; color: #1a7a4a; font-size: 1.6rem; margin-bottom: 0.5rem; line-height: 1.4; }
+.hub-header p { color: #5a7a66; font-size: 0.95rem; font-family: 'Tiro Bangla', serif; font-weight: bold; }
+.set-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
+.set-card { background: white; border: 2px solid #c5dccb; border-radius: 12px; padding: 1.5rem; text-align: center; cursor: pointer; transition: all 0.2s; }
+.set-card:hover { transform: translateY(-3px); border-color: #1a7a4a; box-shadow: 0 6px 20px rgba(26,122,74,0.12); }
+.set-card .icon { font-size: 2.2rem; margin-bottom: 0.3rem; }
+.set-card .set-num { font-weight: 700; font-size: 1.1rem; color: #1a7a4a; }
+.set-card .set-title { font-family: 'Tiro Bangla', serif; font-size: 0.85rem; color: #5a7a66; margin: 0.2rem 0 0.5rem; }
+.set-card .set-meta { display: flex; gap: 1rem; font-size: 0.75rem; color: #5a7a66; justify-content: center; font-weight: bold;}
+.set-card .set-meta span { background: #f0faf4; padding: 0.2rem 0.6rem; border-radius: 4px; }
+.attempt-badge { font-size: 0.8rem; color: #dc3545; font-weight: 700; margin-top: 0.6rem; font-family: 'Tiro Bangla', serif; }
+
+/* QUIZ AREA */
+.quiz-info { background: white; border-radius: 12px; padding: 1rem 1.2rem; margin-bottom: 1.2rem; border: 1px solid #c5dccb; display: flex; gap: 1rem; flex-wrap: wrap; }
+.info-item { font-family: 'Tiro Bangla', serif; font-size: 0.9rem; color: #5a7a66; font-weight: 600; }
+.info-item strong { color: #1a7a4a; }
+
+.progress-wrap { background: #c5dccb; border-radius: 4px; height: 6px; margin-bottom: 1.2rem; overflow: hidden; }
+.progress-fill { height: 100%; background: #1a7a4a; border-radius: 4px; transition: width 0.3s; }
+
+.q-card { background: white; border-radius: 14px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+.q-num { font-size: 0.9rem; font-weight: 700; color: #1a7a4a; margin-bottom: 0.8rem; }
+.q-text { font-family: 'Tiro Bangla', serif; font-size: 1.1rem; color: #1c2e24; font-weight: 700; line-height: 1.6; margin-bottom: 1.2rem; }
+
+.opts { display: flex; flex-direction: column; gap: 0.6rem; }
+.opt { display: flex; align-items: flex-start; gap: 12px; padding: 0.8rem 1rem; border: 1.5px solid #c5dccb; border-radius: 10px; background: transparent; cursor: pointer; text-align: left; transition: all 0.2s; width: 100%; }
+.opt:hover:not(.disabled) { border-color: #1a7a4a; background: #f0faf4; }
+.opt-circle { min-width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid #c5dccb; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #5a7a66; flex-shrink: 0; }
+.opt-text { font-family: 'Tiro Bangla', serif; font-size: 0.95rem; color: #1c2e24; line-height: 1.6; font-weight: 600; padding-top: 2px; }
+
+.opt.correct { border-color: #1a7a4a; background: #e8f7ef; }
+.opt.correct .opt-circle { background: #1a7a4a; border-color: #1a7a4a; color: white; }
+.opt.wrong { border-color: #dc3545; background: #fdf0f0; }
+.opt.wrong .opt-circle { background: #dc3545; border-color: #dc3545; color: white; }
+.opt.disabled { cursor: default; }
+
+.explanation { background: #f0faf4; border-left: 4px solid #1a7a4a; border-radius: 0 8px 8px 0; padding: 1rem; margin-top: 1rem; display: none; }
+.explanation.show { display: block; }
+.explanation p { font-family: 'Tiro Bangla', serif; font-size: 0.9rem; color: #2c4035; line-height: 1.7; }
+
+.nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; }
+.score-show { font-family: 'Tiro Bangla', serif; font-size: 0.85rem; color: #5a7a66; font-weight: bold; }
+.next-btn { background: #1a7a4a; color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 8px; font-family: 'Tiro Bangla', serif; font-size: 0.95rem; font-weight: bold; cursor: pointer; transition: all 0.2s; }
+.next-btn:hover:not(:disabled) { background: #2aad68; }
+.next-btn:disabled { background: #c5dccb; cursor: not-allowed; }
+
+/* RESULT AREA */
+.result-wrap { background: white; border-radius: 14px; padding: 2rem; text-align: center; border: 1px solid #c5dccb; display: none; max-width: 600px; margin: 0 auto; box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+.result-wrap.show { display: block; }
+.result-icon { font-size: 3.5rem; margin-bottom: 0.5rem; line-height: 1; }
+.result-score { font-size: 3.5rem; font-weight: 800; color: #1a7a4a; line-height: 1; margin-bottom: 5px; }
+.result-total { font-size: 1rem; color: #5a7a66; margin-bottom: 0.5rem; font-family: 'Tiro Bangla', serif; font-weight: bold;}
+.result-grade { font-size: 1.2rem; font-weight: 700; color: #1c2e24; margin-bottom: 1.5rem; font-family: 'Tiro Bangla', serif; color: #e8730a; }
+
+.result-bars { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+.result-bar { background: #f0faf4; border-radius: 10px; padding: 1rem; text-align: center; border: 1px solid #c5dccb; }
+.rb-num { font-size: 1.8rem; font-weight: 800; }
+.rb-label { font-family: 'Tiro Bangla', serif; font-size: 0.85rem; color: #5a7a66; margin-top: 0.2rem; font-weight: bold;}
+.attempt-info { font-family: 'Tiro Bangla', serif; font-size: 0.9rem; color: #1a7a4a; font-weight: bold; margin-bottom: 1.5rem; background: #e8f7ef; padding: 10px; border-radius: 8px; }
+
+/* ACTION BUTTONS */
+.result-actions { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+.result-actions button { width: 100%; padding: 14px; border-radius: 8px; font-family: 'Tiro Bangla', serif; font-size: 1.05rem; font-weight: 800; cursor: pointer; border: none; transition: 0.2s; }
+.btn-retry { background: #17a2b8; color: white; }
+.btn-retry:hover { background: #138496; }
+.btn-review { background: #28a745; color: white; }
+.btn-review:hover { background: #218838; }
+.btn-home { background: transparent; color: #5a7a66; border: 2px solid #c5dccb !important; }
+.btn-home:hover { background: #f0faf4; }
+
+/* LOGIN MODAL */
+.login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(4px); }
+.login-overlay.active { display: flex; }
+.login-modal { background: white; padding: 2rem; border-radius: 16px; width: 90%; max-width: 380px; box-shadow: 0 15px 40px rgba(0,0,0,0.2); }
+.login-modal h2 { font-family: 'Tiro Bangla', serif; color: #1a7a4a; font-size: 1.4rem; margin-bottom: 0.5rem; text-align: center; }
+.login-modal p { font-family: 'Tiro Bangla', serif; color: #5a7a66; font-size: 0.9rem; margin-bottom: 1.5rem; text-align: center; }
+
+.input-group { margin-bottom: 1.2rem; }
+.input-group label { display: block; font-size: 0.85rem; font-weight: 700; color: #1c2e24; margin-bottom: 5px; font-family: 'Tiro Bangla', serif; }
+.input-group input { width: 100%; padding: 12px; border: 1.5px solid #c5dccb; border-radius: 8px; font-family: 'Syne', sans-serif; font-size: 0.95rem; outline: none; transition: 0.2s; }
+.input-group input:focus { border-color: #1a7a4a; box-shadow: 0 0 0 3px rgba(26,122,74,0.1); }
+
+.login-btn { width: 100%; background: #1a7a4a; color: white; border: none; padding: 12px; border-radius: 8px; font-family: 'Tiro Bangla', serif; font-size: 1.05rem; font-weight: 700; cursor: pointer; transition: 0.2s; margin-bottom: 8px; }
+.cancel-btn { width: 100%; background: transparent; color: #5a7a66; border: 1.5px solid #c5dccb; padding: 10px; border-radius: 8px; font-family: 'Tiro Bangla', serif; font-size: 1rem; font-weight: 700; cursor: pointer; }
+.error-msg { color: #dc3545; font-size: 0.85rem; font-weight: 700; margin-top: 10px; font-family: 'Tiro Bangla', serif; display: none; text-align: center; }
+.set-name-display { background: #f0faf4; border-radius: 8px; padding: 0.6rem; text-align: center; margin-bottom: 1rem; font-family: 'Tiro Bangla', serif; font-size: 0.95rem; color: #1a7a4a; font-weight: 700; }
+.hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+    <div class="top-logo" onclick="goToHub()">Test<span>Bazar</span></div>
+    <div class="timer-box hidden" id="timerBox">⏱ <span id="timerDisplay">10:00</span></div>
+</div>
+
+<div class="main">
+
+    <!-- ===== LOGIN OVERLAY ===== -->
+    <div class="login-overlay" id="loginOverlay">
+        <div class="login-modal">
+            <h2>🔐 লগইন করুন</h2>
+            <p>Test শুরু করতে আপনার ইউজারনেম ও পাসওয়ার্ড দিন</p>
+            <div class="set-name-display" id="loginSetName">📚 Set 1</div>
+            <div class="input-group">
+                <label>ইউজারনেম</label>
+                <input type="text" id="loginUsername" placeholder="আপনার ইউজারনেম লিখুন">
+            </div>
+            <div class="input-group">
+                <label>পাসওয়ার্ড</label>
+                <input type="password" id="loginPassword" placeholder="আপনার পাসওয়ার্ড লিখুন" onkeydown="if(event.key==='Enter') doLogin()">
+            </div>
+            <button class="login-btn" onclick="doLogin()">✅ লগইন করে Test শুরু করো</button>
+            <button class="cancel-btn" onclick="closeLogin()">বাতিল</button>
+            <div class="error-msg" id="loginError">❌ ভুল ইউজারনেম বা পাসওয়ার্ড।</div>
+        </div>
+    </div>
+
+    <!-- ===== HUB PAGE ===== -->
+    <div id="hubPage">
+        <div class="hub-header">
+            <h1>ভূগোল — 1st Sem<br>Unit 2: অর্থনৈতিক কার্যাবলির শ্রেণিবিভাগ</h1>
+            <p>নিচের সেটগুলো থেকে বেছে নিন। প্রতিটি সেটে ১৫টি প্রশ্ন রয়েছে।</p>
+            <div id="hubUserInfo" style="font-family:'Tiro Bangla',serif;font-size:1rem;color:#1a7a4a;margin-top:0.8rem;font-weight:bold;"></div>
+        </div>
+        <div class="set-grid" id="setGrid"></div>
+    </div>
+
+    <!-- ===== TEST AREA ===== -->
+    <div id="testArea" class="hidden">
+        <div class="quiz-info">
+            <div class="info-item">🎓 <strong id="testSetName">ভূগোল</strong> — 1st Sem | Econ Unit 2 | <span id="testSetLabel">Set 1</span></div>
+            <div class="info-item">📝 <span id="testTopic">Topic</span></div>
+        </div>
+
+        <div class="progress-wrap"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+
+        <div class="q-card" id="qCard">
+            <div class="q-num" id="qNum">প্রশ্ন ১ / ১৫</div>
+            <div class="q-text" id="qText"></div>
+            <div class="opts" id="qOpts"></div>
+            <div class="explanation" id="explanation"><p id="explanationText"></p></div>
+
+            <div class="nav-row">
+                <div class="score-show" id="scoreShow">সঠিক: ০ | ভুল: ০</div>
+                <button class="next-btn" id="nextBtn" onclick="nextQ()" disabled>পরবর্তী →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== RESULT AREA ===== -->
+    <div class="result-wrap" id="resultWrap">
+        <div class="result-icon" id="resultIcon">🏆</div>
+        <div class="result-score en-font" id="finalScore">100%</div>
+        <div class="result-total">স্কোর</div>
+        <div class="result-grade" id="resultGrade">অসাধারণ!</div>
+
+        <div class="result-bars">
+            <div class="result-bar">
+                <div class="rb-num en-font" id="rbCorrect" style="color:#1a7a4a">0</div>
+                <div class="rb-label">সঠিক</div>
+            </div>
+            <div class="result-bar">
+                <div class="rb-num en-font" id="rbWrong" style="color:#dc3545">0</div>
+                <div class="rb-label">ভুল/স্কিপ</div>
+            </div>
+        </div>
+
+        <div class="attempt-info" id="attemptInfo">👤 user — Set 1: বাকি আছে 9 বার Test দেওয়ার সুযোগ</div>
+
+        <!-- ACTION BUTTONS -->
+        <div class="result-actions">
+            <button class="btn-retry" onclick="restartQuiz()">🔄 আবার চেষ্টা করো</button>
+            <button class="btn-review" onclick="showReview()">👀 উত্তর দেখো</button>
+            <button class="btn-home" onclick="goToHub()">🏠 ← Hub এ ফিরে যাও</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+// ============================================================
+// গ্লোবাল ভেরিয়েবল
+// ============================================================
+const MAX_ATTEMPTS = 10;
+const TIME_LIMIT = 10 * 60; // 10 Minutes
+const LABELS = ['ক', 'খ', 'গ', 'ঘ'];
+const STORAGE_KEY = "testBazarAttempts_Geo_1stSem_EconU2";
+
+let currentUser = "";
+let currentSetId = 1;
+let pendingSetId = null;
+
+let cur = 0, score = 0, wrong = 0, answered = false;
+let timerInterval, timeLeft = TIME_LIMIT;
+let userAnswers = [];
+let isReviewMode = false;
+let TOTAL_QS = 0;
+
+// ============================================================
+// Unit 2: অর্থনৈতিক কার্যাবলির শ্রেণিবিভাগ (Classification of Economic Activities) - ৪টি সেটের প্রশ্নাবলি
+// ============================================================
+const allSets = {
+    1: {
+        name: 'Set 1', icon: '🌾', topic: 'অর্থনৈতিক কার্যাবলির ধারণা, বৈশিষ্ট্য ও আদিম কার্যাবলি',
+        questions: [
+            { q: "১. বিশ্বের অর্থনৈতিক ক্রিয়াকলাপকে প্রধানত কয়টি ভাগে ভাগ করা হয়েছে?", opts: ["৩টি", "৪টি", "৫টি", "৬টি"], ans: 2, exp: "পরিবেশ ও সংস্কৃতির ওপর ভিত্তি করে বিশ্বের অর্থনৈতিক ক্রিয়াকলাপকে প্রধান ৫টি স্তরে (প্রাথমিক, দ্বিতীয়, তৃতীয়, চতুর্থ এবং পঞ্চম) ভাগ করা হয়েছে।" },
+            { q: "২. খাদ্যের প্রয়োজনে বা ক্ষুধা মেটানোর জন্য মানুষ সরাসরি প্রকৃতি থেকে সম্পদ সংগ্রহের যে পেশা গ্রহণ করে, তাকে কী বলে?", opts: ["প্রাথমিক অর্থনৈতিক কার্যাবলি", "দ্বিতীয় স্তরের কার্যাবলি", "পরিসেবামূলক কাজ", "কুইনারি কাজ"], ans: 0, exp: "মানুষের প্রাথমিক চাহিদা বা ক্ষুধা মেটানোর জন্য প্রকৃতির ভান্ডার থেকে সরাসরি সম্পদ সংগ্রহের সাথে যুক্ত পেশাকে প্রাথমিক অর্থনৈতিক কার্যাবলি বলে।" },
+            { q: "৩. প্রাথমিক অর্থনৈতিক কার্যকলাপে নিযুক্ত শ্রমজীবী গোষ্ঠীকে কী বলা হয়?", opts: ["নীল পোশাক শ্রমজীবী", "সাদা পোশাক কর্মজীবী", "লাল পোশাক শ্রমজীবী", "গোলাপি পোশাক কর্মজীবী"], ans: 2, exp: "প্রাথমিক অর্থনীতিতে যুক্ত শ্রমশক্তিকে লাল পোশাক শ্রমজীবী গোষ্ঠী (red colour labour force) বলা হয়, কারণ এই পেশায় মানুষকে ঘরের বাইরে কাজ করতে হয়।" },
+            { q: "৪. পৃথিবীর সবচেয়ে বেশি লোক কোন্ স্তরের অর্থনীতিতে যুক্ত?", opts: ["প্রথম স্তর", "দ্বিতীয় স্তর", "তৃতীয় স্তর", "চতুর্থ স্তর"], ans: 0, exp: "পৃথিবীর সবচেয়ে বেশি লোক প্রাথমিক স্তরের অর্থনীতিতে যুক্ত। উন্নয়নশীল দেশসমূহে শ্রমশক্তির প্রায় ৬০ শতাংশ এই কাজে নিযুক্ত।" },
+            { q: "৫. উন্নত দেশসমূহে প্রাথমিক অর্থনৈতিক কার্যকলাপে নিযুক্ত মানুষের সংখ্যা শতকরা কত?", opts: ["৫ শতাংশের কম", "১০ শতাংশ", "২০ শতাংশ", "৫০ শতাংশের বেশি"], ans: 0, exp: "উন্নত দেশে প্রাথমিক অর্থনৈতিক কার্যকলাপে নিযুক্ত লোকের সংখ্যা খুব কম, যা প্রায় ৫ শতাংশের নীচে থাকে।" },
+            { q: "৬. 'জীবিকাসত্তাভিত্তিক ক্রিয়াকলাপ' বা জীবনধারণভিত্তিক কাজের মূল উদ্দেশ্য কী?", opts: ["বাণিজ্য করা", "উদ্বৃত্ত সম্পদ জমানো", "বেঁচে থাকার জন্য কেবল মূল চাহিদাগুলির সংস্থান করা", "শিল্পের কাঁচামাল সংগ্রহ"], ans: 2, exp: "প্রাচীনকালে মানুষ খাদ্যের খোঁজে ঘুরে বেড়াত এবং কেবল মূল চাহিদাগুলির (খাদ্য-পানীয়, বস্ত্র ও বাসস্থান) সংস্থান করত, একে জীবিকাসত্তাভিত্তিক ক্রিয়াকলাপ (subsistence activity) বলে।" },
+            { q: "৭. মালয়েশিয়ার আদিম সংগ্রাহক উপজাতি 'সেমাঙ'-দের প্রতিটি পরিবারের অধিকারে প্রায় কতটা এলাকা থাকে?", opts: ["৫ বর্গকিমি", "১০ বর্গকিমি", "২০ বর্গকিমি", "৩০ বর্গকিমি"], ans: 3, exp: "সংগ্রাহক উপজাতি সমাজ ব্যবস্থায় মালয়েশিয়ার সেমাঙদের প্রতিটি পরিবারের অধিকারে প্রায় ৩০ বর্গকিমি এলাকা নির্দিষ্ট থাকে।" },
+            { q: "৮. চিরতুষার দেশের বাসিন্দা এস্কিমোদের বরফের তৈরি গম্বুজাকৃতি ঘরকে কী বলা হয়?", opts: ["কায়াক", "ইগলু", "শ্লেজ", "হারপুণ"], ans: 1, exp: "চিরতুষার দেশের বাসিন্দা এস্কিমোদের বরফের তৈরি গম্বুজাকৃতি ঘরকে ইগলু (Igloo) বলা হয়।" },
+            { q: "৯. এস্কিমোদের ব্যবহৃত কাঠ বা তিমির হাড়ের কাঠামোয় চামড়া দিয়ে তৈরি নৌকাকে কী বলে?", opts: ["হারপুণ", "ইগলু", "শ্লেজ", "কায়াক"], ans: 3, exp: "এস্কিমোদের ব্যবহৃত কাঠ বা তিমির হাড়ের তৈরি কাঠামোয় চামড়া দিয়ে তৈরি নৌকাকে কায়াক (Kayak) বলে।" },
+            { q: "১০. সামুদ্রিক প্রাণী ও মাছ শিকার করার জন্য এস্কিমোরা যে তীক্ষ্ণ ফলাবিশিষ্ট বর্শা ব্যবহার করে, তাকে কী বলে?", opts: ["কায়াক", "বুমেরাং", "হারপুণ", "শ্লেজ"], ans: 2, exp: "সামুদ্রিক প্রাণী ও মাছ শিকার করার তীক্ষ্ণ ফলাবিশিষ্ট বর্শাকে হারপুণ (Harpoon) বলা হয়।" },
+            { q: "১১. দক্ষিণ আমেরিকার পম্পাস তৃণভূমি অঞ্চলে পূর্ব বলিভিয়ার কোন্ উপজাতি বন্য শূকর-জাতীয় প্রাণী শিকার করে?", opts: ["পিগমি", "বুশমেন", "ব্ল‍্যাকফুট", "সিরিওনো (Siriono)"], ans: 3, exp: "দক্ষিণ আমেরিকার পম্পাস তৃণভূমি অঞ্চলে পূর্ব বলিভিয়ার সিরিওনো (Siriono) উপজাতি শূকর-জাতীয় প্রাণী (Peccary) শিকার করে।" },
+            { q: "১২. দক্ষিণ আফ্রিকার কালাহারি মরুভূমি অঞ্চলের কোন্ উপজাতি জিরাফ, জেব্রা ও উটপাখি শিকার করে?", opts: ["বুশমেন", "সাকাই", "পিগমি", "নুটকা"], ans: 0, exp: "কালাহারি মরুভূমি অঞ্চলের বুশমেন (Bushmen) উপজাতিরা জিরাফ, জেব্রা, উটপাখি (Ostrich) ইত্যাদি শিকার করে।" },
+            { q: "১৩. কঙ্গো অববাহিকার কোন্ উপজাতি বন থেকে ইতর প্রাণী শিকার ও ফলমূল সংগ্রহ করে?", opts: ["ব্ল‍্যাকফুট", "পিগমি (Pigmi)", "স্যামোয়েদ", "বেদুইন"], ans: 1, exp: "কঙ্গো অববাহিকার বৃষ্টি অরণ্যের পিগমি উপজাতি শিকার ও সংগ্রহ বৃত্তির সাথে জড়িত। এদের গড়ন বেঁটে হয়।" },
+            { q: "১৪. 'ট্রান্সহিউমেনস' (Transhumance) বা ঋতুকালীন পরিভ্রমণ কাকে বলে?", opts: ["কাজের সন্ধানে শহরে যাওয়া", "যাযাবরদের ঋতুভেদে চারণভূমির পরিবর্তন করা", "পশুদের প্রজনন ঘটানো", "কৃষির জন্য স্থান বদল"], ans: 1, exp: "যাযাবর পশুপালনে পশুপালকরা এক ঋতু থেকে অন্য ঋতুতে পশুদের সাথে চারণভূমি পরিবর্তন করে চক্রাকারে পরিব্রাজন করে, একে ট্রান্সহিউমেনস বলে।" },
+            { q: "১৫. আরবের রুয়ালা বেদুইনরা প্রধানত কোন্ পশু পালন করে?", opts: ["বল্গা হরিণ", "ভেড়া ও ছাগল", "উট ও ঘোড়া", "চমরী গাই"], ans: 2, exp: "দক্ষিণ-পশ্চিম এশিয়া ও উত্তর আফ্রিকার আরব উপদ্বীপের রুয়ালা বেদুইনরা প্রধানত উট ও ঘোড়া প্রতিপালন করে।" }
+        ]
+    },
+    2: {
+        name: 'Set 2', icon: '🐄', topic: 'পশুপালন, কৃষিকাজ এবং এর শ্রেণিবিভাগ',
+        questions: [
+            { q: "১. তুন্দ্রা অঞ্চলের ল্যাপ, স্যামোয়েদ ও চুকচি উপজাতিদের প্রধান গৃহপালিত পশু কোনটি?", opts: ["উট", "ঘোড়া", "বল্গা হরিণ", "চমরী গাই"], ans: 2, exp: "তুন্দ্রা অঞ্চলের যাযাবর উপজাতিদের (ল্যাপ, স্যামোয়েদ, চুকচি) প্রধান গৃহপালিত পশু হলো বল্গা হরিণ, যার দুধ, মাংস, চর্মজাত দ্রব্যের ওপর তারা নির্ভরশীল।" },
+            { q: "২. পাহাড়ি ও মালভূমি অঞ্চলে ব্যক্তি-মালিকানাহীন জমিতে বনজঙ্গল পুড়িয়ে যে ভ্রাম্যমাণ কৃষি ব্যবস্থা গড়ে ওঠে, তাকে কী বলে?", opts: ["মিশ্র কৃষি", "বাজার উদ্যান কৃষি", "স্থানান্তর কৃষি", "প্রগাঢ় কৃষি"], ans: 2, exp: "বনজঙ্গল পুড়িয়ে ও সাফ করে আদিবাসী ও উপজাতি গোষ্ঠী দ্বারা যে ভ্রাম্যমাণ বা পরিযায়ী কৃষি ব্যবস্থা গড়ে ওঠে, তাকে স্থানান্তর কৃষি বলে।" },
+            { q: "৩. স্থানান্তর কৃষিকে মধ্য আমেরিকায় কী বলা হয়?", opts: ["রোকা", "মিলপা", "লাডাং", "চেনা"], ans: 1, exp: "বিভিন্ন দেশে স্থানান্তর কৃষির আলাদা নাম রয়েছে। মধ্য আমেরিকায় এটি 'মিলপা' নামে পরিচিত।" },
+            { q: "৪. স্থানান্তর কৃষি মালয়েশিয়ায় কী নামে পরিচিত?", opts: ["লাডাং", "হুমা", "মিলপা", "রোকা"], ans: 0, exp: "মালয়েশিয়ায় স্থানান্তর কৃষিব্যবস্থাকে 'লাডাং' বলা হয়।" },
+            { q: "৫. ভারতের উত্তর-পূর্ব পাহাড়ি অঞ্চলে স্থানান্তর কৃষি কী নামে পরিচিত?", opts: ["পোডু", "পোনম", "ঝুম", "বেওয়ড়"], ans: 2, exp: "স্থানান্তর কৃষিকার্য ভারতের উত্তর-পূর্ব পাহাড়ি অঞ্চলে 'ঝুম' চাষ নামে পরিচিত।" },
+            { q: "৬. দক্ষিণ-পূর্ব এশিয়ার কৃষি-ব্যবস্থার অন্যতম প্রধান বৈশিষ্ট্য কোনটি?", opts: ["ব্যাপক যন্ত্রপাতির ব্যবহার", "কৃষিজমির নিবিড় ব্যবহার বা ফসল পদ্ধতি", "কেবল বাণিজ্যিক উদ্দেশ্যে চাষ", "বড়ো বড়ো কৃষিজোত"], ans: 1, exp: "ঘনবসতির জন্য দক্ষিণ-পূর্ব এশিয়ায় জনপ্রতি জমির পরিমাণ কম। তাই কৃষিজমির নিবিড় ব্যবহার এই কৃষি-ব্যবস্থার অন্যতম বৈশিষ্ট্য।" },
+            { q: "৭. যতটা সম্ভব বেশি শ্রম বা মূলধন বিনিয়োগ করে কম পরিমাণ জমি থেকে সব থেকে বেশি ফসল উৎপন্ন করাকে কী বলে?", opts: ["নিবিড় বা প্রগাঢ় কৃষি", "ব্যাপক কৃষি", "মিশ্র কৃষি", "স্থানান্তর কৃষি"], ans: 0, exp: "জমির উপর জনসংখ্যার চাপ অত্যন্ত বেশি হওয়ায় বেশি শ্রম বিনিয়োগ করে ক্ষুদ্র জমি থেকে সর্বাধিক ফসল উৎপাদন করাকে নিবিড় বা প্রগাঢ় কৃষি বলে।" },
+            { q: "৮. নাতিশীতোষ্ণ তৃণভূমিতে ব্যাপক আকারে আধুনিক যন্ত্রপাতির সাহায্যে দানাশস্যের চাষকে কী বলা হয়?", opts: ["নিবিড় কৃষি", "বাণিজ্যিক কৃষি", "জীবিকাসত্তাভিত্তিক কৃষি", "দোহ কৃষি"], ans: 1, exp: "বাণিজ্যিক ভিত্তিতে ও ব্যাপক আকারে অতি আধুনিক কৃষি-যন্ত্রপাতি ও কৌশলের সাহায্যে নাতিশীতোয় তৃণভূমিতে দানাশস্যের চাষকে বাণিজ্যিক কৃষি বলা হয়।" },
+            { q: "৯. বাণিজ্যিক কৃষির প্রধান ফসল কোনটি?", opts: ["ধান", "পাট", "গম", "তুলো"], ans: 2, exp: "বাণিজ্যিক কৃষি ব্যবস্থায় গম হলো প্রধান শস্য। এ ছাড়াও ভুট্টা, যব, রাই ইত্যাদি চাষ হয়।" },
+            { q: "১০. যে কৃষিব্যবস্থায় ফসল উৎপাদনের সাথে সাথে ফল, শাকসবজি এবং পশুপালন করা হয়, তাকে কী বলে?", opts: ["মিশ্র কৃষি", "ব্যাপক কৃষি", "স্থানান্তর কৃষি", "বাজার উদ্যান কৃষি"], ans: 0, exp: "চাষের জমি থেকে বিভিন্ন ফসল উৎপাদনের সাথে সাথে দুগ্ধ, মাংস ও সারের প্রয়োজনে একই খামারে পশুপালন করা হলে তাকে মিশ্র কৃষি বলে।" },
+            { q: "১১. মিশ্র কৃষিব্যবস্থার অন্যতম প্রধান বৈশিষ্ট্য কোনটি?", opts: ["এক ফসলি চাষ", "শুধু গোরু পালন", "শস্যাবর্তন পদ্ধতি", "কেবল বাণিজ্যিক রপ্তানি"], ans: 2, exp: "মিশ্র কৃষি ব্যবস্থার অন্যতম প্রধান বৈশিষ্ট্য হলো শস্যাবর্তন পদ্ধতি (Crop Rotation), যার সাহায্যে জমির স্বাভাবিক উর্বরতা রক্ষা করা হয়।" },
+            { q: "১২. শহর বা নগরকে কেন্দ্র করে প্রাত্যহিক টাটকা শাক-সবজি, ফল ও ফুলের চাষকে কী বলে?", opts: ["মিশ্র কৃষি", "দোহ কৃষি", "বাজার উদ্যান কৃষি (Market Gardening)", "ব্যাপক কৃষি"], ans: 2, exp: "পৌর অঞ্চলে টাটকা শাক-সবজি, ফল, ফুল ইত্যাদির প্রাত্যহিক চাহিদা পূরণের জন্য শহরতলিতে নিবিড় পদ্ধতিতে এদের চাষকে বাজার উদ্যান কৃষি বলে।" },
+            { q: "১৩. বাজার উদ্যান কৃষিকে আমেরিকা যুক্তরাষ্ট্রে কী বলা হয়?", opts: ["হর্টিকালচার", "ট্রাক ফার্মিং (Truck farming)", "প্রগাঢ় কৃষি", "মিশ্র ফার্মিং"], ans: 1, exp: "কৃষিক্ষেত্র থেকে শহরে পণ্য আনার জন্য ট্রাক বেশি সুবিধাজনক। ট্রাক এক রাতে যতটা দূরত্ব অতিক্রম করতে পারে, তার মধ্যে কৃষিক্ষেত্রগুলি থাকে বলে একে ট্রাক ফার্মিং বলা হয়।" },
+            { q: "১৪. ফুল চাষকে বাণিজ্যিকভাবে কী বলা হয়?", opts: ["ওলেরিকালচার", "পোমামকালচার", "ফ্লোরিকালচার (Floriculture)", "হর্টিকালচার"], ans: 2, exp: "উদ্যান কৃষিতে সারাবছরের বা মরশুমি ফুলের চাষকে ফ্লোরিকালচার (Floriculture) বলে।" },
+            { q: "১৫. পৃথিবীর 'ফলের ঝুড়ি' (Food basket of the world) বা 'বিশ্বের ফুল-ফলের উদ্যান' কাকে বলা হয়?", opts: ["মৌসুমি জলবায়ু অঞ্চলকে", "ভূমধ্যসাগরীয় অঞ্চলকে", "নিরক্ষীয় অঞ্চলকে", "তুন্দ্রা অঞ্চলকে"], ans: 1, exp: "ভূমধ্যসাগরীয় অঞ্চলে প্রচুর আঙুর, কমলালেবু, জলপাই, ডুমুর প্রভৃতি ফুল-ফল উৎপন্ন হয় বলে একে বিশ্বের ফুল-ফলের উদ্যান বা পৃথিবীর ফলের ঝুড়ি বলা হয়।" }
+        ]
+    },
+    3: {
+        name: 'Set 3', icon: '☕', topic: 'কফি, আখ, তুলো উৎপাদন এবং দোহ কৃষি ও পরবর্তী কার্যাবলি',
+        questions: [
+            { q: "১. দোহ কৃষি বা দুধ উৎপাদন কৃষিতে (Dairy Farming) বিশ্বে কোন্ অঞ্চল শ্রেষ্ঠ?", opts: ["এশিয়া", "উত্তর আমেরিকা", "ডেনমার্ক বা ইউরোপীয় ইউনিয়ন", "অস্ট্রেলিয়া"], ans: 2, exp: "দোহ কৃষি ও দুগ্ধ শিল্পে ইউরোপের দেশগুলির মধ্যে ডেনমার্ক শ্রেষ্ঠ। সামগ্রিকভাবে ইউরোপীয় ইউনিয়ন (EU) বিশ্বের সর্বাধিক দুধ উৎপাদনকারী অঞ্চল।" },
+            { q: "২. বিশ্বের সর্বাধিক কফি উৎপাদনকারী দেশ কোনটি (২০২২ সালের তথ্য অনুযায়ী)?", opts: ["ভারত", "কলম্বিয়া", "ভিয়েতনাম", "ব্রাজিল"], ans: 3, exp: "১৫০ বছর ধরে ব্রাজিল কফি উৎপাদনে বিশ্বে শীর্ষস্থানে রয়েছে, যেখানে বছরে গড়ে ২.৬ মিলিয়ন মেট্রিক টন কফি উৎপন্ন হয়।" },
+            { q: "৩. ব্রাজিলের কফি বাগিচাকে কী বলা হয়?", opts: ["মিলপা", "ফাজেন্ডা (Fazenda)", "লাডাং", "এস্টেনসিয়া"], ans: 1, exp: "ব্রাজিলের কফি বাগিচাকে ফাজেন্ডা বলা হয়।" },
+            { q: "৪. পৃথিবীর কফি বন্দর এবং ব্রাজিলের কফি রাজধানী কাকে বলা হয়?", opts: ["রিউ দি জেনেরিউ এবং বাহিয়া", "সান্টোস এবং সাওপাওলো", "ব্রাসিলিয়া এবং পারানা", "মিনাস গেরাইস এবং রোন্ডোনিয়া"], ans: 1, exp: "পৃথিবীর কফি বন্দর হলো সান্টোস এবং ব্রাজিলের কফি রাজধানী বলা হয় সাওপাওলো-কে।" },
+            { q: "৫. বিশ্বের সবচেয়ে মূল্যবান কফি কোনটি?", opts: ["অ্যারাবিকা", "রোবাস্টা", "কোপি লুয়াক (Kopi Luwak)", "মোচা কফি"], ans: 2, exp: "পৃথিবীর সবচেয়ে মূল্যবান কফি হলো কোপি লুয়াক বা গন্ধগোকুল কফি (Civet Coffee)। গন্ধগোকুল কফির বীজ ভক্ষণ করে মলের মাধ্যমে বের করে দেয়, যা থেকে এটি তৈরি হয়।" },
+            { q: "৬. কফি উৎপাদনে বিশ্বে দ্বিতীয় স্থানে রয়েছে কোন্ দেশ?", opts: ["কলম্বিয়া", "ইন্দোনেশিয়া", "ভারত", "ভিয়েতনাম"], ans: 3, exp: "সাম্প্রতিক দশকে কফি উৎপাদনে ভিয়েতনাম ব্যাপক বৃদ্ধি ঘটিয়েছে এবং কলম্বিয়াকে পিছনে ফেলে বিশ্বের দ্বিতীয় স্থানে উঠে এসেছে।" },
+            { q: "৭. আখ বা চিনি উৎপাদনে বিশ্বে প্রথম স্থানে রয়েছে কোন্ দেশ (২০২২ অনুযায়ী)?", opts: ["ভারত", "ব্রাজিল", "চিন", "থাইল্যান্ড"], ans: 1, exp: "২০২২ সালের তথ্য অনুযায়ী, ৭২৪.৪৩ মিলিয়ন মেট্রিক টন আখ উৎপাদন করে ব্রাজিল বিশ্বে প্রথম স্থান অধিকার করেছে।" },
+            { q: "৮. আখ চাষের জন্য কীরূপ তাপমাত্রা প্রয়োজন?", opts: ["১৫°সে - ২০°সে", "২১°সে - ২৮°সে", "১০°সে - ১৫°সে", "৩০°সে - ৩৫°সে"], ans: 1, exp: "আখ চাষের জন্য সারা বছর ২১°সে থেকে প্রায় ২৮°সে উয়তা প্রয়োজন।" },
+            { q: "৯. 'সাদা সোনা' বা 'শ্বেত স্বর্ণ' (White gold) কাকে বলা হয়?", opts: ["পাটকে", "রেশমকে", "তুলোকে", "পশমকে"], ans: 2, exp: "তুলোর সৌন্দর্য, আরাম, টেকসই বৈশিষ্ট্য ও বহুমুখী কার্যকারিতার গুণের জন্য একে শ্বেত স্বর্ণ বা সাদা সোনা (White gold) বলে।" },
+            { q: "১০. তুলো উৎপাদনে মার্কিন যুক্তরাষ্ট্রের কোন্ রাজ্য প্রথম স্থান অধিকার করে?", opts: ["জর্জিয়া", "মিসিসিপি", "টেক্সাস", "আরকানসাস"], ans: 2, exp: "২০২৩ সালের তথ্য অনুযায়ী, টেক্সাস রাজ্যে সবচেয়ে বেশি তুলো উৎপন্ন হয় (২৮২৫ হাজার গাঁট)।" },
+            { q: "১১. প্রাথমিক উৎপাদিত দ্রব্যের উপযোগিতা ও গুণগত মান বৃদ্ধি করাকে কোন্ স্তরের অর্থনৈতিক কাজ বলা হয়?", opts: ["প্রথম স্তর", "দ্বিতীয় স্তর", "তৃতীয় স্তর", "চতুর্থ স্তর"], ans: 1, exp: "যে কার্যকলাপের মাধ্যমে মানুষ প্রাথমিক ক্ষেত্র থেকে সংগৃহীত উপাদানের রূপান্তর ঘটিয়ে গুণগতমান ও উপযোগিতা বৃদ্ধি করে (যেমন- শিল্প), তাকে দ্বিতীয় স্তরের বা সহায়ক কার্যাবলি বলে।" },
+            { q: "১২. দ্বিতীয় স্তরের অর্থনৈতিক কার্যাবলিতে নিযুক্ত শ্রমজীবী গোষ্ঠীকে কী বলা হয়?", opts: ["লাল পোশাক শ্রমজীবী", "গোলাপি পোশাক কর্মজীবী", "নীল পোশাক শ্রমজীবী (Blue collar worker)", "সাদা পোশাক কর্মজীবী"], ans: 2, exp: "দ্বিতীয় স্তরের অর্থনৈতিক কার্যাবলিতে নিযুক্ত শ্রমজীবী গোষ্ঠীকে নীল পোশাক শ্রমজীবী গোষ্ঠী বা Blue collar labour force বলা হয়।" },
+            { q: "১৩. উৎপন্ন দ্রব্যের বণ্টন, ব্যাবসাবাণিজ্য এবং পরিসেবামূলক কার্যাবলি কোন্ স্তরের অর্থনীতির অন্তর্গত?", opts: ["প্রথম স্তর", "দ্বিতীয় স্তর", "তৃতীয় স্তর", "পঞ্চম স্তর"], ans: 2, exp: "প্রাথমিক ও সহায়ক ক্রিয়াকলাপের সুষ্ঠু সম্পাদনা এবং উৎপন্ন দ্রব্যের বণ্টনমূলক কার্যকলাপ (বিনিময়, পরিসেবা) তৃতীয় স্তরের অর্থনৈতিক কার্যাবলির অন্তর্গত।" },
+            { q: "১৪. পরিবহণ, যোগাযোগ, ব্যাংক ও বিমা ব্যবস্থা কোন্ স্তরের অর্থনৈতিক কাজের অন্তর্গত?", opts: ["দ্বিতীয় স্তর", "তৃতীয় স্তর", "চতুর্থ স্তর", "পঞ্চম স্তর"], ans: 1, exp: "পরিবহণ ও যোগাযোগ ব্যবস্থা, চিকিৎসা ব্যবস্থা, ব্যাবসাবাণিজ্য, ব্যাংক ও বিমা ব্যবস্থা ইত্যাদি তৃতীয় স্তরের পরিসেবামূলক কার্যাবলির অন্তর্গত।" },
+            { q: "১৫. তৃতীয় স্তরের অর্থনৈতিক কাজে যুক্ত কর্মীদের কী বলা হয়?", opts: ["নীল পোশাক শ্রমজীবী", "সাদা পোশাক কর্মজীবী", "গোলাপি পোশাক কর্মজীবী (Pink collar workers)", "সোনালি পোশাক কর্মজীবী"], ans: 2, exp: "তৃতীয় স্তরের বা পরিসেবামূলক কাজে যুক্ত অধিবাসীরা বিশেষজ্ঞ হিসেবে কাজ করে। এদের গোলাপি পোশাক কর্মজীবী (pink colour workers) বলা হয়।" }
+        ]
+    },
+    4: {
+        name: 'Set 4', icon: '💻', topic: 'নব্য ও অতি নব্য কার্যাবলি এবং খনি খনন',
+        questions: [
+            { q: "১. চতুর্থ স্তরের অর্থনৈতিক কার্যাবলি বা নব্য আধুনিক কার্যাবলির প্রধান ক্ষেত্র কোনটি?", opts: ["কৃষিকাজ ও পশুপালন", "তথ্যপ্রযুক্তি, গবেষণা ও উন্নয়ন", "ব্যাংক ও বিমা", "শিল্প উৎপাদন"], ans: 1, exp: "চতুর্থ শ্রেণির অর্থনৈতিক কাজের প্রধান ক্ষেত্র হলো তথ্যপ্রযুক্তি, তথ্যের বিশ্লেষণ, আদানপ্রদান এবং গবেষণা ও উন্নয়ন।" },
+            { q: "২. চতুর্থ স্তরের অর্থনৈতিক কাজে যুক্ত শ্রমিকদের কী বলা হয়?", opts: ["সাদা পোশাক কর্মজীবী (White collar worker)", "গোলাপি পোশাক কর্মজীবী", "নীল পোশাক শ্রমজীবী", "সোনালি পোশাক কর্মজীবী"], ans: 0, exp: "এই অর্থনৈতিক কাজে যুক্ত শ্রমিকদের সাদা পোশাক কর্মজীবী (white collar labour force) বলা হয়, কারণ এই ক্রিয়াকলাপ সাধারণত বহুতল অফিসের পরিবেশে বিকাশ লাভ করে।" },
+            { q: "৩. কনসালটেন্সি সার্ভিস, বাজার বিশেষজ্ঞ ও নীতি নির্ধারক কোন্ স্তরের অর্থনৈতিক কাজের অন্তর্গত?", opts: ["দ্বিতীয় স্তর", "তৃতীয় স্তর", "চতুর্থ স্তর", "পঞ্চম স্তর (Quinary)"], ans: 3, exp: "অতি দক্ষতাসম্পন্ন ক্রিয়াকলাপ, যেমন— কর্পোরেট জগতের কাজকর্ম, কনসালটেন্সি সার্ভিস, নীতি নির্ধারক ইত্যাদি পঞ্চম স্তরের অর্থনৈতিক কাজ বা কুইনারি পরিসেবার অন্তর্গত।" },
+            { q: "৪. পঞ্চম স্তরের অর্থনৈতিক কাজে যুক্ত শ্রমিকদের কী বলা হয়?", opts: ["লাল পোশাক শ্রমজীবী", "নীল পোশাক শ্রমজীবী", "সাদা পোশাক কর্মজীবী", "সোনালি পোশাক কর্মজীবী (Gold collar worker)"], ans: 3, exp: "পঞ্চম স্তরে প্রচুর আয় করার সুযোগ থাকে এবং অতি দক্ষ পেশাদারি শ্রমিকের প্রয়োজন হয় বলে এদের সোনালি পোশাক কর্মজীবী (gold collar worker) বলা হয়।" },
+            { q: "৫. খনিজ খনন বা মাইনিং (Mining) প্রধানত কয় ভাগে ভাগ করা হয়?", opts: ["২ ভাগে", "৩ ভাগে", "৪ ভাগে", "৫ ভাগে"], ans: 0, exp: "মাইনিংকে প্রধানত দু-ভাগে ভাগ করা হয়: পৃষ্ঠস্থ খনন (Surface mining) এবং উপপৃষ্ঠ বা ভূগর্ভস্থ খনন (Sub-surface/Underground mining)।" },
+            { q: "৬. পৃথিবীর প্রাচীনতম খনি হিসেবে পরিচিত 'এনওয়েনা' (Ngwenya) খনিটি কোথায় অবস্থিত?", opts: ["ভারত", "দক্ষিণ আফ্রিকা", "সুইজারল্যান্ড", "রাশিয়া"], ans: 2, exp: "৪৩০০০ বছরের পুরানো সুইটজারল্যান্ডের এনওয়েনা (Ngwenya) খনিকে প্রাচীনতম খনি হিসেবে ধরা হয়।" },
+            { q: "৭. বিশ্বের সর্ববৃহৎ হিরের খনি কোনটি?", opts: ["এমপোনেং", "আইখেল (রাশিয়া)", "কোলা", "জয়ানেঞ্জ"], ans: 1, exp: "রাশিয়ার আইখেল (Aikhal) হলো সর্ববৃহৎ হিরের খনি।" },
+            { q: "৮. খনিজ সম্পদ উত্তোলনে পৃষ্ঠস্থ খনন (Surface mining) পদ্ধতিতে বিশ্বের কত শতাংশ খনিজ তোলা হয়?", opts: ["এক-চতুর্থাংশ", "এক-তৃতীয়াংশ", "অর্ধেক", "দুই-তৃতীয়াংশের বেশি"], ans: 3, exp: "পৃথিবীর খনিজ উৎপাদনের দুই-তৃতীয়াংশেরও বেশি পৃষ্ঠ খননের (Surface mining) মাধ্যমে উত্তোলন করা হয়।" },
+            { q: "৯. সমুদ্রের বা জলাশয়ের নীচে ভাসমান যন্ত্রের সাহায্যে মূল্যবান খনিজ সমৃদ্ধ পলির বালি খনন করাকে কী বলে?", opts: ["ড্রেজিং (Dredging)", "প্যানিং", "সুইসিং", "র‍্যাট-হোল খনন"], ans: 0, exp: "ড্রেজিং হলো জলের নীচে ভাসমান যন্ত্রের সাহায্যে মূল্যবান খনিজ সমৃদ্ধ সঞ্চয়কে (Placer deposit) খনন করা।" },
+            { q: "১০. প্লেসার (Placer) শব্দের অর্থ কী?", opts: ["ভূগর্ভস্থ সুড়ঙ্গ", "পলির বালি", "সমুদ্রের লবণ", "কঠিন শিলা"], ans: 1, exp: "স্প্যানিশ Placer শব্দের অর্থ হলো 'পলির বালি'।" },
+            { q: "১১. মেঘালয়ে কোন্ অবৈজ্ঞানিক ও ঝুঁকিপূর্ণ পদ্ধতিতে লিগনাইট কয়লা নিষ্কাশন করা হত, যা বর্তমানে আইন করে নিষিদ্ধ?", opts: ["পর্বত শীর্ষ খনন", "ডাইমেনশন কোয়ারিং", "র‍্যাট-হোল খনন (Rat-hole mining)", "উপস্তর গুহা খনন"], ans: 2, exp: "র‍্যাট-হোল খনন হলো এমন একপ্রকার সুড়ঙ্গ খনন যার মধ্যে দিয়ে মানুষ হামাগুড়ি দিয়ে ঢুকে কয়লা আহরণ করে। মেঘালয়ে এই পদ্ধতিতে লিগনাইট নিষ্কাশন হত, যা বর্তমানে নিষিদ্ধ।" },
+            { q: "১২. ভূগর্ভস্থ খননে দীর্ঘপ্রাচীর বা 'লংওয়াল মাইনিং' (Longwall mining) পদ্ধতিতে প্রধানত কী উত্তোলন করা হয়?", opts: ["লোহা", "কয়লা", "সোনা", "হিরে"], ans: 1, exp: "লংওয়াল পদ্ধতিতে আকরিক বস্তুকে আয়তাকার খণ্ডে বিভক্ত করে খননকারী মেশিনের সাহায্যে কয়লা বা আকরিক স্তর খনন করা হয়।" },
+            { q: "১৩. গৃহ নির্মাণে ব্যবহৃত পাথরের বড়ো চাঁই কেটে স্ল্যাবে পরিণত ও পালিশ করার কাজকে কী বলে?", opts: ["ডাইমেনশন কোয়ারিং (Dimension quarrying)", "ফালি খনন", "ব্লাস্টহোল স্টপিং", "প্যানিং"], ans: 0, exp: "গৃহ নির্মাণ কাজে ব্যবহারের জন্য গ্র্যানাইট, মারবেল ইত্যাদির বড়ো চাঁইকে স্ল্যাব আকারে কাটাকে ডাইমেনশন কোয়ারিং বলে।" },
+            { q: "১৪. খনিজ উত্তোলনে ব্লাস্টহোল স্টপিং পদ্ধতিতে খনিজ অপসারণের জন্য যে নলসদৃশ উল্লম্ব গর্ত তৈরি করা হয় তাকে কী বলে?", opts: ["সুড়ঙ্গ", "ড্রিফ্ট", "রেইজ (raise)", "অ্যাডিট"], ans: 2, exp: "ব্লাস্টহোল পদ্ধতিতে তলদেশ থেকে উপরের দিকে ড্রিল করার লেভেল পর্যন্ত একটি নলসদৃশ উল্লম্ব গর্ত তৈরি করা হয়, একে রেইজ (raise) বলে।" },
+            { q: "১৫. খনি খননের ফলে সৃষ্ট একটি অন্যতম প্রাকৃতিক পরিবেশগত সমস্যা কোনটি?", opts: ["বেকারত্ব", "সিঙ্কহোল সৃষ্টি বা ভূমিক্ষয়", "বৈদেশিক বাণিজ্যের হ্রাস", "শিল্পের অবনতি"], ans: 1, exp: "খনি খননের ফলে সৃষ্ট প্রাকৃতিক পরিবেশগত সমস্যার মধ্যে সিঙ্কহোল সৃষ্টি, ভূমিক্ষয়, ভূমিধস, জীববৈচিত্র্য ধ্বংস ইত্যাদি অন্যতম।" }
+        ]
+    }
+};
+
+// ============================================================
+// মূল লজিক (লগইন, টাইমার, কুইজ পরিচালনা এবং রেজাল্ট)
+// ============================================================
+function initHub() {
+    const grid = document.getElementById('setGrid');
+    grid.innerHTML = '';
+
+    Object.keys(allSets).forEach(setId => {
+        const set = allSets[setId];
+        const card = document.createElement('div');
+        card.className = 'set-card';
+
+        let attemptCount = 0;
+        if (currentUser) {
+            let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+            attemptCount = (data[currentUser] && data[currentUser][setId]) || 0;
+        }
+
+        card.innerHTML = `
+            <div class="icon">${set.icon}</div>
+            <div class="set-num">${set.name}</div>
+            <div class="set-title">${set.topic}</div>
+            <div class="set-meta"><span>${set.questions.length} প্রশ্ন</span><span>১০ মিনিট</span></div>
+            ${currentUser ? `<div class="attempt-badge">${attemptCount}/${MAX_ATTEMPTS} Attempts</div>` : ''}
+        `;
+
+        card.onclick = () => {
+            if (currentUser) {
+                if (attemptCount >= MAX_ATTEMPTS) {
+                    alert(`⚠️ আপনি ${set.name} এর সর্বোচ্চ ${MAX_ATTEMPTS} বার Test দিয়েছেন।`);
+                    return;
+                }
+                startQuiz(setId);
+            } else {
+                openLogin(setId);
+            }
+        };
+        grid.appendChild(card);
+    });
+}
+
+function openLogin(setId) {
+    pendingSetId = setId;
+    document.getElementById('loginSetName').innerText = `📚 ${allSets[setId].name}`;
+    document.getElementById('loginOverlay').classList.add('active');
+    document.getElementById('loginUsername').value = '';
+    document.getElementById('loginPassword').value = '';
+    document.getElementById('loginError').style.display = 'none';
+}
+
+function closeLogin() {
+    document.getElementById('loginOverlay').classList.remove('active');
+}
+
+function doLogin() {
+    const u = document.getElementById('loginUsername').value.trim();
+    const p = document.getElementById('loginPassword').value.trim();
+    const err = document.getElementById('loginError');
+
+    // গ্লোবাল স্টোরেজ থেকে ইউজার ডেটাবেস কল করা হচ্ছে
+    const GLOBAL_USERS = JSON.parse(localStorage.getItem("testBazarGlobalUsers")) || {};
+
+    if (!u || !p) {
+        err.innerText = "❌ ইউজারনেম এবং পাসওয়ার্ড দিন!";
+        err.style.display = 'block';
+        return;
+    }
+
+    if (GLOBAL_USERS[u] && GLOBAL_USERS[u] === p) {
+        currentUser = u;
+        document.getElementById('hubUserInfo').innerText = `👤 ${u} — Test দিতে সেট সিলেক্ট করো।`;
+        closeLogin();
+        initHub();
+
+        if (pendingSetId) {
+            let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+            let attemptCount = (data[u] && data[u][pendingSetId]) || 0;
+            if (attemptCount < MAX_ATTEMPTS) {
+                startQuiz(pendingSetId);
+            } else {
+                alert(`⚠️ আপনি ${allSets[pendingSetId].name} এর সর্বোচ্চ ${MAX_ATTEMPTS} বার Test দিয়েছেন।`);
+            }
+            pendingSetId = null;
+        }
+    } else {
+        err.innerText = "❌ ভুল ইউজারনেম বা পাসওয়ার্ড।";
+        err.style.display = 'block';
+    }
+}
+
+function startQuiz(setId) {
+    currentSetId = setId;
+    TOTAL_QS = allSets[setId].questions.length;
+
+    let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+    if (!data[currentUser]) data[currentUser] = {};
+    data[currentUser][setId] = (data[currentUser][setId] || 0) + 1;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    initHub();
+
+    cur = 0; score = 0; wrong = 0; answered = false; userAnswers = [];
+    timeLeft = TIME_LIMIT;
+    isReviewMode = false;
+
+    document.getElementById('hubPage').classList.add('hidden');
+    document.getElementById('resultWrap').classList.remove('show');
+    document.getElementById('testArea').classList.remove('hidden');
+    document.getElementById('timerBox').classList.remove('hidden');
+    document.getElementById('timerBox').classList.remove('danger');
+
+    const set = allSets[setId];
+    document.getElementById('testSetLabel').innerText = set.name;
+    document.getElementById('testTopic').innerText = set.topic;
+
+    startTimer();
+    loadQuestion();
+}
+
+function startTimer() {
+    clearInterval(timerInterval);
+    updateTimerDisplay();
+    timerInterval = setInterval(() => {
+        timeLeft--;
+        updateTimerDisplay();
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            showResult();
+        }
+    }, 1000);
+}
+
+function updateTimerDisplay() {
+    const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+    const s = (timeLeft % 60).toString().padStart(2, '0');
+    document.getElementById('timerDisplay').innerText = `${m}:${s}`;
+    if (timeLeft < 60) document.getElementById('timerBox').classList.add('danger');
+}
+
+function loadQuestion() {
+    answered = false;
+    const set = allSets[currentSetId];
+    const q = set.questions[cur];
+
+    document.getElementById('qNum').innerText = isReviewMode ? `Review: প্রশ্ন ${cur + 1} / ${TOTAL_QS}` : `প্রশ্ন ${cur + 1} / ${TOTAL_QS}`;
+    document.getElementById('qText').innerText = q.q;
+    document.getElementById('progressFill').style.width = `${((cur + 1) / TOTAL_QS) * 100}%`;
+
+    const optsContainer = document.getElementById('qOpts');
+    optsContainer.innerHTML = '';
+
+    q.opts.forEach((optText, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'opt';
+        btn.innerHTML = `<div class="opt-circle">${LABELS[idx]}</div> <div class="opt-text">${optText}</div>`;
+
+        if (isReviewMode) {
+            btn.classList.add('disabled');
+            if (idx === q.ans) btn.classList.add('correct');
+            else if (userAnswers[cur] === idx) btn.classList.add('wrong');
+        } else {
+            btn.onclick = () => selectAnswer(idx, btn);
+        }
+        optsContainer.appendChild(btn);
+    });
+
+    const nextBtn = document.getElementById('nextBtn');
+    document.getElementById('explanation').classList.remove('show');
+    document.getElementById('scoreShow').innerText = isReviewMode ? "সবুজ = সঠিক উত্তর | লাল = আপনার ভুল উত্তর" : `সঠিক: ${score} | ভুল: ${wrong}`;
+
+    if (isReviewMode) {
+        document.getElementById('explanationText').innerHTML = '<strong>ব্যাখ্যা:</strong> ' + q.exp;
+        document.getElementById('explanation').classList.add('show');
+        nextBtn.disabled = false;
+        nextBtn.innerText = cur === set.questions.length - 1 ? 'ফলাফল পেজে ফিরুন' : 'পরবর্তী →';
+    } else {
+        nextBtn.disabled = true;
+        nextBtn.innerText = cur === set.questions.length - 1 ? 'ফলাফল দেখো 🏆' : 'পরবর্তী →';
+    }
+}
+
+function selectAnswer(selectedIdx, btnElement) {
+    if (answered) return;
+    answered = true;
+    const set = allSets[currentSetId];
+    const q = set.questions[cur];
+    userAnswers[cur] = selectedIdx;
+
+    const allBtns = document.getElementById('qOpts').children;
+    for (let i = 0; i < allBtns.length; i++) {
+        allBtns[i].classList.add('disabled');
+        if (i === q.ans) allBtns[i].classList.add('correct');
+    }
+
+    if (selectedIdx === q.ans) {
+        score++;
+    } else {
+        btnElement.classList.add('wrong');
+        wrong++;
+    }
+
+    document.getElementById('scoreShow').innerText = `সঠিক: ${score} | ভুল: ${wrong}`;
+    document.getElementById('explanationText').innerHTML = '<strong>ব্যাখ্যা:</strong> ' + q.exp;
+    document.getElementById('explanation').classList.add('show');
+    document.getElementById('nextBtn').disabled = false;
+}
+
+function nextQ() {
+    const set = allSets[currentSetId];
+    if (cur < set.questions.length - 1) {
+        cur++;
+        loadQuestion();
+    } else {
+        if (isReviewMode) {
+            document.getElementById('testArea').classList.add('hidden');
+            document.getElementById('resultWrap').classList.add('show');
+        } else {
+            clearInterval(timerInterval);
+            showResult();
+        }
+    }
+}
+
+function showResult() {
+    document.getElementById('testArea').classList.add('hidden');
+    document.getElementById('timerBox').classList.add('hidden');
+    document.getElementById('resultWrap').classList.add('show');
+
+    const total = allSets[currentSetId].questions.length;
+    const pct = Math.round((score / total) * 100);
+
+    document.getElementById('finalScore').innerText = `${pct}%`;
+    document.getElementById('rbCorrect').innerText = score;
+    document.getElementById('rbWrong').innerText = total - score;
+
+    let msg = "অসাধারণ!"; let icon = "🏆";
+    if (pct < 50) { msg = "আরও অনুশীলন প্রয়োজন!"; icon = "📚"; }
+    else if (pct < 80) { msg = "খুব ভালো চেষ্টা!"; icon = "👍"; }
+
+    document.getElementById('resultGrade').innerText = msg;
+    document.getElementById('resultIcon').innerText = icon;
+
+    let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+    let count = data[currentUser][currentSetId] || 0;
+    let remaining = MAX_ATTEMPTS - count;
+    document.getElementById('attemptInfo').innerText = `👤 ${currentUser} — ${allSets[currentSetId].name}: বাকি আছে ${remaining} বার Test দেওয়ার সুযোগ`;
+}
+
+function showReview() {
+    document.getElementById('resultWrap').classList.remove('show');
+    document.getElementById('testArea').classList.remove('hidden');
+    isReviewMode = true;
+    cur = 0;
+    loadQuestion();
+}
+
+function restartQuiz() {
+    let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+    let count = data[currentUser][currentSetId] || 0;
+    if (count >= MAX_ATTEMPTS) {
+        alert(`⚠️ আপনি এই সেটের সর্বোচ্চ ${MAX_ATTEMPTS} বার Test দিয়েছেন। আর দেওয়া সম্ভব নয়।`);
+        return;
+    }
+    document.getElementById('resultWrap').classList.remove('show');
+    startQuiz(currentSetId);
+}
+
+function goToHub() {
+    window.location.href = "index.html";
+}
+
+window.onload = initHub;
+</script>
+
+</body>
+</html>
+
+
