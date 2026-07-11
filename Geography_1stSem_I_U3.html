@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test Bazar — Geography | 1st Sem | Regional Unit 3</title>
+<link href="https://fonts.googleapis.com/css2?family=Tiro+Bangla&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ================== CSS STYLES ================== */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Syne', sans-serif; background: #f0faf4; min-height: 100vh; color: #1c2e24; }
+.en-font { font-family: 'Syne', sans-serif; }
+
+.top-bar { background: #1a7a4a; padding: 0.8rem 1.5rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+.top-logo { font-size: 1.2rem; font-weight: 800; color: white; cursor: pointer; }
+.top-logo span { color: #f9a825; }
+.timer-box { background: rgba(255,255,255,0.2); padding: 0.3rem 0.8rem; border-radius: 6px; color: white; font-weight: 700; font-size: 0.95rem; }
+.timer-box.danger { background: #dc3545; animation: pulse 1s infinite; }
+@keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+.main { max-width: 800px; margin: 0 auto; padding: 1.5rem; }
+
+/* HUB PAGE */
+.hub-header { text-align: center; margin-bottom: 2rem; }
+.hub-header h1 { font-family: 'Tiro Bangla', serif; color: #1a7a4a; font-size: 1.6rem; margin-bottom: 0.5rem; line-height: 1.4; }
+.hub-header p { color: #5a7a66; font-size: 0.95rem; font-family: 'Tiro Bangla', serif; font-weight: bold; }
+.set-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
+.set-card { background: white; border: 2px solid #c5dccb; border-radius: 12px; padding: 1.5rem; text-align: center; cursor: pointer; transition: all 0.2s; }
+.set-card:hover { transform: translateY(-3px); border-color: #1a7a4a; box-shadow: 0 6px 20px rgba(26,122,74,0.12); }
+.set-card .icon { font-size: 2.2rem; margin-bottom: 0.3rem; }
+.set-card .set-num { font-weight: 700; font-size: 1.1rem; color: #1a7a4a; }
+.set-card .set-title { font-family: 'Tiro Bangla', serif; font-size: 0.85rem; color: #5a7a66; margin: 0.2rem 0 0.5rem; }
+.set-card .set-meta { display: flex; gap: 1rem; font-size: 0.75rem; color: #5a7a66; justify-content: center; font-weight: bold;}
+.set-card .set-meta span { background: #f0faf4; padding: 0.2rem 0.6rem; border-radius: 4px; }
+.attempt-badge { font-size: 0.8rem; color: #dc3545; font-weight: 700; margin-top: 0.6rem; font-family: 'Tiro Bangla', serif; }
+
+/* QUIZ AREA */
+.quiz-info { background: white; border-radius: 12px; padding: 1rem 1.2rem; margin-bottom: 1.2rem; border: 1px solid #c5dccb; display: flex; gap: 1rem; flex-wrap: wrap; }
+.info-item { font-family: 'Tiro Bangla', serif; font-size: 0.9rem; color: #5a7a66; font-weight: 600; }
+.info-item strong { color: #1a7a4a; }
+
+.progress-wrap { background: #c5dccb; border-radius: 4px; height: 6px; margin-bottom: 1.2rem; overflow: hidden; }
+.progress-fill { height: 100%; background: #1a7a4a; border-radius: 4px; transition: width 0.3s; }
+
+.q-card { background: white; border-radius: 14px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+.q-num { font-size: 0.9rem; font-weight: 700; color: #1a7a4a; margin-bottom: 0.8rem; }
+.q-text { font-family: 'Tiro Bangla', serif; font-size: 1.1rem; color: #1c2e24; font-weight: 700; line-height: 1.6; margin-bottom: 1.2rem; }
+
+.opts { display: flex; flex-direction: column; gap: 0.6rem; }
+.opt { display: flex; align-items: flex-start; gap: 12px; padding: 0.8rem 1rem; border: 1.5px solid #c5dccb; border-radius: 10px; background: transparent; cursor: pointer; text-align: left; transition: all 0.2s; width: 100%; }
+.opt:hover:not(.disabled) { border-color: #1a7a4a; background: #f0faf4; }
+.opt-circle { min-width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid #c5dccb; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #5a7a66; flex-shrink: 0; }
+.opt-text { font-family: 'Tiro Bangla', serif; font-size: 0.95rem; color: #1c2e24; line-height: 1.6; font-weight: 600; padding-top: 2px; }
+
+.opt.correct { border-color: #1a7a4a; background: #e8f7ef; }
+.opt.correct .opt-circle { background: #1a7a4a; border-color: #1a7a4a; color: white; }
+.opt.wrong { border-color: #dc3545; background: #fdf0f0; }
+.opt.wrong .opt-circle { background: #dc3545; border-color: #dc3545; color: white; }
+.opt.disabled { cursor: default; }
+
+.explanation { background: #f0faf4; border-left: 4px solid #1a7a4a; border-radius: 0 8px 8px 0; padding: 1rem; margin-top: 1rem; display: none; }
+.explanation.show { display: block; }
+.explanation p { font-family: 'Tiro Bangla', serif; font-size: 0.9rem; color: #2c4035; line-height: 1.7; }
+
+.nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; }
+.score-show { font-family: 'Tiro Bangla', serif; font-size: 0.85rem; color: #5a7a66; font-weight: bold; }
+.next-btn { background: #1a7a4a; color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 8px; font-family: 'Tiro Bangla', serif; font-size: 0.95rem; font-weight: bold; cursor: pointer; transition: all 0.2s; }
+.next-btn:hover:not(:disabled) { background: #2aad68; }
+.next-btn:disabled { background: #c5dccb; cursor: not-allowed; }
+
+/* RESULT AREA */
+.result-wrap { background: white; border-radius: 14px; padding: 2rem; text-align: center; border: 1px solid #c5dccb; display: none; max-width: 600px; margin: 0 auto; box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+.result-wrap.show { display: block; }
+.result-icon { font-size: 3.5rem; margin-bottom: 0.5rem; line-height: 1; }
+.result-score { font-size: 3.5rem; font-weight: 800; color: #1a7a4a; line-height: 1; margin-bottom: 5px; }
+.result-total { font-size: 1rem; color: #5a7a66; margin-bottom: 0.5rem; font-family: 'Tiro Bangla', serif; font-weight: bold;}
+.result-grade { font-size: 1.2rem; font-weight: 700; color: #1c2e24; margin-bottom: 1.5rem; font-family: 'Tiro Bangla', serif; color: #e8730a; }
+
+.result-bars { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+.result-bar { background: #f0faf4; border-radius: 10px; padding: 1rem; text-align: center; border: 1px solid #c5dccb; }
+.rb-num { font-size: 1.8rem; font-weight: 800; }
+.rb-label { font-family: 'Tiro Bangla', serif; font-size: 0.85rem; color: #5a7a66; margin-top: 0.2rem; font-weight: bold;}
+.attempt-info { font-family: 'Tiro Bangla', serif; font-size: 0.9rem; color: #1a7a4a; font-weight: bold; margin-bottom: 1.5rem; background: #e8f7ef; padding: 10px; border-radius: 8px; }
+
+/* ACTION BUTTONS */
+.result-actions { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+.result-actions button { width: 100%; padding: 14px; border-radius: 8px; font-family: 'Tiro Bangla', serif; font-size: 1.05rem; font-weight: 800; cursor: pointer; border: none; transition: 0.2s; }
+.btn-retry { background: #17a2b8; color: white; }
+.btn-retry:hover { background: #138496; }
+.btn-review { background: #28a745; color: white; }
+.btn-review:hover { background: #218838; }
+.btn-home { background: transparent; color: #5a7a66; border: 2px solid #c5dccb !important; }
+.btn-home:hover { background: #f0faf4; }
+
+/* LOGIN MODAL */
+.login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(4px); }
+.login-overlay.active { display: flex; }
+.login-modal { background: white; padding: 2rem; border-radius: 16px; width: 90%; max-width: 380px; box-shadow: 0 15px 40px rgba(0,0,0,0.2); }
+.login-modal h2 { font-family: 'Tiro Bangla', serif; color: #1a7a4a; font-size: 1.4rem; margin-bottom: 0.5rem; text-align: center; }
+.login-modal p { font-family: 'Tiro Bangla', serif; color: #5a7a66; font-size: 0.9rem; margin-bottom: 1.5rem; text-align: center; }
+
+.input-group { margin-bottom: 1.2rem; }
+.input-group label { display: block; font-size: 0.85rem; font-weight: 700; color: #1c2e24; margin-bottom: 5px; font-family: 'Tiro Bangla', serif; }
+.input-group input { width: 100%; padding: 12px; border: 1.5px solid #c5dccb; border-radius: 8px; font-family: 'Syne', sans-serif; font-size: 0.95rem; outline: none; transition: 0.2s; }
+.input-group input:focus { border-color: #1a7a4a; box-shadow: 0 0 0 3px rgba(26,122,74,0.1); }
+
+.login-btn { width: 100%; background: #1a7a4a; color: white; border: none; padding: 12px; border-radius: 8px; font-family: 'Tiro Bangla', serif; font-size: 1.05rem; font-weight: 700; cursor: pointer; transition: 0.2s; margin-bottom: 8px; }
+.cancel-btn { width: 100%; background: transparent; color: #5a7a66; border: 1.5px solid #c5dccb; padding: 10px; border-radius: 8px; font-family: 'Tiro Bangla', serif; font-size: 1rem; font-weight: 700; cursor: pointer; }
+.error-msg { color: #dc3545; font-size: 0.85rem; font-weight: 700; margin-top: 10px; font-family: 'Tiro Bangla', serif; display: none; text-align: center; }
+.set-name-display { background: #f0faf4; border-radius: 8px; padding: 0.6rem; text-align: center; margin-bottom: 1rem; font-family: 'Tiro Bangla', serif; font-size: 0.95rem; color: #1a7a4a; font-weight: 700; }
+.hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+    <div class="top-logo" onclick="goToHub()">Test<span>Bazar</span></div>
+    <div class="timer-box hidden" id="timerBox">⏱ <span id="timerDisplay">10:00</span></div>
+</div>
+
+<div class="main">
+
+    <!-- ===== LOGIN OVERLAY ===== -->
+    <div class="login-overlay" id="loginOverlay">
+        <div class="login-modal">
+            <h2>🔐 লগইন করুন</h2>
+            <p>Test শুরু করতে আপনার ইউজারনেম ও পাসওয়ার্ড দিন</p>
+            <div class="set-name-display" id="loginSetName">📚 Set 1</div>
+            <div class="input-group">
+                <label>ইউজারনেম</label>
+                <input type="text" id="loginUsername" placeholder="আপনার ইউজারনেম লিখুন">
+            </div>
+            <div class="input-group">
+                <label>পাসওয়ার্ড</label>
+                <input type="password" id="loginPassword" placeholder="আপনার পাসওয়ার্ড লিখুন" onkeydown="if(event.key==='Enter') doLogin()">
+            </div>
+            <button class="login-btn" onclick="doLogin()">✅ লগইন করে Test শুরু করো</button>
+            <button class="cancel-btn" onclick="closeLogin()">বাতিল</button>
+            <div class="error-msg" id="loginError">❌ ভুল ইউজারনেম বা পাসওয়ার্ড।</div>
+        </div>
+    </div>
+
+    <!-- ===== HUB PAGE ===== -->
+    <div id="hubPage">
+        <div class="hub-header">
+            <h1>ভূগোল — 1st Sem<br>Unit 3: ভারত: জলনিকাশি ব্যবস্থা</h1>
+            <p>নিচের সেটগুলো থেকে বেছে নিন।</p>
+            <div id="hubUserInfo" style="font-family:'Tiro Bangla',serif;font-size:1rem;color:#1a7a4a;margin-top:0.8rem;font-weight:bold;"></div>
+        </div>
+        <div class="set-grid" id="setGrid"></div>
+    </div>
+
+    <!-- ===== TEST AREA ===== -->
+    <div id="testArea" class="hidden">
+        <div class="quiz-info">
+            <div class="info-item">🎓 <strong id="testSetName">ভূগোল</strong> — 1st Sem | Regional Unit 3 | <span id="testSetLabel">Set 1</span></div>
+            <div class="info-item">📝 <span id="testTopic">Topic</span></div>
+        </div>
+
+        <div class="progress-wrap"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+
+        <div class="q-card" id="qCard">
+            <div class="q-num" id="qNum">প্রশ্ন ১ / ১৫</div>
+            <div class="q-text" id="qText"></div>
+            <div class="opts" id="qOpts"></div>
+            <div class="explanation" id="explanation"><p id="explanationText"></p></div>
+
+            <div class="nav-row">
+                <div class="score-show" id="scoreShow">সঠিক: ০ | ভুল: ০</div>
+                <button class="next-btn" id="nextBtn" onclick="nextQ()" disabled>পরবর্তী →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== RESULT AREA ===== -->
+    <div class="result-wrap" id="resultWrap">
+        <div class="result-icon" id="resultIcon">🏆</div>
+        <div class="result-score en-font" id="finalScore">100%</div>
+        <div class="result-total">স্কোর</div>
+        <div class="result-grade" id="resultGrade">অসাধারণ!</div>
+
+        <div class="result-bars">
+            <div class="result-bar">
+                <div class="rb-num en-font" id="rbCorrect" style="color:#1a7a4a">0</div>
+                <div class="rb-label">সঠিক</div>
+            </div>
+            <div class="result-bar">
+                <div class="rb-num en-font" id="rbWrong" style="color:#dc3545">0</div>
+                <div class="rb-label">ভুল/স্কিপ</div>
+            </div>
+        </div>
+
+        <div class="attempt-info" id="attemptInfo">👤 user — Set 1: বাকি আছে 9 বার Test দেওয়ার সুযোগ</div>
+
+        <!-- ACTION BUTTONS -->
+        <div class="result-actions">
+            <button class="btn-retry" onclick="restartQuiz()">🔄 আবার চেষ্টা করো</button>
+            <button class="btn-review" onclick="showReview()">👀 উত্তর দেখো</button>
+            <button class="btn-home" onclick="goToHub()">🏠 ← Hub এ ফিরে যাও</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+// ============================================================
+// গ্লোবাল ভেরিয়েবল
+// ============================================================
+const MAX_ATTEMPTS = 10;
+const TIME_LIMIT = 10 * 60; // 10 Minutes
+const LABELS = ['ক', 'খ', 'গ', 'ঘ'];
+const STORAGE_KEY = "testBazarAttempts_Geo_1stSem_RegU3";
+
+let currentUser = "";
+let currentSetId = 1;
+let pendingSetId = null;
+
+let cur = 0, score = 0, wrong = 0, answered = false;
+let timerInterval, timeLeft = TIME_LIMIT;
+let userAnswers = [];
+let isReviewMode = false;
+let TOTAL_QS = 0;
+
+// ============================================================
+// বিভাগ ৩: আঞ্চলিক ভূগোল - ভারত, অধ্যায় ৩: ভারত: জলনিকাশি ব্যবস্থা
+// ============================================================
+const allSets = {
+    1: {
+        name: 'Set 1', icon: '🌊', topic: 'ভারতের নদী ব্যবস্থা ও হিমালয়ের নদনদী',
+        questions: [
+            { q: "১. নদীবিজ্ঞানীদের মতে, একটি আদর্শ নদীর ন্যূনতম দৈর্ঘ্য কত হওয়া প্রয়োজন?", opts: ["১ কিমি", "১.৬ কিমি", "২ কিমি", "৫ কিমি"], ans: 1, exp: "নদীবিজ্ঞানীরা মোটামুটি একমত যে, নদীর একটি নির্দিষ্ট উৎস ও মোহানা থাকা দরকার এবং এর ন্যূনতম দৈর্ঘ্য হতে হবে ১.৬ কিমি। এই হিসাবে ভারতে মোট নদীর সংখ্যা ১০,৩৬০টি।" },
+            { q: "২. ক্যাচমেন্ট এলাকার আকার অনুযায়ী ২০,০০০ বর্গকিমির অধিক ক্ষেত্রবিশিষ্ট 'প্রধান নদী অববাহিকা' (Major river basins) ভারতে কয়টি রয়েছে?", opts: ["১০টি", "১২টি", "১৪টি", "৪৪টি"], ans: 2, exp: "২০,০০০ বর্গকিমির অধিক ক্ষেত্রের নদী অববাহিকাগুলিকে প্রধান নদী অববাহিকা বলা হয়। ভারতে গঙ্গা, ব্রহ্মপুত্র, কৃষ্ণা, তাপ্তী, নর্মদা ইত্যাদি নিয়ে মোট ১৪টি প্রধান নদী অববাহিকা রয়েছে।" },
+            { q: "৩. ভারতের মোট নদী অববাহিকার মধ্যে গঙ্গা-ব্রহ্মপুত্র-মেঘনা পরিবাহ ক্ষেত্রের আয়তন প্রায় কত শতাংশ?", opts: ["২৫%", "৩৫%", "৪৩%", "৬৫%"], ans: 2, exp: "ভারতের নদীগুলির মোট ক্যাচমেন্ট এলাকা ২৫.৩ লক্ষ বর্গকিমি। এর মধ্যে বৃহত্তম হলো গঙ্গা-ব্রহ্মপুত্র-মেঘনা পরিবাহ ক্ষেত্র, যা সমগ্র ক্ষেত্রের প্রায় ৪৩ শতাংশ অধিকার করে আছে।" },
+            { q: "৪. পৃথিবীর মোট মিঠা জলের মাত্র কত শতাংশ ভারতে রয়েছে?", opts: ["২.৪%", "৪.৫%", "৯.২%", "১৭.৮%"], ans: 1, exp: "পৃথিবীর মোট মিঠা জলের মাত্র ৪.৫ শতাংশ ভারতে রয়েছে, অথচ পৃথিবীর মোট জনসংখ্যার প্রায় ১৭.৮ শতাংশ ভারতবাসীকে এই জল ভাগ করে নিতে হয়।" },
+            { q: "৫. ভারতের বৃহত্তম জলবিভাজিকা (Water divide) কোনটি?", opts: ["পশ্চিমঘাট পর্বত জলবিভাজিকা", "বিন্ধ্য-সাতপুরা জলবিভাজিকা", "হিমালয় ও কারাকোরাম জলবিভাজিকা", "আরাবল্লি জলবিভাজিকা"], ans: 2, exp: "হিমালয় ও কারাকোরাম জলবিভাজিকা হলো ভারতের বৃহত্তম জলবিভাজিকা। এখানে অসংখ্য হিমবাহ রয়েছে যা সিন্ধু, গঙ্গা ও ব্রহ্মপুত্র অববাহিকাকে জল প্রদান করে।" },
+            { q: "৬. ভারতের বৃহত্তম জলবিভাজিকায় অবস্থিত সিন্ধু অববাহিকায় সবচেয়ে বেশি কতগুলি হিমবাহ রয়েছে?", opts: ["৬০০টি", "১০০০টি", "২৫০০টি", "৩৫০০টি"], ans: 3, exp: "হিমালয় ও কারাকোরাম জলবিভাজিকার অন্তর্গত সিন্ধু অববাহিকায় সবচেয়ে বেশি ৩৫০০টি হিমবাহ রয়েছে। এরপরে গঙ্গা অববাহিকায় ১০০০টি এবং ব্রহ্মপুত্রে ৬০০টি হিমবাহ রয়েছে।" },
+            { q: "৭. ভারতের একটি উল্লেখযোগ্য উত্তরবাহিনী নদীর নাম কী?", opts: ["নর্মদা", "চম্বল", "কাবেরী", "গোদাবরী"], ans: 1, exp: "ভারতের অল্প কয়েকটি নদী উত্তরবাহিনী। গঙ্গা-যমুনার ডানদিকের চম্বল, সিন্ধু, বেতোয়া, শোন ইত্যাদি নদীগুলি মধ্য ভারতের মালভূমি থেকে বেরিয়ে উত্তর দিকে প্রবাহিত হয়ে গঙ্গা-যমুনার সঙ্গে মিশেছে।" },
+            { q: "৮. সিন্ধুনদের মোট দৈর্ঘ্য ৩১৮৬ কিমি হলে, ভারতে এর প্রবাহপথের দৈর্ঘ্য কত?", opts: ["৫০৭ কিমি", "৭০৯ কিমি", "১১২০ কিমি", "১৩৬৮ কিমি"], ans: 1, exp: "সিন্ধুনদের মোট দৈর্ঘ্য ৩১৮৬ কিমি। এর মধ্যে ৭০৯ কিমি ভারতের মধ্য দিয়ে প্রবাহিত, যার অধিকাংশই পর্বতসংকুল।" },
+            { q: "৯. বিশ্বের নদীমধ্যস্থ দ্বীপগুলির মধ্যে বৃহত্তম 'মাজুলির চর' কোন্ নদে অবস্থিত?", opts: ["গঙ্গা", "সিন্ধু", "ব্রহ্মপুত্র", "গোদাবরী"], ans: 2, exp: "ব্রহ্মপুত্র নদের মধ্যে অবস্থিত মাজুলির চর বিশ্বের নদীমধ্যস্থ দ্বীপগুলির মধ্যে বৃহত্তম।" },
+            { q: "১০. ভূতাত্ত্বিকদের মতে, মায়োসিন যুগে হিমালয়ের শিবালিক অংশে অসম থেকে পাঞ্জাব পর্যন্ত কোন্ বিশাল নদী প্রবাহিত হত?", opts: ["ইন্দো-ব্রহ্মা বা শিবালিক নদী", "প্রাচীন গঙ্গা", "টেথিস নদী", "সরস্বতী নদী"], ans: 0, exp: "ভূতাত্ত্বিকদের মতে মায়োসিন যুগে (২.৩-৫.৩ কোটি বছর পূর্বে) শিবালিক বা ইন্দো-ব্রহ্মা নামে বিশাল নদী হিমালয়ের শিবালিক অংশে অসম থেকে পাঞ্জাব পর্যন্ত প্রবাহিত হত।" },
+            { q: "১১. গঙ্গা ও ব্রহ্মপুত্র নদীর প্রবাহ বঙ্গোপসাগরমুখী হওয়ার জন্য দায়ী 'মালদা গ্যাপ' বা 'গারো-রাজমহল গ্যাপ' কোন্ যুগে সৃষ্টি হয়েছিল?", opts: ["মায়োসিন যুগে", "প্লিস্টোসিন যুগের মাঝামাঝি সময়ে", "জুরাসিক যুগে", "ক্যাম্ব্রিয়ান যুগে"], ans: 1, exp: "প্লিস্টোসিন যুগের মাঝামাঝি সময়ে রাজমহল পাহাড় ও মেঘালয় মালভূমি এবং এদের মাঝে এক নিম্নভূমি তৈরি হয় যা মালদা গ্যাপ নামে পরিচিত। এই গ্যাপ দিয়েই গঙ্গা ও ব্রহ্মপুত্র বঙ্গোপসাগরের দিকে প্রবাহিত হয়।" },
+            { q: "১২. তিব্বতের মালভূমিতে মানস সরোবরের কাছে চেয়ায়ুং দুং হিমবাহ থেকে সৃষ্ট নদীটি তিব্বতে কী নামে পরিচিত?", opts: ["ডিহং", "সিয়াং", "সাংপো", "লোহিত"], ans: 2, exp: "ব্রহ্মপুত্র নদ তিব্বতের মানস সরোবরের কাছে চেয়ায়ুং দুং হিমবাহ থেকে সৃষ্টি হয়ে তিব্বতের ভিতর দিয়ে প্রবাহিত হয়েছে, সেখানে এর নাম সাংপো।" },
+            { q: "১৩. গঙ্গা নদীর উৎপত্তিস্থল 'গঙ্গোত্রী হিমবাহ' সমুদ্রপৃষ্ঠ থেকে কত উচ্চতায় অবস্থিত?", opts: ["২৫২৫ মি", "৩৯০০ মি", "৫৪৮৫ মি", "৮৮৪৮ মি"], ans: 1, exp: "ভাগীরথী (গঙ্গা) নদী হিমালয়ের মধ্যে ৩৯০০ মি উচ্চতায় গোমুখে গঙ্গোত্রী হিমবাহ থেকে উৎপন্ন হয়েছে।" },
+            { q: "১৪. ভাগীরথী ও অলকানন্দা নদী কোথায় মিলিত হয়ে 'গঙ্গা' নাম ধারণ করেছে?", opts: ["হরিদ্বার", "এলাহাবাদ", "দেবপ্রয়াগ", "বারাণসী"], ans: 2, exp: "দেবপ্রয়াগের কাছে ভাগীরথী অলকানন্দার সাথে মিলিত হয়েছে এবং এই মিলিত প্রবাহ গঙ্গা নাম নিয়ে শিবালিক পর্বত অতিক্রম করে হরিদ্বারের কাছে সমভূমিতে নেমে এসেছে।" },
+            { q: "১৫. গঙ্গার ডানতীরের সর্ববৃহৎ উপনদী 'যমুনা' কোথায় গঙ্গার সাথে মিলিত হয়েছে?", opts: ["হরিদ্বার", "এলাহাবাদ (প্রয়াগরাজ)", "পাটনা", "বারাণসী"], ans: 1, exp: "হিমালয়ের যমুনোত্রী হিমবাহে উৎপন্ন যমুনা নদী ৪০০ কিমি পথ গঙ্গার সমান্তরালভাবে প্রবাহিত হয়ে এলাহাবাদে গঙ্গার সাথে মিলিত হয়েছে।" }
+        ]
+    },
+    2: {
+        name: 'Set 2', icon: '🏞️', topic: 'উপদ্বীপীয় বা দাক্ষিণাত্যের নদনদী',
+        questions: [
+            { q: "১. দাক্ষিণাত্য মালভূমির অধিকাংশ নদী পশ্চিম থেকে পূর্বদিকে প্রবাহিত হয়ে বঙ্গোপসাগরে পড়ার মূল ভৌগোলিক কারণ কী?", opts: ["পূর্ব উপকূলের উচ্চতা বৃদ্ধি", "টার্শিয়ারি যুগে হিমালয়ের উত্থানকালে মালভূমির পূর্বদিকে হেলে যাওয়া", "পশ্চিমঘাট পর্বতের উচ্চতা হ্রাস", "খাড়া ভূমিঢাল"], ans: 1, exp: "টার্শিয়ারি যুগে হিমালয়ের উত্থানকালে উপদ্বীপীয় মালভূমি পূর্বদিকে হেলে যায়। ফলে নদীগুলি ভূমির প্রাথমিক ঢালকে অনুসরণ করে প্রবাহিত হয়ে বঙ্গোপসাগরে পড়েছে।" },
+            { q: "২. ভারতের পশ্চিমবাহিনী নদীগুলির (যেমন নর্মদা ও তাপ্তী) মোহানায় বদ্বীপ গড়ে না ওঠার প্রধান কারণ কী?", opts: ["নদীর দীর্ঘ গতিপথ", "নদীর জলে প্রচুর পলির উপস্থিতি", "মোহানা অংশের খাড়া ভূমিঢাল এবং স্রোতের অধিক বেগ", "অসংখ্য উপনদীর অবস্থান"], ans: 2, exp: "পশ্চিমবাহিনী নদীগুলি আরব সাগরের মহীসোপানের গভীর ও খাড়া ঢালে জোরাল প্রবাহ বজায় রেখে মিলিত হয় এবং প্রবাহপথ ছোটো হওয়ায় পলির পরিমাণও কম থাকে। তাই বদ্বীপ সৃষ্টি হয়নি।" },
+            { q: "৩. দাক্ষিণাত্যের পশ্চিমবাহিনী নদী 'নর্মদা' কোন্ পর্বত থেকে উৎপত্তি লাভ করেছে?", opts: ["পশ্চিমঘাট পর্বত", "মহাকাল পর্বতের অমরকণ্টক শৃঙ্গ", "মহাদেব পর্বত", "নীলগিরি পর্বত"], ans: 1, exp: "নর্মদা নদী ১০০০ মি উঁচুতে মহাকাল পর্বতের অমরকণ্টক শৃঙ্গের একটি প্রস্রবণ থেকে উৎপন্ন হয়ে সাতপুরা পর্বতের উত্তর দিকের স্রংস উপত্যকার মধ্য দিয়ে প্রবাহিত হয়েছে।" },
+            { q: "৪. নর্মদা নদী জবলপুরে মারবেল পাহাড় অতিক্রম করার সময় ভেরাঘাটে যে ১৫ মিটার উঁচু সুন্দর জলপ্রপাতটির সৃষ্টি করেছে, তার নাম কী?", opts: ["যোগ জলপ্রপাত", "চিত্রকোট জলপ্রপাত", "শিবসমুদ্রম জলপ্রপাত", "ধুঁয়াধার জলপ্রপাত"], ans: 3, exp: "জবলপুরে মারবেল পাহাড় অতিক্রম করার সময় ভেরাঘাটে নর্মদা নদী ধুঁয়াধার জলপ্রপাত নামে ১৫ মিটার উঁচু একটি সুন্দর জলপ্রপাতের সৃষ্টি করেছে।" },
+            { q: "৫. দাক্ষিণাত্যের অপর একটি উল্লেখযোগ্য পশ্চিমবাহিনী নদী 'তাপ্তী' বা 'তাপি' কোন্ পর্বত থেকে উৎপন্ন হয়েছে?", opts: ["মহাদেব পর্বত", "বিন্ধ্য পর্বত", "আরাবল্লি পর্বত", "মহাকাল পর্বত"], ans: 0, exp: "তাপ্তী নদী মহাদেব পর্বতে উৎপন্ন হয়ে সাতপুরা ও অজন্তা পাহাড়ের মধ্যবর্তী সংকীর্ণ স্রংস উপত্যকার মধ্য দিয়ে পশ্চিম দিকে প্রবাহিত হয়ে খাম্বাত উপসাগরে পড়েছে।" },
+            { q: "৬. পূর্ব ভারতের উচ্চভূমির অন্তর্গত খামারপাত পাহাড় থেকে কোন্ নদীর উৎপত্তি হয়েছে?", opts: ["সুবর্ণরেখা", "মহানদী", "দামোদর", "ব্রাহ্মণী"], ans: 2, exp: "দামোদর নদ ছোটোনাগপুর মালভূমি অঞ্চলে পালামৌ জেলার খামারপাত পাহাড় থেকে উৎপন্ন হয়ে পশ্চিমবঙ্গের দিকে প্রবাহিত হয়েছে।" },
+            { q: "৭. ওডিশার সম্বলপুরের কাছে কোন্ নদীর ওপর বিখ্যাত 'হীরাকুঁদ বাঁধ' নির্মাণ করা হয়েছে?", opts: ["সুবর্ণরেখা", "মহানদী", "গোদাবরী", "কৃষ্ণা"], ans: 1, exp: "ছত্তিশগড়ের সিহওয়া পাহাড় থেকে উৎপন্ন মহানদীর ওপর ওডিশার সম্বলপুরের কাছে হীরাকুঁদ বাঁধ ও জলাধার নির্মাণ করা হয়েছে।" },
+            { q: "৮. দৈর্ঘ্য, অববাহিকা অঞ্চলের বিস্তার এবং ধর্মীয় গুরুত্বের বিচারে কোন্ নদীকে 'দক্ষিণ ভারতের গঙ্গা' আখ্যা দেওয়া হয়েছে?", opts: ["কৃষ্ণা", "কাবেরী", "গোদাবরী", "নর্মদা"], ans: 2, exp: "গোদাবরী দক্ষিণ ভারতের দীর্ঘতম নদী (১৪৫০ কিমি)। বিশাল অববাহিকা এবং অর্থনৈতিক ও ধর্মীয় গুরুত্বের দিক দিয়ে বিচার করে গোদাবরীকে দক্ষিণ ভারতের গঙ্গা বলা হয়।" },
+            { q: "৯. গোদাবরী নদীর উৎপত্তি কোথায়?", opts: ["মহাবালেশ্বর শৃঙ্গ", "ত্রিম্বকেশ্বর (ত্রিম্বক)", "ব্রহ্মগিরি পাহাড়", "মহাকাল পর্বত"], ans: 1, exp: "পশ্চিমঘাট পর্বতমালায় ত্রিম্বকের কাছে উৎপন্ন হয়ে গোদাবরী একটি গিরিখাতের মধ্য দিয়ে প্রবাহিত হয়ে মহারাষ্ট্র ও অন্ধ্রপ্রদেশের ওপর দিয়ে বয়ে গেছে।" },
+            { q: "১০. পশ্চিমঘাট পর্বতমালার 'মহাবালেশ্বর শৃঙ্গ' থেকে কোন্ নদীর উৎপত্তি হয়েছে?", opts: ["কৃষ্ণা", "কাবেরী", "গোদাবরী", "তাপ্তী"], ans: 0, exp: "কৃষ্ণা নদী পশ্চিমঘাট পর্বতমালার মহাবালেশ্বর শৃঙ্গ থেকে উৎপন্ন হয়ে মহারাষ্ট্র, কর্ণাটক ও অন্ধ্রপ্রদেশের ভিতর দিয়ে প্রবাহিত হয়েছে।" },
+            { q: "১১. অন্ধ্রপ্রদেশে কৃষ্ণা নদীর ওপর কোন্ বিখ্যাত বাঁধটি নির্মাণ করা হয়েছে?", opts: ["কৃষ্ণসাগর", "মেতুর", "নাগার্জুনসাগর", "হীরাকুঁদ"], ans: 2, exp: "কৃষ্ণা নদীর ওপর অন্ধ্রপ্রদেশে বিখ্যাত নাগার্জুনসাগর বাঁধ নির্মাণ করা হয়েছে।" },
+            { q: "১২. কাবেরী নদী কর্ণাটকের শিবসমুদ্রমে কত মিটার উঁচু একটি খাড়া জলপ্রপাতের সৃষ্টি করেছে?", opts: ["১৫ মি", "১০০ মি", "২৫০ মি", "৪০০ মি"], ans: 1, exp: "কর্ণাটকের মালভূমির ওপর দিয়ে প্রবাহিত হওয়ার সময় কাবেরী নদী শিবসমুদ্রমে ১০০ মিটার খাড়া একটি জলপ্রপাতের সৃষ্টি করেছে।" },
+            { q: "১৩. কোন্ নদীর বদ্বীপ অঞ্চল অতি উর্বর হওয়ায় তাকে 'দক্ষিণের শস্যভাণ্ডার' বলা হয়?", opts: ["কৃষ্ণা", "গোদাবরী", "কাবেরী", "মহানদী"], ans: 2, exp: "তামিলনাডুতে কাবেরী নদীর মোহানায় সৃষ্ট বদ্বীপ অতি উর্বর এবং এখানে প্রচুর পরিমাণে ধান উৎপন্ন হয় বলে একে দক্ষিণের শস্যভাণ্ডার বলা হয়।" },
+            { q: "১৪. বিখ্যাত 'যোগ জলপ্রপাত' (Jog Falls) কোন্ নদীর গতিপথে সৃষ্টি হয়েছে?", opts: ["কাবেরী", "সরাবতী", "নর্মদা", "সুবর্ণরেখা"], ans: 1, exp: "দাক্ষিণাত্যের সরাবতী নদী আরব সাগরে পতিত হওয়ার পথে পশ্চিমঘাট পর্বতমালায় প্রায় ২৫০ মি উঁচু বিখ্যাত যোগ জলপ্রপাতের সৃষ্টি করেছে।" },
+            { q: "১৫. রাজস্থানের একমাত্র উল্লেখযোগ্য নদী 'লুনি' কোথায় গিয়ে পড়েছে?", opts: ["খাম্বাত উপসাগর", "আরব সাগর", "কচ্ছের রান", "বঙ্গোপসাগর"], ans: 2, exp: "রাজস্থানের শুষ্কতম রাজ্যের নদী লুনি অনাসাগর থেকে উৎপন্ন হয়ে বালতোরার কাছে দক্ষিণ দিকে বেঁকে কচ্ছের রানে গিয়ে পড়েছে।" }
+        ]
+    },
+    3: {
+        name: 'Set 3', icon: '🤝', topic: 'নদী সংযোগ, জলবণ্টন চুক্তি এবং বিবিধ',
+        questions: [
+            { q: "১. ১৯৬০ সালে ভারত ও পাকিস্তানের মধ্যে কোন্ বিখ্যাত জলবণ্টন চুক্তি স্বাক্ষরিত হয়?", opts: ["গঙ্গা জলবণ্টন চুক্তি", "সিন্ধু জল চুক্তি", "তিস্তা চুক্তি", "ব্রহ্মপুত্র চুক্তি"], ans: 1, exp: "সিন্ধু নদের জলের দাবি নিয়ে দুই দেশের মধ্যে বিবাদ মেটাতে ১৯৬০ সালে ভারত ও পাকিস্তানের মধ্যে 'সিন্ধু জল চুক্তি' (Indus Water Treaty) স্বাক্ষরিত হয়।" },
+            { q: "২. ১৯৯৬ সালে ভারত ও বাংলাদেশের মধ্যে গঙ্গার জলবণ্টন নিয়ে যে ঐতিহাসিক চুক্তি স্বাক্ষরিত হয়, তার মেয়াদ কত বছর?", opts: ["১০ বছর", "২০ বছর", "৩০ বছর", "৫০ বছর"], ans: 2, exp: "১৯৯৬ সালে গঙ্গার জলবণ্টন নিয়ে ভারত ও বাংলাদেশের মধ্যে এক পরিপূর্ণ চুক্তি হয়, যার মেয়াদ ৩০ বছর নির্ধারণ করা হয়েছে।" },
+            { q: "৩. সিন্ধু জল চুক্তিতে (১৯৬০) মধ্যস্থতাকারী হিসেবে কোন্ আন্তর্জাতিক সংস্থা গুরুত্বপূর্ণ ভূমিকা পালন করেছিল?", opts: ["রাষ্ট্রসংঘ (UN)", "বিশ্ব স্বাস্থ্য সংস্থা (WHO)", "বিশ্ব ব্যাংক (World Bank)", "আন্তর্জাতিক ন্যায়ালয়"], ans: 2, exp: "বিশ্ব ব্যাংকের মতে, এই চুক্তিটিকে পৃথিবীর সবচেয়ে সফল আন্তঃসীমান্ত জল ব্যবস্থাপনা চুক্তি হিসেবে গণ্য করা যায়।" },
+            { q: "৪. সিন্ধু জল চুক্তি (১৯৬০) অনুযায়ী পূর্বের কোন্ নদীগুলির সম্পূর্ণ নিয়ন্ত্রণ ভারতের হাতে দেওয়া হয়?", opts: ["সিন্ধু, বিতস্তা ও চন্দ্রভাগা", "বিপাশা, ইরাবতী ও শতদ্রু", "গঙ্গা, যমুনা ও সরস্বতী", "তিস্তা, তোর্সা ও মানস"], ans: 1, exp: "চুক্তি অনুসারে বিপাশা (Beas), ইরাবতী (Ravi) ও শতদ্রু (Sutlej) নদীর জলের নিয়ন্ত্রণ ভারতের হাতে থাকে এবং পশ্চিমের সিন্ধু, চন্দ্রভাগা ও বিতস্তার নিয়ন্ত্রণ পাকিস্তানকে দেওয়া হয়।" },
+            { q: "৫. আন্তঃরাজ্য নদী জলবিবাদ নিষ্পত্তির জন্য ভারত সরকার কত সালে 'আন্তঃরাজ্য নদী জলবিবাদ আইন' (ISRWD) পাস করে?", opts: ["১৯৪৭ সালে", "১৯৫৬ সালে", "১৯৮৬ সালে", "১৯৯৬ সালে"], ans: 1, exp: "নদীতে বহুমুখী প্রকল্পের ব্যয় ও সুবিধা ভাগাভাগি নিয়ে রাজ্যগুলির মধ্যে বিবাদ নিষ্পত্তির জন্য ভারত সরকার ১৯৫৬ সালে আন্তঃরাজ্য নদী জলবিবাদ আইন পাস করে।" },
+            { q: "৬. ইরাবতী ও বিপাশা নদীর জলবণ্টন নিয়ে বিবাদের জেরে ১৯৮৬ সালে গঠিত ট্রাইব্যুনালে কোন্ কোন্ রাজ্য যুক্ত?", opts: ["মহারাষ্ট্র, কর্ণাটক, অন্ধ্রপ্রদেশ", "ওডিশা, ছত্তিশগড়", "পাঞ্জাব, হরিয়ানা, রাজস্থান", "তামিলনাড়ু, কেরালা"], ans: 2, exp: "ইরাবতী ও বিপাশার জল নিয়ে বিবাদ মেটাতে ১৯৮৬ সালে পাঞ্জাব, হরিয়ানা এবং রাজস্থানের মধ্যে প্রথম নদী ট্রাইব্যুনালটি গঠিত হয়।" },
+            { q: "৭. ভারতের নদীসংযুক্তিকরণের (River Linking) ধারণা ১৮৫৮ সালে সর্বপ্রথম কে প্রকাশ্যে আনেন?", opts: ["ড. কানুরি লক্ষ্মণ রাও", "স্যার আর্থার কটন", "এ. পি. জে. আবদুল কালাম", "জওহরলাল নেহরু"], ans: 1, exp: "নদী সংযুক্তিকরণের ধারণা ১৮৫৮ সালে স্যার আর্থার কটন সর্বপ্রথম প্রকাশ্যে আনেন। পরিকল্পনাটি ছিল উদ্বৃত্ত জলের নদীগুলিকে খালের মাধ্যমে জল ঘাটতি থাকা নদীগুলির সাথে যুক্ত করা।" },
+            { q: "৮. আধুনিক নদীসংযোগ পরিকল্পনায় ভারতের ৩৮টি নদনদীকে মোট কতগুলি খাল দ্বারা যুক্ত করার প্রস্তাব দেওয়া হয়েছে?", opts: ["১৪টি", "১৬টি", "৩০টি", "৫০টি"], ans: 2, exp: "প্রকল্পের খসড়ায় বলা আছে ভারতের ৩৮টি নদনদীকে ৩০টি খাল দ্বারা যুক্ত করা হবে। এর মধ্যে ১৪টি হিমালয়ান কম্পোনেন্ট এবং ১৬টি পেনিনসুলার কম্পোনেন্ট।" },
+            { q: "৯. গঙ্গা নদীর বামতীরের উল্লেখযোগ্য উপনদী ঘর্ঘরা (সরযূ), গণ্ডক ও কোশী কোথা থেকে উৎপন্ন হয়েছে?", opts: ["বিন্ধ্য পর্বত", "পশ্চিমঘাট পর্বত", "হিমালয় পর্বত", "আরাবল্লি পর্বত"], ans: 2, exp: "গঙ্গার বাম তীরের উপনদীগুলির মধ্যে ঘর্ঘরা, রামগঙ্গা, গণ্ডক ও কোশী সবচেয়ে উল্লেখযোগ্য। এই নদীগুলি হিমালয় পর্বতে উৎপন্ন হয়েছে।" },
+            { q: "১০. ভারতের দীর্ঘতম নদী গঙ্গার দৈর্ঘ্য কত কিলোমিটার?", opts: ["১৩৭৬ কিমি", "১৪৫০ কিমি", "২৫২৫ কিমি", "২৯০০ কিমি"], ans: 2, exp: "গঙ্গা ভারতের সর্বশ্রেষ্ঠ এবং দীর্ঘতম নদী, যার মোট দৈর্ঘ্য ২৫২৫ কিলোমিটার।" },
+            { q: "১১. সিন্ধুর পাঁচটি উপনদীর মধ্যে দীর্ঘতম উপনদী কোনটি, যার ওপর বিখ্যাত ভাকরা বাঁধ নির্মিত হয়েছে?", opts: ["শতদ্রু", "বিপাশা", "চন্দ্রভাগা", "বিতস্তা"], ans: 0, exp: "সিন্ধুর পাঁচটি উপনদীর মধ্যে শতদ্রুর দৈর্ঘ্য ১৩৬৮ কিমি। ভাকরায় শতদ্রু নদীর ওপর বিশ্বের সবচেয়ে উঁচু বাঁধ নির্মাণ করা হয়েছে।" },
+            { q: "১২. 'পাঞ্জাব' কথাটির সৃষ্টি হয়েছে পঞ্চ (পাঁচ) + অব (নদী) থেকে। এই পাঁচটি নদী মূলত কোন্ নদের উপনদী?", opts: ["গঙ্গা", "ব্রহ্মপুত্র", "সিন্ধু", "যমুনা"], ans: 2, exp: "সিন্ধুর পাঁচটি উপনদী (শতদ্রু, বিপাশা, চন্দ্রভাগা, ইরাবতী ও বিতস্তা) পাঞ্জাবের সমভূমির ভিতর দিয়ে বয়ে গিয়ে শুকনো জমিকে সরস করেছে। এই পাঁচটি নদীর জন্যই রাজ্যের নাম 'পাঞ্জাব' হয়েছে।" },
+            { q: "১৩. ব্রহ্মপুত্র নদ ভারত ভূখণ্ডে প্রথম কোন্ রাজ্যে প্রবেশ করেছে?", opts: ["অসম", "ত্রিপুরা", "অরুণাচল প্রদেশ", "মেঘালয়"], ans: 2, exp: "ব্রহ্মপুত্র নদ নামচা-বারওয়া গিরিশৃঙ্গের কাছে চুলের কাঁটার মতো দক্ষিণ দিকে বেঁকে 'ডিহং' নাম নিয়ে ভারতের অরুণাচল প্রদেশে প্রবেশ করেছে।" }
+        ]
+    }
+};
+
+// ============================================================
+// মূল লজিক (লগইন, টাইমার, কুইজ পরিচালনা এবং রেজাল্ট)
+// ============================================================
+function initHub() {
+    const grid = document.getElementById('setGrid');
+    grid.innerHTML = '';
+
+    Object.keys(allSets).forEach(setId => {
+        const set = allSets[setId];
+        const card = document.createElement('div');
+        card.className = 'set-card';
+
+        let attemptCount = 0;
+        if (currentUser) {
+            let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+            attemptCount = (data[currentUser] && data[currentUser][setId]) || 0;
+        }
+
+        card.innerHTML = `
+            <div class="icon">${set.icon}</div>
+            <div class="set-num">${set.name}</div>
+            <div class="set-title">${set.topic}</div>
+            <div class="set-meta"><span>${set.questions.length} প্রশ্ন</span><span>১০ মিনিট</span></div>
+            ${currentUser ? `<div class="attempt-badge">${attemptCount}/${MAX_ATTEMPTS} Attempts</div>` : ''}
+        `;
+
+        card.onclick = () => {
+            if (currentUser) {
+                if (attemptCount >= MAX_ATTEMPTS) {
+                    alert(`⚠️ আপনি ${set.name} এর সর্বোচ্চ ${MAX_ATTEMPTS} বার Test দিয়েছেন।`);
+                    return;
+                }
+                startQuiz(setId);
+            } else {
+                openLogin(setId);
+            }
+        };
+        grid.appendChild(card);
+    });
+}
+
+function openLogin(setId) {
+    pendingSetId = setId;
+    document.getElementById('loginSetName').innerText = `📚 ${allSets[setId].name}`;
+    document.getElementById('loginOverlay').classList.add('active');
+    document.getElementById('loginUsername').value = '';
+    document.getElementById('loginPassword').value = '';
+    document.getElementById('loginError').style.display = 'none';
+}
+
+function closeLogin() {
+    document.getElementById('loginOverlay').classList.remove('active');
+}
+
+function doLogin() {
+    const u = document.getElementById('loginUsername').value.trim();
+    const p = document.getElementById('loginPassword').value.trim();
+    const err = document.getElementById('loginError');
+
+    // গ্লোবাল স্টোরেজ থেকে ইউজার ডেটাবেস কল করা হচ্ছে
+    const GLOBAL_USERS = JSON.parse(localStorage.getItem("testBazarGlobalUsers")) || {};
+
+    if (!u || !p) {
+        err.innerText = "❌ ইউজারনেম এবং পাসওয়ার্ড দিন!";
+        err.style.display = 'block';
+        return;
+    }
+
+    if (GLOBAL_USERS[u] && GLOBAL_USERS[u] === p) {
+        currentUser = u;
+        document.getElementById('hubUserInfo').innerText = `👤 ${u} — Test দিতে সেট সিলেক্ট করো।`;
+        closeLogin();
+        initHub();
+
+        if (pendingSetId) {
+            let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+            let attemptCount = (data[u] && data[u][pendingSetId]) || 0;
+            if (attemptCount < MAX_ATTEMPTS) {
+                startQuiz(pendingSetId);
+            } else {
+                alert(`⚠️ আপনি ${allSets[pendingSetId].name} এর সর্বোচ্চ ${MAX_ATTEMPTS} বার Test দিয়েছেন।`);
+            }
+            pendingSetId = null;
+        }
+    } else {
+        err.innerText = "❌ ভুল ইউজারনেম বা পাসওয়ার্ড।";
+        err.style.display = 'block';
+    }
+}
+
+function startQuiz(setId) {
+    currentSetId = setId;
+    TOTAL_QS = allSets[setId].questions.length;
+
+    let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+    if (!data[currentUser]) data[currentUser] = {};
+    data[currentUser][setId] = (data[currentUser][setId] || 0) + 1;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    initHub();
+
+    cur = 0; score = 0; wrong = 0; answered = false; userAnswers = [];
+    timeLeft = TIME_LIMIT;
+    isReviewMode = false;
+
+    document.getElementById('hubPage').classList.add('hidden');
+    document.getElementById('resultWrap').classList.remove('show');
+    document.getElementById('testArea').classList.remove('hidden');
+    document.getElementById('timerBox').classList.remove('hidden');
+    document.getElementById('timerBox').classList.remove('danger');
+
+    const set = allSets[setId];
+    document.getElementById('testSetLabel').innerText = set.name;
+    document.getElementById('testTopic').innerText = set.topic;
+
+    startTimer();
+    loadQuestion();
+}
+
+function startTimer() {
+    clearInterval(timerInterval);
+    updateTimerDisplay();
+    timerInterval = setInterval(() => {
+        timeLeft--;
+        updateTimerDisplay();
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            showResult();
+        }
+    }, 1000);
+}
+
+function updateTimerDisplay() {
+    const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+    const s = (timeLeft % 60).toString().padStart(2, '0');
+    document.getElementById('timerDisplay').innerText = `${m}:${s}`;
+    if (timeLeft < 60) document.getElementById('timerBox').classList.add('danger');
+}
+
+function loadQuestion() {
+    answered = false;
+    const set = allSets[currentSetId];
+    const q = set.questions[cur];
+
+    document.getElementById('qNum').innerText = isReviewMode ? `Review: প্রশ্ন ${cur + 1} / ${TOTAL_QS}` : `প্রশ্ন ${cur + 1} / ${TOTAL_QS}`;
+    document.getElementById('qText').innerText = q.q;
+    document.getElementById('progressFill').style.width = `${((cur + 1) / TOTAL_QS) * 100}%`;
+
+    const optsContainer = document.getElementById('qOpts');
+    optsContainer.innerHTML = '';
+
+    q.opts.forEach((optText, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'opt';
+        btn.innerHTML = `<div class="opt-circle">${LABELS[idx]}</div> <div class="opt-text">${optText}</div>`;
+
+        if (isReviewMode) {
+            btn.classList.add('disabled');
+            if (idx === q.ans) btn.classList.add('correct');
+            else if (userAnswers[cur] === idx) btn.classList.add('wrong');
+        } else {
+            btn.onclick = () => selectAnswer(idx, btn);
+        }
+        optsContainer.appendChild(btn);
+    });
+
+    const nextBtn = document.getElementById('nextBtn');
+    document.getElementById('explanation').classList.remove('show');
+    document.getElementById('scoreShow').innerText = isReviewMode ? "সবুজ = সঠিক উত্তর | লাল = আপনার ভুল উত্তর" : `সঠিক: ${score} | ভুল: ${wrong}`;
+
+    if (isReviewMode) {
+        document.getElementById('explanationText').innerHTML = '<strong>ব্যাখ্যা:</strong> ' + q.exp;
+        document.getElementById('explanation').classList.add('show');
+        nextBtn.disabled = false;
+        nextBtn.innerText = cur === set.questions.length - 1 ? 'ফলাফল পেজে ফিরুন' : 'পরবর্তী →';
+    } else {
+        nextBtn.disabled = true;
+        nextBtn.innerText = cur === set.questions.length - 1 ? 'ফলাফল দেখো 🏆' : 'পরবর্তী →';
+    }
+}
+
+function selectAnswer(selectedIdx, btnElement) {
+    if (answered) return;
+    answered = true;
+    const set = allSets[currentSetId];
+    const q = set.questions[cur];
+    userAnswers[cur] = selectedIdx;
+
+    const allBtns = document.getElementById('qOpts').children;
+    for (let i = 0; i < allBtns.length; i++) {
+        allBtns[i].classList.add('disabled');
+        if (i === q.ans) allBtns[i].classList.add('correct');
+    }
+
+    if (selectedIdx === q.ans) {
+        score++;
+    } else {
+        btnElement.classList.add('wrong');
+        wrong++;
+    }
+
+    document.getElementById('scoreShow').innerText = `সঠিক: ${score} | ভুল: ${wrong}`;
+    document.getElementById('explanationText').innerHTML = '<strong>ব্যাখ্যা:</strong> ' + q.exp;
+    document.getElementById('explanation').classList.add('show');
+    document.getElementById('nextBtn').disabled = false;
+}
+
+function nextQ() {
+    const set = allSets[currentSetId];
+    if (cur < set.questions.length - 1) {
+        cur++;
+        loadQuestion();
+    } else {
+        if (isReviewMode) {
+            document.getElementById('testArea').classList.add('hidden');
+            document.getElementById('resultWrap').classList.add('show');
+        } else {
+            clearInterval(timerInterval);
+            showResult();
+        }
+    }
+}
+
+function showResult() {
+    document.getElementById('testArea').classList.add('hidden');
+    document.getElementById('timerBox').classList.add('hidden');
+    document.getElementById('resultWrap').classList.add('show');
+
+    const total = allSets[currentSetId].questions.length;
+    const pct = Math.round((score / total) * 100);
+
+    document.getElementById('finalScore').innerText = `${pct}%`;
+    document.getElementById('rbCorrect').innerText = score;
+    document.getElementById('rbWrong').innerText = total - score;
+
+    let msg = "অসাধারণ!"; let icon = "🏆";
+    if (pct < 50) { msg = "আরও অনুশীলন প্রয়োজন!"; icon = "📚"; }
+    else if (pct < 80) { msg = "খুব ভালো চেষ্টা!"; icon = "👍"; }
+
+    document.getElementById('resultGrade').innerText = msg;
+    document.getElementById('resultIcon').innerText = icon;
+
+    let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+    let count = data[currentUser][currentSetId] || 0;
+    let remaining = MAX_ATTEMPTS - count;
+    document.getElementById('attemptInfo').innerText = `👤 ${currentUser} — ${allSets[currentSetId].name}: বাকি আছে ${remaining} বার Test দেওয়ার সুযোগ`;
+}
+
+function showReview() {
+    document.getElementById('resultWrap').classList.remove('show');
+    document.getElementById('testArea').classList.remove('hidden');
+    isReviewMode = true;
+    cur = 0;
+    loadQuestion();
+}
+
+function restartQuiz() {
+    let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+    let count = data[currentUser][currentSetId] || 0;
+    if (count >= MAX_ATTEMPTS) {
+        alert(`⚠️ আপনি এই সেটের সর্বোচ্চ ${MAX_ATTEMPTS} বার Test দিয়েছেন। আর দেওয়া সম্ভব নয়।`);
+        return;
+    }
+    document.getElementById('resultWrap').classList.remove('show');
+    startQuiz(currentSetId);
+}
+
+function goToHub() {
+    window.location.href = "index.html";
+}
+
+window.onload = initHub;
+</script>
+
+</body>
+</html>
+
+
