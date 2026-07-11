@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test Bazar — Geography | 1st Sem | Unit 2</title>
+<link href="https://fonts.googleapis.com/css2?family=Tiro+Bangla&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ================== CSS STYLES ================== */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Syne', sans-serif; background: #f0faf4; min-height: 100vh; color: #1c2e24; }
+.en-font { font-family: 'Syne', sans-serif; }
+
+.top-bar { background: #1a7a4a; padding: 0.8rem 1.5rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+.top-logo { font-size: 1.2rem; font-weight: 800; color: white; cursor: pointer; }
+.top-logo span { color: #f9a825; }
+.timer-box { background: rgba(255,255,255,0.2); padding: 0.3rem 0.8rem; border-radius: 6px; color: white; font-weight: 700; font-size: 0.95rem; }
+.timer-box.danger { background: #dc3545; animation: pulse 1s infinite; }
+@keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+.main { max-width: 800px; margin: 0 auto; padding: 1.5rem; }
+
+/* HUB PAGE */
+.hub-header { text-align: center; margin-bottom: 2rem; }
+.hub-header h1 { font-family: 'Tiro Bangla', serif; color: #1a7a4a; font-size: 1.6rem; margin-bottom: 0.5rem; line-height: 1.4; }
+.hub-header p { color: #5a7a66; font-size: 0.95rem; font-family: 'Tiro Bangla', serif; font-weight: bold; }
+.set-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
+.set-card { background: white; border: 2px solid #c5dccb; border-radius: 12px; padding: 1.5rem; text-align: center; cursor: pointer; transition: all 0.2s; }
+.set-card:hover { transform: translateY(-3px); border-color: #1a7a4a; box-shadow: 0 6px 20px rgba(26,122,74,0.12); }
+.set-card .icon { font-size: 2.2rem; margin-bottom: 0.3rem; }
+.set-card .set-num { font-weight: 700; font-size: 1.1rem; color: #1a7a4a; }
+.set-card .set-title { font-family: 'Tiro Bangla', serif; font-size: 0.85rem; color: #5a7a66; margin: 0.2rem 0 0.5rem; }
+.set-card .set-meta { display: flex; gap: 1rem; font-size: 0.75rem; color: #5a7a66; justify-content: center; font-weight: bold;}
+.set-card .set-meta span { background: #f0faf4; padding: 0.2rem 0.6rem; border-radius: 4px; }
+.attempt-badge { font-size: 0.8rem; color: #dc3545; font-weight: 700; margin-top: 0.6rem; font-family: 'Tiro Bangla', serif; }
+
+/* QUIZ AREA */
+.quiz-info { background: white; border-radius: 12px; padding: 1rem 1.2rem; margin-bottom: 1.2rem; border: 1px solid #c5dccb; display: flex; gap: 1rem; flex-wrap: wrap; }
+.info-item { font-family: 'Tiro Bangla', serif; font-size: 0.9rem; color: #5a7a66; font-weight: 600; }
+.info-item strong { color: #1a7a4a; }
+
+.progress-wrap { background: #c5dccb; border-radius: 4px; height: 6px; margin-bottom: 1.2rem; overflow: hidden; }
+.progress-fill { height: 100%; background: #1a7a4a; border-radius: 4px; transition: width 0.3s; }
+
+.q-card { background: white; border-radius: 14px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+.q-num { font-size: 0.9rem; font-weight: 700; color: #1a7a4a; margin-bottom: 0.8rem; }
+.q-text { font-family: 'Tiro Bangla', serif; font-size: 1.1rem; color: #1c2e24; font-weight: 700; line-height: 1.6; margin-bottom: 1.2rem; }
+
+.opts { display: flex; flex-direction: column; gap: 0.6rem; }
+.opt { display: flex; align-items: flex-start; gap: 12px; padding: 0.8rem 1rem; border: 1.5px solid #c5dccb; border-radius: 10px; background: transparent; cursor: pointer; text-align: left; transition: all 0.2s; width: 100%; }
+.opt:hover:not(.disabled) { border-color: #1a7a4a; background: #f0faf4; }
+.opt-circle { min-width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid #c5dccb; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #5a7a66; flex-shrink: 0; }
+.opt-text { font-family: 'Tiro Bangla', serif; font-size: 0.95rem; color: #1c2e24; line-height: 1.6; font-weight: 600; padding-top: 2px; }
+
+.opt.correct { border-color: #1a7a4a; background: #e8f7ef; }
+.opt.correct .opt-circle { background: #1a7a4a; border-color: #1a7a4a; color: white; }
+.opt.wrong { border-color: #dc3545; background: #fdf0f0; }
+.opt.wrong .opt-circle { background: #dc3545; border-color: #dc3545; color: white; }
+.opt.disabled { cursor: default; }
+
+.explanation { background: #f0faf4; border-left: 4px solid #1a7a4a; border-radius: 0 8px 8px 0; padding: 1rem; margin-top: 1rem; display: none; }
+.explanation.show { display: block; }
+.explanation p { font-family: 'Tiro Bangla', serif; font-size: 0.9rem; color: #2c4035; line-height: 1.7; }
+
+.nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; }
+.score-show { font-family: 'Tiro Bangla', serif; font-size: 0.85rem; color: #5a7a66; font-weight: bold; }
+.next-btn { background: #1a7a4a; color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 8px; font-family: 'Tiro Bangla', serif; font-size: 0.95rem; font-weight: bold; cursor: pointer; transition: all 0.2s; }
+.next-btn:hover:not(:disabled) { background: #2aad68; }
+.next-btn:disabled { background: #c5dccb; cursor: not-allowed; }
+
+/* RESULT AREA */
+.result-wrap { background: white; border-radius: 14px; padding: 2rem; text-align: center; border: 1px solid #c5dccb; display: none; max-width: 600px; margin: 0 auto; box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+.result-wrap.show { display: block; }
+.result-icon { font-size: 3.5rem; margin-bottom: 0.5rem; line-height: 1; }
+.result-score { font-size: 3.5rem; font-weight: 800; color: #1a7a4a; line-height: 1; margin-bottom: 5px; }
+.result-total { font-size: 1rem; color: #5a7a66; margin-bottom: 0.5rem; font-family: 'Tiro Bangla', serif; font-weight: bold;}
+.result-grade { font-size: 1.2rem; font-weight: 700; color: #1c2e24; margin-bottom: 1.5rem; font-family: 'Tiro Bangla', serif; color: #e8730a; }
+
+.result-bars { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+.result-bar { background: #f0faf4; border-radius: 10px; padding: 1rem; text-align: center; border: 1px solid #c5dccb; }
+.rb-num { font-size: 1.8rem; font-weight: 800; }
+.rb-label { font-family: 'Tiro Bangla', serif; font-size: 0.85rem; color: #5a7a66; margin-top: 0.2rem; font-weight: bold;}
+.attempt-info { font-family: 'Tiro Bangla', serif; font-size: 0.9rem; color: #1a7a4a; font-weight: bold; margin-bottom: 1.5rem; background: #e8f7ef; padding: 10px; border-radius: 8px; }
+
+/* ACTION BUTTONS */
+.result-actions { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+.result-actions button { width: 100%; padding: 14px; border-radius: 8px; font-family: 'Tiro Bangla', serif; font-size: 1.05rem; font-weight: 800; cursor: pointer; border: none; transition: 0.2s; }
+.btn-retry { background: #17a2b8; color: white; }
+.btn-retry:hover { background: #138496; }
+.btn-review { background: #28a745; color: white; }
+.btn-review:hover { background: #218838; }
+.btn-home { background: transparent; color: #5a7a66; border: 2px solid #c5dccb !important; }
+.btn-home:hover { background: #f0faf4; }
+
+/* LOGIN MODAL */
+.login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(4px); }
+.login-overlay.active { display: flex; }
+.login-modal { background: white; padding: 2rem; border-radius: 16px; width: 90%; max-width: 380px; box-shadow: 0 15px 40px rgba(0,0,0,0.2); }
+.login-modal h2 { font-family: 'Tiro Bangla', serif; color: #1a7a4a; font-size: 1.4rem; margin-bottom: 0.5rem; text-align: center; }
+.login-modal p { font-family: 'Tiro Bangla', serif; color: #5a7a66; font-size: 0.9rem; margin-bottom: 1.5rem; text-align: center; }
+
+.input-group { margin-bottom: 1.2rem; }
+.input-group label { display: block; font-size: 0.85rem; font-weight: 700; color: #1c2e24; margin-bottom: 5px; font-family: 'Tiro Bangla', serif; }
+.input-group input { width: 100%; padding: 12px; border: 1.5px solid #c5dccb; border-radius: 8px; font-family: 'Syne', sans-serif; font-size: 0.95rem; outline: none; transition: 0.2s; }
+.input-group input:focus { border-color: #1a7a4a; box-shadow: 0 0 0 3px rgba(26,122,74,0.1); }
+
+.login-btn { width: 100%; background: #1a7a4a; color: white; border: none; padding: 12px; border-radius: 8px; font-family: 'Tiro Bangla', serif; font-size: 1.05rem; font-weight: 700; cursor: pointer; transition: 0.2s; margin-bottom: 8px; }
+.cancel-btn { width: 100%; background: transparent; color: #5a7a66; border: 1.5px solid #c5dccb; padding: 10px; border-radius: 8px; font-family: 'Tiro Bangla', serif; font-size: 1rem; font-weight: 700; cursor: pointer; }
+.error-msg { color: #dc3545; font-size: 0.85rem; font-weight: 700; margin-top: 10px; font-family: 'Tiro Bangla', serif; display: none; text-align: center; }
+.set-name-display { background: #f0faf4; border-radius: 8px; padding: 0.6rem; text-align: center; margin-bottom: 1rem; font-family: 'Tiro Bangla', serif; font-size: 0.95rem; color: #1a7a4a; font-weight: 700; }
+.hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+    <div class="top-logo" onclick="goToHub()">Test<span>Bazar</span></div>
+    <div class="timer-box hidden" id="timerBox">⏱ <span id="timerDisplay">10:00</span></div>
+</div>
+
+<div class="main">
+
+    <!-- ===== LOGIN OVERLAY ===== -->
+    <div class="login-overlay" id="loginOverlay">
+        <div class="login-modal">
+            <h2>🔐 লগইন করুন</h2>
+            <p>Test শুরু করতে আপনার ইউজারনেম ও পাসওয়ার্ড দিন</p>
+            <div class="set-name-display" id="loginSetName">📚 Set 1</div>
+            <div class="input-group">
+                <label>ইউজারনেম</label>
+                <input type="text" id="loginUsername" placeholder="আপনার ইউজারনেম লিখুন">
+            </div>
+            <div class="input-group">
+                <label>পাসওয়ার্ড</label>
+                <input type="password" id="loginPassword" placeholder="আপনার পাসওয়ার্ড লিখুন" onkeydown="if(event.key==='Enter') doLogin()">
+            </div>
+            <button class="login-btn" onclick="doLogin()">✅ লগইন করে Test শুরু করো</button>
+            <button class="cancel-btn" onclick="closeLogin()">বাতিল</button>
+            <div class="error-msg" id="loginError">❌ ভুল ইউজারনেম বা পাসওয়ার্ড।</div>
+        </div>
+    </div>
+
+    <!-- ===== HUB PAGE ===== -->
+    <div id="hubPage">
+        <div class="hub-header">
+            <h1>ভূগোল — 1st Sem<br>Unit 2: পৃথিবীর উৎপত্তি</h1>
+            <p>নিচের সেটগুলো থেকে বেছে নিন। প্রতিটি সেটে ১৫টি প্রশ্ন রয়েছে।</p>
+            <div id="hubUserInfo" style="font-family:'Tiro Bangla',serif;font-size:1rem;color:#1a7a4a;margin-top:0.8rem;font-weight:bold;"></div>
+        </div>
+        <div class="set-grid" id="setGrid"></div>
+    </div>
+
+    <!-- ===== TEST AREA ===== -->
+    <div id="testArea" class="hidden">
+        <div class="quiz-info">
+            <div class="info-item">🎓 <strong id="testSetName">ভূগোল</strong> — 1st Sem | Unit 2 | <span id="testSetLabel">Set 1</span></div>
+            <div class="info-item">📝 <span id="testTopic">Topic</span></div>
+        </div>
+
+        <div class="progress-wrap"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+
+        <div class="q-card" id="qCard">
+            <div class="q-num" id="qNum">প্রশ্ন ১ / ১৫</div>
+            <div class="q-text" id="qText"></div>
+            <div class="opts" id="qOpts"></div>
+            <div class="explanation" id="explanation"><p id="explanationText"></p></div>
+
+            <div class="nav-row">
+                <div class="score-show" id="scoreShow">সঠিক: ০ | ভুল: ০</div>
+                <button class="next-btn" id="nextBtn" onclick="nextQ()" disabled>পরবর্তী →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== RESULT AREA ===== -->
+    <div class="result-wrap" id="resultWrap">
+        <div class="result-icon" id="resultIcon">🏆</div>
+        <div class="result-score en-font" id="finalScore">100%</div>
+        <div class="result-total">স্কোর</div>
+        <div class="result-grade" id="resultGrade">অসাধারণ!</div>
+
+        <div class="result-bars">
+            <div class="result-bar">
+                <div class="rb-num en-font" id="rbCorrect" style="color:#1a7a4a">0</div>
+                <div class="rb-label">সঠিক</div>
+            </div>
+            <div class="result-bar">
+                <div class="rb-num en-font" id="rbWrong" style="color:#dc3545">0</div>
+                <div class="rb-label">ভুল/স্কিপ</div>
+            </div>
+        </div>
+
+        <div class="attempt-info" id="attemptInfo">👤 user — Set 1: বাকি আছে 9 বার Test দেওয়ার সুযোগ</div>
+
+        <!-- ACTION BUTTONS -->
+        <div class="result-actions">
+            <button class="btn-retry" onclick="restartQuiz()">🔄 আবার চেষ্টা করো</button>
+            <button class="btn-review" onclick="showReview()">👀 উত্তর দেখো</button>
+            <button class="btn-home" onclick="goToHub()">🏠 ← Hub এ ফিরে যাও</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+// ============================================================
+// গ্লোবাল ভেরিয়েবল
+// ============================================================
+const MAX_ATTEMPTS = 10;
+const TIME_LIMIT = 10 * 60; // 10 Minutes
+const LABELS = ['ক', 'খ', 'গ', 'ঘ'];
+const STORAGE_KEY = "testBazarAttempts_Geo_1stSem_U2";
+
+let currentUser = "";
+let currentSetId = 1;
+let pendingSetId = null;
+
+let cur = 0, score = 0, wrong = 0, answered = false;
+let timerInterval, timeLeft = TIME_LIMIT;
+let userAnswers = [];
+let isReviewMode = false;
+let TOTAL_QS = 0;
+
+// ============================================================
+// Unit 2: পৃথিবীর উৎপত্তি (Origin of Earth) - ৩টি সেটের প্রশ্নাবলি
+// ============================================================
+const allSets = {
+    1: {
+        name: 'Set 1', icon: '🌌', topic: 'মহাবিশ্ব, গ্যালাক্সি ও সৌরজগৎ',
+        questions: [
+            { q: "১. সূর্য কোন্ গ্যালাক্সির অন্তর্গত?", opts: ["অ্যানড্রোমিডা", "ম্যাগেলানিক ক্লাউড", "আরসামেজর", "আকাশগঙ্গা বা ছায়াপথ"], ans: 3, exp: "আমাদের সৌর পরিবার যে গ্যালাক্সি বা ব্রহ্মাণ্ডের অন্তর্গত, তার নাম ছায়াপথ (Milky Way)। বিশ্বকবি রবীন্দ্রনাথ ঠাকুর একে 'আকাশগঙ্গা' নামে অভিহিত করেছিলেন।" },
+            { q: "২. আকাশগঙ্গার নিকটতম গ্যালাক্সির নাম কী?", opts: ["অ্যানড্রোমিডা", "এনজিসি ৪৪১৪", "ম্যাগেলানিক ক্লাউড", "আলফা সেন্টাউরি"], ans: 0, exp: "আমাদের ছায়াপথ গ্যালাক্সিটি 'অ্যানড্রোমিডা' (Andromeda) এবং আরও ৪-৫টি গ্যালাক্সি নিয়ে গঠিত একটি গ্যালাক্সিপুঞ্জের অঙ্গ। অ্যানড্রোমিডাই হলো আকাশগঙ্গার সবচেয়ে কাছের গ্যালাক্সি।" },
+            { q: "৩. মহাকাশে ছড়িয়ে থাকা কম চাপের ও তাপের গ্যাসপিণ্ডকে কী বলে?", opts: ["গ্যালাক্সি", "ব্ল্যাক হোল", "নীহারিকা", "ডার্ক ম্যাটার"], ans: 2, exp: "মহাকাশের সর্বত্র ভাসমান অতিশীতল, কম চাপ ও কম তাপমাত্রার এই গ্যাসপিণ্ডকে নীহারিকা (Nebula) বলা হয়। বিজ্ঞানীদের অনুমান নীহারিকা থেকেই তারাদের জন্ম।" },
+            { q: "৪. সূর্যের পরিক্রমণের বেগ হলো সেকেন্ডে-", opts: ["২৫ কিমি", "১০০ কিমি", "২৫০ কিমি", "৫০০ কিমি"], ans: 2, exp: "সূর্য গ্যালাক্সির কেন্দ্রের চারদিকে তার গ্রহ-উপগ্রহদের নিয়ে সেকেন্ডে ২৫০ কিলোমিটার বেগে ধাবিত হয়।" },
+            { q: "৫. সূর্য একবার গ্যালাক্সিকে পূর্ণ পরিক্রমণ করতে সময় লাগায়-", opts: ["১ কোটি বছর", "১০ কোটি বছর", "২৫ কোটি বছর", "১০০ কোটি বছর"], ans: 2, exp: "ছায়াপথ বা গ্যালাক্সিকে কেন্দ্র করে সূর্যের একবার পূর্ণ প্রদক্ষিণ করতে সময় লাগে প্রায় ২৫ কোটি বছর। একে সূর্যের বার্ষিক গতি বলা হয়।" },
+            { q: "৬. সূর্যের উপরিতলের গড় তাপমাত্রা হলো-", opts: ["৩,০০০° সেলসিয়াস", "৫,৫০০° সেলসিয়াস", "১০,০০০° সেলসিয়াস", "১৫,০০০° সেলসিয়াস"], ans: 1, exp: "এক বিশাল জ্বলন্ত গ্যাসের গোলক সূর্যের উপরিতলের তাপমাত্রা প্রায় ৫,৫০০° সেলসিয়াস। তবে এর ভেতরের তাপমাত্রা অত্যন্ত বেশি—প্রায় দেড় কোটি ডিগ্রি সেলসিয়াসের কাছাকাছি।" },
+            { q: "৭. সূর্যের আলো পৃথিবীতে আসতে গড় সময় লাগে-", opts: ["৮ সেকেন্ড", "৪.২৮ মিনিট", "৮.২৮ মিনিট", "১২.৩০ মিনিট"], ans: 2, exp: "সূর্য থেকে পৃথিবীর দূরত্ব প্রায় ১৪ কোটি ৯৫ লক্ষ কিমি। তাপ ও আলোকরূপে সূর্যের শক্তি এই বিশাল পথ পেরিয়ে পৃথিবীতে পৌঁছাতে গড়ে ৮.২৮ মিনিট সময় লাগে।" },
+            { q: "৮. আমাদের ছায়াপথে নক্ষত্রের সংখ্যা প্রায়-", opts: ["১০০ কোটি", "১০০০ কোটি", "৪০০০ কোটির কিছু বেশি", "১০ হাজার কোটি"], ans: 2, exp: "আমাদের ছায়াপথ বা আকাশগঙ্গায় অসংখ্য তারা ভিড় করে রয়েছে, যার সংখ্যা প্রায় ৪০০০ কোটির কিছু বেশি এবং সূর্য এই কোটি কোটি তারার মধ্যে একটি মাঝারি মানের তারা মাত্র।" },
+            { q: "৯. সূর্যের অবস্থান আমাদের গ্যালাক্সিতে কোথায়?", opts: ["কেন্দ্রে", "কেন্দ্র থেকে ৩০০০ আলোকবর্ষ দূরে", "কেন্দ্র থেকে ৫০০০ আলোকবর্ষ দূরে", "একদম প্রান্তে"], ans: 1, exp: "সূর্য গ্যালাক্সির বেশ ধারের দিকে অবস্থান করছে। গ্যালাক্সির কেন্দ্র থেকে এর দূরত্ব প্রায় ৩০০০ আলোকবর্ষ।" },
+            { q: "১০. মহাবিশ্বে মোট গ্যালাক্সির সংখ্যা প্রায়-", opts: ["১ লক্ষ কোটি", "১০ হাজার কোটি", "১০ কোটি", "১ হাজার কোটি"], ans: 1, exp: "মহাকাশে ছড়িয়ে থাকা গ্যালাক্সির সংখ্যা সম্বন্ধে বিজ্ঞানীদের অনুমান যে, সমগ্র মহাবিশ্বে প্রায় ১০ হাজার কোটি গ্যালাক্সি রয়েছে।" },
+            { q: "১১. মহাবিশ্বের অন্ধকার অংশের তাপমাত্রা হলো-", opts: ["-১০০° সেলসিয়াস", "-১৫০° সেলসিয়াস", "-২৫০° সেলসিয়াস", "-২৭৩° সেলসিয়াস"], ans: 3, exp: "মহাবিশ্বের অধিকাংশ স্থানই অতি শীতল, অন্ধকার এবং শূন্য পরিসর, যেখানে তাপমাত্রা পরম শূন্য অর্থাৎ -২৭৩° সেলসিয়াসের কাছাকাছি থাকে।" },
+            { q: "১২. পৃথিবীর বয়স কত?", opts: ["২৫০ কোটি বছর", "৪৬০ কোটি বছর", "৫০০ কোটি বছর", "১৩৭১ কোটি বছর"], ans: 1, exp: "বিজ্ঞানীদের মতে, পৃথিবীর বয়স মহাবিশ্বের বয়সের কমবেশি এক তৃতীয়াংশ, যা আনুমানিক ৪.৬ বিলিয়ন বা ৪৬০ কোটি বছর।" },
+            { q: "১৩. বিজ্ঞানী কার্ল ডেভিড আন্ডারসন ১৯৩৬ সালে আবিষ্কার করেন-", opts: ["ইলেকট্রন", "পজিট্রন", "প্রোটন", "নিউট্রিনো"], ans: 1, exp: "১৯৩৬ সালে বিজ্ঞানী কার্ল ডেভিড আন্ডারসন ইলেকট্রনের প্রতিকণা বা প্রতিপদার্থ হিসেবে ধনাত্মক আধানযুক্ত 'পজিট্রন' আবিষ্কার করেন এবং এর জন্য তিনি নোবেল পুরস্কার লাভ করেন।" },
+            { q: "১৪. দুটি তারা একে অপরকে কেন্দ্র করে আবর্তিত হলে তাকে বলে—", opts: ["সর্পিল তারা", "ব্ল্যাক হোল", "সহযোগী তারা", "নিউট্রন তারা"], ans: 2, exp: "গ্যালাক্সিতে দুটি তারা একসঙ্গে একে অপরকে কেন্দ্র করে আবর্তিত হলে তাদের জোড়া তারা, বাইনারি তারা বা সহযোগী তারা (Companion Star) বলে।" },
+            { q: "১৫. পৃথিবীর প্রাচীনতম খনিজের নাম কী?", opts: ["কোয়ার্টজ", "ফেল্ডস্পার", "জারকন", "মাইকা"], ans: 2, exp: "পৃথিবী যখন গ্যাসীয় পিণ্ড থেকে শীতল ও ঘনীভূত হয়ে পাথর বা শিলামণ্ডল তৈরি করছিল, তখন তৈরি হয় পৃথিবীর প্রাচীনতম খনিজ 'জারকন', যার বয়স আনুমানিক ৪৪০ কোটি বছর।" }
+        ]
+    },
+    2: {
+        name: 'Set 2', icon: '🔭', topic: 'পৃথিবীর উৎপত্তির প্রাচীন তত্ত্বসমূহ',
+        questions: [
+            { q: "১. পৃথিবীর উৎপত্তি সম্পর্কে কে সর্বপ্রথম তাঁর মতবাদ প্রকাশ করেন?", opts: ["পি এস লাপ্লাস", "ইমানুয়েল কান্ট", "জেমস জিন্স", "চেম্বারলিন"], ans: 1, exp: "১৭৫৫ সালে জার্মান দার্শনিক ইমানুয়েল কান্ট সর্বপ্রথম সৌরজগৎ তথা পৃথিবীর উৎপত্তি সম্পর্কে তাঁর ধারণা প্রকাশ করেন। এটি পৃথিবীর উৎপত্তি সম্পর্কে প্রাচীনতম মতবাদ হিসেবে ধরা হয়।" },
+            { q: "২. পৃথিবী ও সৌরজগতের উৎপত্তি সম্পর্কে কান্টের মতবাদটি কী নামে পরিচিত?", opts: ["গ্যাসীয় মতবাদ", "জোয়ারি মতবাদ", "গ্রহকণিকা মতবাদ", "সংঘর্ষ তত্ত্ব"], ans: 0, exp: "কান্ট প্রবর্তিত পৃথিবীর উৎপত্তি সংক্রান্ত এই প্রাচীনতম মতবাদটিকে 'গ্যাসীয় নীহারিকা মতবাদ' (Gaseous Nebular Hypothesis) বলা হয়।" },
+            { q: "৩. কান্টের মতবাদটি কত সালে প্রকাশিত হয়?", opts: ["১৬৫০ সালে", "১৭৫৫ সালে", "১৯০১ সালে", "১৯১১ সালে"], ans: 1, exp: "১৭৫৫ সালে জার্মান দার্শনিক ইমানুয়েল কান্ট নিউটনের মাধ্যাকর্ষণ শক্তিকে মূল ভিত্তি হিসেবে ধরে তাঁর এই মতবাদ প্রকাশ করেন।" },
+            { q: "৪. ইমানুয়েল কান্টের গ্যাসীয় তত্ত্বে পৃথিবী সৃষ্টির পূর্বে আদি বস্তুকণার অবস্থা কেমন ছিল?", opts: ["অতি উষ্ণ", "অতি শীতল ও কঠিন", "অতি উষ্ণ ও ঘূর্ণায়মান", "অতি শীতল ও গতিহীন"], ans: 3, exp: "কান্টের মতে, সৌরজগৎ সৃষ্টির অনেক আগে থেকেই মহাবিশ্বে এক অতিশীতল ও গতিহীন গ্যাসীয় ধূলিকণার মেঘপুঞ্জের অস্তিত্ব ছিল।" },
+            { q: "৫. কান্টের গ্যাসীয় তত্ত্বের পরিমার্জিত রূপটির নাম কী?", opts: ["লাপ্লাসের নীহারিকা তত্ত্ব", "জিন্স-এর জোয়ারি তত্ত্ব", "গ্রহকণিকা তত্ত্ব", "বিগ ব্যাং তত্ত্ব"], ans: 0, exp: "ফরাসি বিজ্ঞানী পি এস লাপ্লাস কান্টের মতবাদকে আরও উন্নত ও বিজ্ঞানসম্মতভাবে পরিমার্জন করে তাঁর নিজস্ব 'নীহারিকা মতবাদ' প্রকাশ করেন।" },
+            { q: "৬. লাপ্লাসের নীহারিকা মতবাদটি কবে প্রকাশিত হয়?", opts: ["১৪৯৬ সালে", "১৫৯৬ সালে", "১৬৯৬ সালে", "১৭৯৬ সালে"], ans: 3, exp: "ফরাসি বিজ্ঞানী পি এস লাপ্লাস কান্টের মতবাদকে পরিমার্জন করে ১৭৯৫/১৭৯৬ সালে তাঁর নিজস্ব নীহারিকা মতবাদটি প্রকাশ করেন।" },
+            { q: "৭. বিজ্ঞানী চেম্বারলিন ও মুলটন কোন্ মতবাদের জনক?", opts: ["জোয়ারি মতবাদ", "নীহারিকা মতবাদ", "গ্রহকণিকা মতবাদ", "বিগ ব্যাং মতবাদ"], ans: 2, exp: "১৯০৪ সালে আমেরিকান বিজ্ঞানী চেম্বারলিন ও মুলটন পৃথিবী ও সৌরজগতের উৎপত্তির ব্যাখ্যা দিতে গিয়ে 'গ্রহকণা' বা 'গ্রহকণিকা মতবাদ' (Planetesimal Hypothesis) প্রদান করেন।" },
+            { q: "৮. চেম্বারলিন ও মূলটন কত সালে গ্রহকণিকা মতবাদের ধারণা দিয়েছিলেন?", opts: ["১৭৭৫ সালে", "১৮০৬ সালে", "১৯০৪ সালে", "১৯২২ সালে"], ans: 2, exp: "১৯০৪ সালে চেম্বারলিন ও মুলটনের এই গ্রহকণিকা মতবাদটি প্রকাশিত হয় যেখানে তাঁরা 'সহচরী তারা' (Companion star)-এর উল্লেখ করেছিলেন।" },
+            { q: "৯. পৃথিবীর উৎপত্তি সংক্রান্ত কোন্ মতবাদে বলা হয়েছে যে, সৌরজগতের উদ্ভবের আদিপর্বে মহাশূন্যে অপর এক শক্তিশালী নক্ষত্র (সহচরী তারা) এসেছিল?", opts: ["কান্টের গ্যাসীয় মতবাদ", "চেম্বারলিনের গ্রহকণিকা তত্ত্ব", "জেফ্রিসের জোয়ারি তত্ত্ব", "কুপারের সঞ্চয় তত্ত্ব"], ans: 1, exp: "গ্রহকণিকা মতবাদে বলা হয়েছে, সূর্য সৃষ্টির পরে মহাকাশে অপর এক শক্তিশালী নক্ষত্রের আবির্ভাব হয়, যেটিকে তাঁরা 'সহচরী তারা' (Companion star) বলে উল্লেখ করেছেন।" },
+            { q: "১০. জেফ্রিস ও জিন্স-এর জোয়ারি তত্ত্বে আগন্তুক নক্ষত্রের প্রভাবে কী সৃষ্টি হয়?", opts: ["সূর্যপৃষ্ঠে জোয়ারের সৃষ্টি হয়", "ব্ল্যাক হোল সৃষ্টি হয়", "নতুন গ্যালাক্সি তৈরি হয়", "সূর্যের তাপ কমে যায়"], ans: 0, exp: "জোয়ারি তত্ত্বে বলা হয়েছে, একটি বিশাল নক্ষত্র সূর্যের খুব কাছে আসার ফলে তার মাধ্যাকর্ষণ শক্তির প্রভাবে সূর্যের গ্যাসীয় দেহ ফুলে ওঠে এবং জোয়ারের সৃষ্টি হয়।" },
+            { q: "১১. জোয়ারি মতবাদ অনুসারে সৌরজগতের সমস্ত গ্রহ, উপগ্রহ, উল্কা প্রভৃতির মোট কৌণিক ভরবেগ কত?", opts: ["২%", "৫০%", "৮৯%", "৯৮%"], ans: 3, exp: "জিন্স-জেফ্রির জোয়ারি তত্ত্বের একটি বড় সমালোচনা হলো, গ্রহ-উপগ্রহগুলি সূর্যের সামান্য অংশ নিয়ে গঠিত হলেও তাদের মোট কৌণিক ভরবেগ সৌরজগতের ৯৮%, আর সূর্যের মাত্র ২%।" },
+            { q: "১২. গ্রহকণিকা মতবাদে যেসব কণা জমাট বাঁধার সুযোগ পায়নি তারা বর্তমানে কী রূপে অবস্থান করছে?", opts: ["উপগ্রহ", "উল্কা ও ধূমকেতু", "ছায়াপথ", "ব্ল্যাক হোল"], ans: 1, exp: "চেম্বারলিন ও মুলটনের মতে, যেসব ছোটো ছোটো গ্রহকণা একত্রে জমাট বেঁধে গ্রহ বা উপগ্রহ হতে পারেনি, তারা আজও সৌরজগতের অন্যান্য জ্যোতিষ্ক, যেমন উল্কা ও ধূমকেতু রূপে অবস্থান করছে।" },
+            { q: "১৩. কোন্ তত্ত্বের ভিত্তিতে বর্তমান সৌরজগতের গ্রহগুলির আকৃতি ও অবস্থান সবচেয়ে ভালোভাবে ব্যাখ্যা করা সম্ভব হয়েছে?", opts: ["কান্টের মতবাদ", "জিন্স-জেফ্রির জোয়ারি তত্ত্ব", "লাপ্লাসের নীহারিকা তত্ত্ব", "স্টেডি স্টেট তত্ত্ব"], ans: 1, exp: "জোয়ারি তত্ত্বে ফিতে বা লম্বা পটোলের মতো গ্যাসীয় পিণ্ড থেকে গ্রহের সৃষ্টি হওয়ার ধারণাটি সৌরজগতের বর্তমান গ্রহগুলির আয়তনগত বিন্যাসকে (মাঝখানে বৃহস্পতি-শনি এবং দুই প্রান্তে ছোটো গ্রহ) চমৎকারভাবে ব্যাখ্যা করে।" },
+            { q: "১৪. পৃথিবীর অভ্যন্তরে ভারী ধাতুগুলো (লোহা-নিকেল) গলনের ফলে নীচে ডুবে কোন্ স্তরের সৃষ্টি করেছে?", opts: ["ভূত্বক", "শিলামণ্ডল", "গুরুমণ্ডল", "কেন্দ্রমণ্ডল"], ans: 3, exp: "পৃথিবীর গলনের প্রথম পর্যায়ে ভারী ধাতুগুলো (যেমন লোহা) অভিকর্ষ বলের প্রভাবে কেন্দ্রের দিকে চলে গিয়ে 'কেন্দ্রমণ্ডল' তৈরি করে এবং হালকা পদার্থগুলো ওপরে ভেসে ওঠে।" },
+            { q: "১৫. ভূতাত্ত্বিক সময় মাপনি অনুযায়ী পৃথিবীতে ডাইনোসরের বিলুপ্তি কোন্ যুগে ঘটেছিল?", opts: ["জুরাসিক যুগে", "ক্রিটেসিয়াস যুগে", "টার্শিয়ারি যুগে", "পারমিয়ান যুগে"], ans: 1, exp: "ভূতাত্ত্বিক ইতিহাস অনুযায়ী, মেসোজোয়িক মহাযুগের শেষ ভাগ অর্থাৎ ক্রিটেসিয়াস যুগে (আনুমানিক ৬৫ মিলিয়ন বা ৬.৫ কোটি বছর আগে) পৃথিবী থেকে ডাইনোসরের বিলুপ্তি ঘটে।" }
+        ]
+    },
+    3: {
+        name: 'Set 3', icon: '💥', topic: 'বিগ ব্যাং, স্টেডি স্টেট ও মহাবিশ্বের প্রসারণ',
+        questions: [
+            { q: "১. বিগ ব্যাং বা বিশাল বিস্ফোরণ তত্ত্বের অবতারণা প্রথম কে করেন?", opts: ["এডউইন হাবল", "আলেকজান্ডার ফ্রিডম্যান", "রজার পেনরোজ", "ফ্রেড হোয়েল"], ans: 1, exp: "গ্যালাক্সিগুলো যে একে অপরের থেকে দূরে সরে যাচ্ছে, তার কারণ ব্যাখ্যা করতে গিয়ে রুশ বিজ্ঞানী আলেকজান্ডার ফ্রিডম্যান সর্বপ্রথম মহাবিস্ফোরণ বা বিগ ব্যাং (Big Bang) তত্ত্বের অবতারণা করেন।" },
+            { q: "২. বিগ ব্যাং তত্ত্ব মতে মহাবিশ্বের বয়স প্রায়-", opts: ["৫৬০ কোটি বছর", "১৩৭১ কোটি বছর", "৫০০০ কোটি বছর", "১০০০০ কোটি বছর"], ans: 1, exp: "বিজ্ঞানীদের মতে, আজ থেকে প্রায় ১৩৭১ কোটি বছর আগে এক প্রচণ্ড কেন্দ্রীয় বিস্ফোরণের (বিগ ব্যাং) মধ্য দিয়ে এই মহাবিশ্বের সৃষ্টি হয়েছিল।" },
+            { q: "৩. মহাবিশ্ব শুরুতে ছিল এক বিন্দুসম যেখানে সব শক্তি ও পদার্থ ঘনীভূত ছিল। একে বলে—", opts: ["ব্ল্যাক হোল", "সি ফিল্ড", "সিঙ্গুলারিটি", "ডার্ক ম্যাটার"], ans: 2, exp: "সৃষ্টির মুহূর্তে একটি বিন্দুসম শূন্য আয়তনে সমস্ত শক্তি ও পদার্থ ঘনীভূত ছিল। সময় তখনও শুরু হয়নি। এই অজানা ও অবর্ণনীয় অবস্থাকে 'সিঙ্গুলারিটি' (Singularity) বলা হয়।" },
+            { q: "৪. বিগ ব্যাং-এর জন্ম মুহূর্তের এক সেকেন্ডের এক শতাংশের পর মহাবিশ্বের তাপমাত্রা ছিল-", opts: ["১০০ কোটি ডিগ্রি কেলভিন", "১০০০ কোটি ডিগ্রি কেলভিন", "১০০০০ কোটি ডিগ্রি কেলভিন", "-২৭৩ ডিগ্রি কেলভিন"], ans: 2, exp: "বিগ ব্যাং-এর এক সেকেন্ডের এক শতাংশের পর মহাবিশ্বের তাপমাত্রা ছিল ১০,০০০ কোটি ডিগ্রি কেলভিন, যা একটি অবিমিশ্র ঝোলের (cosmic soup) মতো অবস্থায় ছিল।" },
+            { q: "৫. বিগ ব্যাং-এর অল্প কিছুক্ষণ পরে প্রথম যে মৌলিক বস্তু তৈরি হয় তার নাম-", opts: ["হিলিয়াম", "হাইড্রোজেন", "জল", "ইলেকট্রন"], ans: 1, exp: "মহাবিস্ফোরণের পর তাপমাত্রা যখন কিছুটা কমে আসে, তখন পরমাণু গড়ে ওঠা সম্ভব হয়। সবচেয়ে সরল মৌলিক পদার্থ হাইড্রোজেনের পরমাণুই সবার আগে গড়ে উঠেছিল।" },
+            { q: "৬. \"গ্যালাক্সিগুলো ক্রমে দূরে সরে যাচ্ছে, ফলে মহাবিশ্বের প্রসারণ ঘটছে\"-এ কথা প্রথম কে বলেন?", opts: ["এডউইন হাবল", "আলেকজান্ডার ফ্রিডম্যান", "স্টিফেন হকিং", "রজার পেনরোজ"], ans: 0, exp: "১৯২৯ সালে ক্যালিফোর্নিয়ার মাউন্ট উইলসন মানমন্দিরে গবেষণার মাধ্যমে মার্কিন জ্যোতির্বিদ এডউইন হাবল সর্বপ্রথম প্রমাণ করেন যে, মহাবিশ্বের গ্যালাক্সিগুলি পরস্পর থেকে দূরে সরে যাচ্ছে।" },
+            { q: "৭. গ্যালাক্সিগুলো যত দূরে তার আলো তত বেশি লালচে। একে বলে-", opts: ["ডপলার এফেক্ট", "লাল বিচ্যুতি", "ব্ল্যাক হোল", "সি ফিল্ড"], ans: 1, exp: "হাবল দেখেন যে, দূরের গ্যালাক্সি থেকে আগত আলো অতিরিক্ত লালচে হয়। আলোর উৎস দূরে সরে গেলে তরঙ্গদৈর্ঘ্য বেড়ে যায়, যাকে 'লাল বিচ্যুতি' (Red shift) বলা হয়।" },
+            { q: "৮. দূরের গ্যালাক্সিগুলোর গতিবেগ ও লাল বিচ্যুতির অনুপাতকে বলে-", opts: ["বলোকন", "হাবল ধ্রুবক", "রেড শিফট", "ডার্ক এনার্জি"], ans: 1, exp: "বিজ্ঞানী হাবল দূরের গ্যালাক্সির গতিবেগ এবং তাদের লাল-বিচ্যুতির অনুপাত বের করেন। এই অনুপাতই হাবল ধ্রুবক (Hubble constant) নামে পরিচিত।" },
+            { q: "৯. মহাবিশ্বের গড় ঘনত্ব সংকট ঘনত্বের মানের সমান হলে স্পেস বা পরিসর হবে-", opts: ["সমতল", "বক্রতল", "সসীম", "কোনোটিই নয়"], ans: 0, exp: "ফ্রিডম্যানের তৃতীয় মডেল অনুযায়ী, মহাবিশ্বের গড় ঘনত্ব যদি সংকট ঘনত্বের সমান হয়, তাহলে মহাবিশ্বের প্রসারণ সোজাপথে চলতে থাকবে। অর্থাৎ স্পেস হবে অসীম কিন্তু সমতল।" },
+            { q: "১০. মহাবিশ্বের গড় ঘনত্ব নির্ণায়ক বা সংকট ঘনত্বের চেয়ে কম হলে স্পেস বা পরিসর কী রূপ হবে?", opts: ["স্পেস হবে অসীম", "স্পেস হবে বাঁকা", "তৈরি হবে ঋণাত্মক বক্রতা", "সবগুলিই সঠিক"], ans: 3, exp: "ঘনত্ব সংকট ঘনত্বের চেয়ে কম হলে মহাবিশ্ব অনন্তকালের জন্য প্রসারিত হবে (অসীম)। স্পেস সমতলীয় না হয়ে বাঁকা হবে, যাকে ঋণাত্মক বক্রতা (Negative Curvature) বলা হয়।" },
+            { q: "১১. স্টেডি স্টেট (Steady State) বা স্থির মহাবিশ্ব তত্ত্বের জনক কে?", opts: ["ফ্রেড হোয়েল", "আলেকজান্ডার ফ্রিডম্যান", "স্টিফেন হকিং", "রজার পেনরোজ"], ans: 0, exp: "বিংশ শতকে বিগ ব্যাং-এর সবচেয়ে বড়ো প্রতিযোগী তত্ত্ব 'স্থির মহাবিশ্ব মডেল' বা স্টেডি স্টেট (Steady State) তত্ত্ব প্রথম প্রকাশ্যে আনেন বিখ্যাত জ্যোতির্বিদ ফ্রেড হোয়েল।" },
+            { q: "১২. স্টেডি স্টেট তত্ত্বে নতুন গ্যালাক্সি তৈরির উপাদান কোথা থেকে আসে বলে কল্পনা করা হয়েছে?", opts: ["ব্ল্যাক হোল", "সি ফিল্ড", "ডার্ক ম্যাটার", "ডার্ক এনার্জি"], ans: 1, exp: "হোয়েলের কল্পনায় মহাবিশ্বের সর্বত্র ছড়িয়ে ছিটিয়ে থাকা 'সি ফিল্ড' (C-field) থেকে নতুন বস্তুকণা জেগে উঠে নতুন গ্যালাক্সি তৈরি করে শূন্যস্থান পূরণ করে।" },
+            { q: "১৩. মহাবিশ্বের রেডিয়েশনবিহীন বস্তু যা ধরা পড়ে না কোনো যন্ত্রে, তার নাম হলো-", opts: ["ব্ল্যাক হোল", "ডার্ক ম্যাটার", "ডার্ক এনার্জি", "পালসার"], ans: 1, exp: "যে বস্তুগুলো কোনো আলো দেয় না বা অন্যের আলো ছড়ায় না কিন্তু ভর ও আকর্ষণ বল আছে, তাদের 'অদেখা বস্তু' বা ডার্ক ম্যাটার (Dark Matter) বলে। এরা রেডিয়েশনবিহীন হওয়ায় কোনো যন্ত্রে ধরা পড়ে না।" },
+            { q: "১৪. মহাবিশ্বের দ্রুত প্রসারণের জন্য কোন্ অদৃশ্য শক্তিকে দায়ী করা হয়?", opts: ["ডার্ক ম্যাটার", "মহাকর্ষ বল", "ডার্ক এনার্জি", "সি ফিল্ড"], ans: 2, exp: "মহাবিশ্বের প্রায় ৭০ শতাংশ অদৃশ্য শক্তিরূপে ছড়িয়ে আছে, যাকে 'ডার্ক এনার্জি' বলা হয়। এটি এক প্রকার বিকর্ষণ বল যা মহাবিশ্বের দ্রুত প্রসারণের জন্য দায়ী।" },
+            { q: "১৫. মহাবিশ্ব সৃষ্টিতত্ত্বে আদিম মুহূর্ত বা সিঙ্গুলারিটি নিয়ে গবেষণার জন্য রজার পেনরোজ কত সালে নোবেল পুরস্কার লাভ করেন?", opts: ["১৯৯০ সালে", "২০০০ সালে", "২০১১ সালে", "২০২০ সালে"], ans: 3, exp: "মহাবিশ্বের আদি রূপ ও সৃষ্টির কণাগুলির সূক্ষ্ম গঠন অনুসন্ধানে এবং সৃষ্টিতত্ত্বে অর্থাৎ বিগ ব্যাং-এর সিঙ্গুলারিটি বিষয়ে গুরুত্বপূর্ণ অবদানের জন্য বিজ্ঞানী রজার পেনরোজ ২০২০ সালে নোবেল পুরস্কার পান।" }
+        ]
+    }
+};
+
+// ============================================================
+// মূল লজিক (লগইন, টাইমার, কুইজ পরিচালনা এবং রেজাল্ট)
+// ============================================================
+function initHub() {
+    const grid = document.getElementById('setGrid');
+    grid.innerHTML = '';
+
+    Object.keys(allSets).forEach(setId => {
+        const set = allSets[setId];
+        const card = document.createElement('div');
+        card.className = 'set-card';
+
+        let attemptCount = 0;
+        if (currentUser) {
+            let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+            attemptCount = (data[currentUser] && data[currentUser][setId]) || 0;
+        }
+
+        card.innerHTML = `
+            <div class="icon">${set.icon}</div>
+            <div class="set-num">${set.name}</div>
+            <div class="set-title">${set.topic}</div>
+            <div class="set-meta"><span>${set.questions.length} প্রশ্ন</span><span>১০ মিনিট</span></div>
+            ${currentUser ? `<div class="attempt-badge">${attemptCount}/${MAX_ATTEMPTS} Attempts</div>` : ''}
+        `;
+
+        card.onclick = () => {
+            if (currentUser) {
+                if (attemptCount >= MAX_ATTEMPTS) {
+                    alert(`⚠️ আপনি ${set.name} এর সর্বোচ্চ ${MAX_ATTEMPTS} বার Test দিয়েছেন।`);
+                    return;
+                }
+                startQuiz(setId);
+            } else {
+                openLogin(setId);
+            }
+        };
+        grid.appendChild(card);
+    });
+}
+
+function openLogin(setId) {
+    pendingSetId = setId;
+    document.getElementById('loginSetName').innerText = `📚 ${allSets[setId].name}`;
+    document.getElementById('loginOverlay').classList.add('active');
+    document.getElementById('loginUsername').value = '';
+    document.getElementById('loginPassword').value = '';
+    document.getElementById('loginError').style.display = 'none';
+}
+
+function closeLogin() {
+    document.getElementById('loginOverlay').classList.remove('active');
+}
+
+function doLogin() {
+    const u = document.getElementById('loginUsername').value.trim();
+    const p = document.getElementById('loginPassword').value.trim();
+    const err = document.getElementById('loginError');
+
+    // গ্লোবাল স্টোরেজ থেকে ইউজার ডেটাবেস কল করা হচ্ছে
+    const GLOBAL_USERS = JSON.parse(localStorage.getItem("testBazarGlobalUsers")) || {};
+
+    if (!u || !p) {
+        err.innerText = "❌ ইউজারনেম এবং পাসওয়ার্ড দিন!";
+        err.style.display = 'block';
+        return;
+    }
+
+    if (GLOBAL_USERS[u] && GLOBAL_USERS[u] === p) {
+        currentUser = u;
+        document.getElementById('hubUserInfo').innerText = `👤 ${u} — Test দিতে সেট সিলেক্ট করো।`;
+        closeLogin();
+        initHub();
+
+        if (pendingSetId) {
+            let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+            let attemptCount = (data[u] && data[u][pendingSetId]) || 0;
+            if (attemptCount < MAX_ATTEMPTS) {
+                startQuiz(pendingSetId);
+            } else {
+                alert(`⚠️ আপনি ${allSets[pendingSetId].name} এর সর্বোচ্চ ${MAX_ATTEMPTS} বার Test দিয়েছেন।`);
+            }
+            pendingSetId = null;
+        }
+    } else {
+        err.innerText = "❌ ভুল ইউজারনেম বা পাসওয়ার্ড।";
+        err.style.display = 'block';
+    }
+}
+
+function startQuiz(setId) {
+    currentSetId = setId;
+    TOTAL_QS = allSets[setId].questions.length;
+
+    let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+    if (!data[currentUser]) data[currentUser] = {};
+    data[currentUser][setId] = (data[currentUser][setId] || 0) + 1;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    initHub();
+
+    cur = 0; score = 0; wrong = 0; answered = false; userAnswers = [];
+    timeLeft = TIME_LIMIT;
+    isReviewMode = false;
+
+    document.getElementById('hubPage').classList.add('hidden');
+    document.getElementById('resultWrap').classList.remove('show');
+    document.getElementById('testArea').classList.remove('hidden');
+    document.getElementById('timerBox').classList.remove('hidden');
+    document.getElementById('timerBox').classList.remove('danger');
+
+    const set = allSets[setId];
+    document.getElementById('testSetLabel').innerText = set.name;
+    document.getElementById('testTopic').innerText = set.topic;
+
+    startTimer();
+    loadQuestion();
+}
+
+function startTimer() {
+    clearInterval(timerInterval);
+    updateTimerDisplay();
+    timerInterval = setInterval(() => {
+        timeLeft--;
+        updateTimerDisplay();
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            showResult();
+        }
+    }, 1000);
+}
+
+function updateTimerDisplay() {
+    const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+    const s = (timeLeft % 60).toString().padStart(2, '0');
+    document.getElementById('timerDisplay').innerText = `${m}:${s}`;
+    if (timeLeft < 60) document.getElementById('timerBox').classList.add('danger');
+}
+
+function loadQuestion() {
+    answered = false;
+    const set = allSets[currentSetId];
+    const q = set.questions[cur];
+
+    document.getElementById('qNum').innerText = isReviewMode ? `Review: প্রশ্ন ${cur + 1} / ${TOTAL_QS}` : `প্রশ্ন ${cur + 1} / ${TOTAL_QS}`;
+    document.getElementById('qText').innerText = q.q;
+    document.getElementById('progressFill').style.width = `${((cur + 1) / TOTAL_QS) * 100}%`;
+
+    const optsContainer = document.getElementById('qOpts');
+    optsContainer.innerHTML = '';
+
+    q.opts.forEach((optText, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'opt';
+        btn.innerHTML = `<div class="opt-circle">${LABELS[idx]}</div> <div class="opt-text">${optText}</div>`;
+
+        if (isReviewMode) {
+            btn.classList.add('disabled');
+            if (idx === q.ans) btn.classList.add('correct');
+            else if (userAnswers[cur] === idx) btn.classList.add('wrong');
+        } else {
+            btn.onclick = () => selectAnswer(idx, btn);
+        }
+        optsContainer.appendChild(btn);
+    });
+
+    const nextBtn = document.getElementById('nextBtn');
+    document.getElementById('explanation').classList.remove('show');
+    document.getElementById('scoreShow').innerText = isReviewMode ? "সবুজ = সঠিক উত্তর | লাল = আপনার ভুল উত্তর" : `সঠিক: ${score} | ভুল: ${wrong}`;
+
+    if (isReviewMode) {
+        document.getElementById('explanationText').innerHTML = '<strong>ব্যাখ্যা:</strong> ' + q.exp;
+        document.getElementById('explanation').classList.add('show');
+        nextBtn.disabled = false;
+        nextBtn.innerText = cur === set.questions.length - 1 ? 'ফলাফল পেজে ফিরুন' : 'পরবর্তী →';
+    } else {
+        nextBtn.disabled = true;
+        nextBtn.innerText = cur === set.questions.length - 1 ? 'ফলাফল দেখো 🏆' : 'পরবর্তী →';
+    }
+}
+
+function selectAnswer(selectedIdx, btnElement) {
+    if (answered) return;
+    answered = true;
+    const set = allSets[currentSetId];
+    const q = set.questions[cur];
+    userAnswers[cur] = selectedIdx;
+
+    const allBtns = document.getElementById('qOpts').children;
+    for (let i = 0; i < allBtns.length; i++) {
+        allBtns[i].classList.add('disabled');
+        if (i === q.ans) allBtns[i].classList.add('correct');
+    }
+
+    if (selectedIdx === q.ans) {
+        score++;
+    } else {
+        btnElement.classList.add('wrong');
+        wrong++;
+    }
+
+    document.getElementById('scoreShow').innerText = `সঠিক: ${score} | ভুল: ${wrong}`;
+    document.getElementById('explanationText').innerHTML = '<strong>ব্যাখ্যা:</strong> ' + q.exp;
+    document.getElementById('explanation').classList.add('show');
+    document.getElementById('nextBtn').disabled = false;
+}
+
+function nextQ() {
+    const set = allSets[currentSetId];
+    if (cur < set.questions.length - 1) {
+        cur++;
+        loadQuestion();
+    } else {
+        if (isReviewMode) {
+            document.getElementById('testArea').classList.add('hidden');
+            document.getElementById('resultWrap').classList.add('show');
+        } else {
+            clearInterval(timerInterval);
+            showResult();
+        }
+    }
+}
+
+function showResult() {
+    document.getElementById('testArea').classList.add('hidden');
+    document.getElementById('timerBox').classList.add('hidden');
+    document.getElementById('resultWrap').classList.add('show');
+
+    const total = allSets[currentSetId].questions.length;
+    const pct = Math.round((score / total) * 100);
+
+    document.getElementById('finalScore').innerText = `${pct}%`;
+    document.getElementById('rbCorrect').innerText = score;
+    document.getElementById('rbWrong').innerText = total - score;
+
+    let msg = "অসাধারণ!"; let icon = "🏆";
+    if (pct < 50) { msg = "আরও অনুশীলন প্রয়োজন!"; icon = "📚"; }
+    else if (pct < 80) { msg = "খুব ভালো চেষ্টা!"; icon = "👍"; }
+
+    document.getElementById('resultGrade').innerText = msg;
+    document.getElementById('resultIcon').innerText = icon;
+
+    let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+    let count = data[currentUser][currentSetId] || 0;
+    let remaining = MAX_ATTEMPTS - count;
+    document.getElementById('attemptInfo').innerText = `👤 ${currentUser} — ${allSets[currentSetId].name}: বাকি আছে ${remaining} বার Test দেওয়ার সুযোগ`;
+}
+
+function showReview() {
+    document.getElementById('resultWrap').classList.remove('show');
+    document.getElementById('testArea').classList.remove('hidden');
+    isReviewMode = true;
+    cur = 0;
+    loadQuestion();
+}
+
+function restartQuiz() {
+    let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+    let count = data[currentUser][currentSetId] || 0;
+    if (count >= MAX_ATTEMPTS) {
+        alert(`⚠️ আপনি এই সেটের সর্বোচ্চ ${MAX_ATTEMPTS} বার Test দিয়েছেন। আর দেওয়া সম্ভব নয়।`);
+        return;
+    }
+    document.getElementById('resultWrap').classList.remove('show');
+    startQuiz(currentSetId);
+}
+
+function goToHub() {
+    window.location.href = "index.html";
+}
+
+window.onload = initHub;
+</script>
+
+</body>
+</html>
+
+
